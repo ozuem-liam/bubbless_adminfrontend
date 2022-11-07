@@ -1,10 +1,11 @@
 import React from 'react'
+import LoginScreen from './login'
 
 
 const index = () => {
   return (
     <div>
-      <p>Hello world</p>
+      <LoginScreen />
     </div>
   )
 }
