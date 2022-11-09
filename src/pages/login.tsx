@@ -23,10 +23,10 @@ const LoginScreen = () => {
                 <View2>
                     <TextInput label={'Email address'} value={''} />
                     <TextInput label={'Password'} value={''} isPassword />
-                    <div style={{cursor:'pointer'}}  onClick={() => router.push('/reset-password')}>
-<TextField text='Forgot your password' fontFamily='Mont-SemiBold' fontWeight='600' margin='5px 0px 0px 0px'  />
+                    <div style={{ cursor: 'pointer' }} onClick={() => router.push('/reset-password')}>
+                        <TextField text='Forgot your password' fontFamily='Mont-SemiBold' fontWeight='600' margin='5px 0px 0px 0px' />
                     </div>
-                    
+
                     <Br />
                     <Button children='Log In' handlePress={() => { }} />
                 </View2>

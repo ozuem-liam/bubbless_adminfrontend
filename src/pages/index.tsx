@@ -1,11 +1,13 @@
 import React from 'react'
+import Dashboard from './dashboard'
 import LoginScreen from './login'
 
 
 const index = () => {
   return (
     <div>
-      <LoginScreen />
+      {/* <LoginScreen /> */}
+      <Dashboard />
     </div>
   )
 }
