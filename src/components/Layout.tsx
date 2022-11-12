@@ -13,7 +13,7 @@ import {
 import type { MenuProps } from 'antd';
 import TextField from './TextField';
 import Image from 'next/image'
-import { arrowDown, bag, config, dashboard, equip, equipemnt, feedback, loan, logo1, logout, notification, people, placeholder, site, startUp, walletMinus } from '../assets';
+import { arrowDown, arrowLeft, bag, config, dashboard, equip, equipemnt, feedback, loan, logo1, logout, notification, people, placeholder, site, startUp, walletMinus } from '../assets';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -51,13 +51,15 @@ const Layouts = ({ children }) => {
         {
             id: 1,
             name: 'Dashboard',
-            route: '/dashboard',
+            route: '/',
+            secondRoute: '/loan-activities',
             icon: dashboard,
         },
         {
             id: 2,
             name: 'Loan',
             route: '/loan',
+            secondRoute: '/loan-details',
             icon: walletMinus,
         },
         {
@@ -124,12 +126,15 @@ const Layouts = ({ children }) => {
                     }}
                 >
                     <Container>
-                        <Image src={logo1} alt='logo' />
+                        <div style={{cursor: 'pointer'}} onClick={() => router.push('/')}>
+                            <Image src={logo1} alt='logo' />
+                        </div>
+
                         <Menudiv>
                             {
-                                sideMenu?.map(({ name, icon, route, id }) => {
+                                sideMenu?.map(({ name, icon, route, id, secondRoute }) => {
                                     return (
-                                        <Subdiv key={id} onClick={() => router.push(route)} style={{ background: pathname === route ? "#FFC268" : "white", borderRadius: pathname === route ? "10px" : "0" }}>
+                                        <Subdiv key={id} onClick={() => router.push(route)} style={{ background: (pathname === route || pathname.includes(secondRoute)) ? "#FFC268" : "white", borderRadius: (pathname === route || pathname.includes(secondRoute)) ? "10px" : "0" }}>
                                             <Image src={icon} alt='' />
                                             <TextField text={name} margin='0px 0px 0px 14px' />
                                         </Subdiv>
@@ -152,21 +157,26 @@ const Layouts = ({ children }) => {
                     </Container>
                 </Sider>
                 <Layout className="site-layout" style={{ marginLeft: 200 }}>
-                    <Header style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', background: 'white' }}>
-                        <Div>
-                            <Image src={notification} alt='notification' />
-                        </Div>
-                        <Div2>
-                            <Image src={placeholder} alt='placeholder' />
-                        </Div2>
-                        <Div3>
-                            <TextField text='John Doe' />
-                        </Div3>
-                        <Dropdown overlay={menu}>
-                            <Image src={arrowDown} alt='arrowDown' />
-                        </Dropdown>
-                    </Header>
-                    <Content style={{ paddingLeft: '48px', paddingTop: '18px' }}>
+                    <MenuDiv>
+                        <Sub style={{cursor: 'pointer'}} onClick={() => router.back()}>
+                            <Image src={arrowLeft} alt='arrow-left' />
+                        </Sub>
+                        <Header style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', background: 'white' }}>
+                            <Div>
+                                <Image src={notification} alt='notification' />
+                            </Div>
+                            <Div2>
+                                <Image src={placeholder} alt='placeholder' />
+                            </Div2>
+                            <Div3>
+                                <TextField text='John Doe' />
+                            </Div3>
+                            <Dropdown overlay={menu}>
+                                <Image src={arrowDown} alt='arrowDown' />
+                            </Dropdown>
+                        </Header>
+                    </MenuDiv>
+                    <Content>
                         {children}
                     </Content>
                 </Layout>
@@ -221,4 +231,15 @@ const Div2 = styled.div`
 
 const Div3 = styled.div`
     margin: 0px 10px;
+`
+
+const MenuDiv = styled.div`
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ background: white;
+`
+
+const Sub = styled.div`
+    margin-left: 45px;
 `

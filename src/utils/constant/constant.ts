@@ -60,6 +60,7 @@ export let Colors: {
     gray300: "#2A60B7",
     gray200: "#1A4393",
     gray100: "#102E7A",
+    lightGray: "#C7C7C7"
 
 }
 
