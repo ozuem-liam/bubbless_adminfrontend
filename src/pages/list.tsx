@@ -10,6 +10,8 @@ import { useRouter } from 'next/router'
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import SearchField from '../components/SearchField'
 import AddEquipmentModal from '../components/AddEquipmentModal'
+import AddEquipmentApplianceModal from '../components/AddEquipmentApplianceModal'
+import EquipmentDetail from '../components/EquipmentDetail'
 
 
 interface DataType {
@@ -53,7 +55,7 @@ function List() {
       render: (value, rowIndex) => {
         var id = rowIndex?.key as number
         return (
-          <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/loan-details/${id}`)}>
+          <div style={{ cursor: 'pointer' }} onClick={() => setDetailOpen(true)}>
             <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
           </div>
         );
@@ -175,7 +177,7 @@ function List() {
         <RowBtw>
           <TextField text='Equipment' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='32px' />
           <div>
-            <NoButtonTextColored> + New Appliance</NoButtonTextColored>
+            <NoButtonTextColored onClick={() => setApplianceOpen(true)}> + New Appliance</NoButtonTextColored>
             <ButtonTextColored onClick={() => setEquipOpen(true)}> + New Equipment</ButtonTextColored>
           </div>
         </RowBtw>
@@ -204,6 +206,8 @@ function List() {
         </Card>
 
         <AddEquipmentModal modalOpen={equipOpen} handleCancel={() => handleEuipClose()} />
+        <AddEquipmentApplianceModal  modalOpen={applianceOpen} handleCancel={() => handleApplianceClose()} />
+        <EquipmentDetail  modalOpen={detailOpen} handleCancel={() => handleDetailClose()} />
       </ComponentDiv>
     </Layouts>
   )

@@ -8,7 +8,7 @@ import TextInput from './TextInput';
 
 
 
-function AddEquipmentModal({ modalOpen, handleCancel }) {
+function AddInstallation({ modalOpen, handleCancel }) {
     return (
         <Modals title="Add Appliance" open={modalOpen} onCancel={handleCancel} footer={null}>
                 <Div>
@@ -26,7 +26,7 @@ function AddEquipmentModal({ modalOpen, handleCancel }) {
     )
 }
 
-export default AddEquipmentModal
+export default AddInstallation
 
 const Modals = styled(Modal)`
 

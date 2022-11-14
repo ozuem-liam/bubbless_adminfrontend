@@ -9,6 +9,9 @@ import { useRouter } from 'next/router'
 
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import SearchField from '../components/SearchField'
+import AddEquipmentModal from '../components/AddEquipmentModal'
+import AddEquipmentApplianceModal from '../components/AddEquipmentApplianceModal'
+import EquipmentDetail from '../components/EquipmentDetail'
 
 
 interface DataType {
@@ -24,7 +27,7 @@ interface DataType {
 function Request() {
   const router = useRouter()
   const [type,setType] = useState('request')
-  const [euipOpen, setEquipOpen] = useState(false);
+  const [equipOpen, setEquipOpen] = useState(false);
   const [applianceOpen, setApplianceOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
 
@@ -230,6 +233,10 @@ function Request() {
           type === "delivered" &&  <Table columns={columns} dataSource={data3} onChange={onChange} />
          }
         </Card>
+
+        <AddEquipmentModal modalOpen={equipOpen} handleCancel={() => handleEuipClose()} />
+        <AddEquipmentApplianceModal  modalOpen={applianceOpen} handleCancel={() => handleApplianceClose()} />
+        <EquipmentDetail  modalOpen={detailOpen} handleCancel={() => handleDetailClose()} />
       </ComponentDiv>
     </Layouts>
   )

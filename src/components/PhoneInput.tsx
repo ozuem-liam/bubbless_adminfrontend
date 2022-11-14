@@ -3,41 +3,36 @@ import TextField from './TextField'
 import styled from "styled-components"
 import { InputType } from '../utils/types/type'
 import { Input } from 'antd';
-
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 import { NextPage } from 'next'
 import dynamic from 'next/dynamic';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Sizes } from '../utils/constant/constant';
 
 
-const TextInput: NextPage<InputType> = ({ label, onChange, value, errorMsg, isPassword, isMultiline, disabled, type, handleTextChange, required, multiple }) => {
-    const [showPassword, setShowPassword] = useState(true)
-    const handleClickShowPassword = () => {
-    };
-
-    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-    };
-
-    const handleChange = () => {
-        setShowPassword(!showPassword)
-    }
+const PhoneInputs= ({ label, onChange, value, errorMsg, handleTextChange,  }) => {
+  
 
     return (
         <Container>
             <TextField text={label} fontSize={Sizes?.size30} lineHeight='34px' />
-            {
-                multiple ?  <Textarea rows={5} />
-                    : <div>
-                        {
-                            isPassword ? <PasswordField
-                                placeholder={label}
-                                iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                            /> : <InputField placeholder={label} />
-                        }
-                    </div>
-            }
-
+            <PhoneInputField
+                    country={'us'}
+                    value={value}
+                    onChange={phone => console.log(phone)}
+                    inputStyle={{
+                        width: '100%',
+                        border: 'none'
+                    }}
+                    containerStyle={{
+                        padding: '10px'
+                    }}
+                    buttonStyle={{
+                        background: 'none',
+                        border: 'none'
+                    }}
+                />
         </Container>
 
 
@@ -45,7 +40,7 @@ const TextInput: NextPage<InputType> = ({ label, onChange, value, errorMsg, isPa
 }
 
 
-export default TextInput
+export default PhoneInputs
 
 const Container = styled.div`
 
@@ -77,7 +72,7 @@ border-radius: 16px;
 }
 `
 
-const Textarea = styled.textarea`
+const PhoneInputField = styled(PhoneInput)`
 width: 100%;
 border: 1px solid #D1D1D1;
 border-radius: 16px;

@@ -88,6 +88,7 @@ const Layouts = ({ children }) => {
             name: 'Installers',
             route: '/installers',
             icon: people,
+            secondRoute: '/installer-detail',
         },
         {
             id: 6,
