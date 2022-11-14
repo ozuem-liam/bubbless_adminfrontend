@@ -1,5 +1,5 @@
 import { Layout, Menu, Dropdown } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import {
     AppstoreOutlined,
     BarChartOutlined,
@@ -7,7 +7,7 @@ import {
     ShopOutlined,
     TeamOutlined,
     UploadOutlined,
-    UserOutlined,
+    LaptopOutlined, NotificationOutlined, UserOutlined,
     VideoCameraOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
@@ -16,6 +16,10 @@ import Image from 'next/image'
 import { arrowDown, arrowLeft, bag, config, dashboard, equip, equipemnt, feedback, loan, logo1, logout, notification, people, placeholder, site, startUp, walletMinus } from '../assets';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+
+
+
+
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -39,6 +43,7 @@ const items: MenuProps['items'] = [
 const Layouts = ({ children }) => {
     const router = useRouter()
     const pathname = router?.pathname
+    const [open, setOpen] = useState(false)
 
     const menu = (
         <Menu>
@@ -67,6 +72,10 @@ const Layouts = ({ children }) => {
             name: 'Equipment',
             route: '/equipment',
             icon: equip,
+            sub: [
+                'list',
+                'request'
+            ]
         },
         {
             id: 4,
@@ -109,6 +118,8 @@ const Layouts = ({ children }) => {
         }
     ]
 
+
+
     return (
         <>
             <Layout hasSider>
@@ -126,18 +137,30 @@ const Layouts = ({ children }) => {
                     }}
                 >
                     <Container>
-                        <div style={{cursor: 'pointer'}} onClick={() => router.push('/')}>
+                        <div style={{ cursor: 'pointer' }} onClick={() => router.push('/')}>
                             <Image src={logo1} alt='logo' />
                         </div>
 
                         <Menudiv>
                             {
-                                sideMenu?.map(({ name, icon, route, id, secondRoute }) => {
+                                sideMenu?.map(({ name, icon, route, id, secondRoute, sub }) => {
                                     return (
-                                        <Subdiv key={id} onClick={() => router.push(route)} style={{ background: (pathname === route || pathname.includes(secondRoute)) ? "#FFC268" : "white", borderRadius: (pathname === route || pathname.includes(secondRoute)) ? "10px" : "0" }}>
-                                            <Image src={icon} alt='' />
-                                            <TextField text={name} margin='0px 0px 0px 14px' />
-                                        </Subdiv>
+                                        <div>
+                                            <Subdiv key={id} onClick={name === "Equipment" ? () => setOpen(!open) : () => router.push(route)} style={{ 
+                                                  background: pathname === "equipment" ? "white" : (pathname === route || pathname.includes(secondRoute) && pathname !== "equipment") ? "#FFC268" : "white", borderRadius: (pathname === route || pathname.includes(secondRoute)) ? "10px" : pathname === "equipment" ? "0" : "0" 
+                                                }}>
+                                                <Image src={icon} alt='' />
+                                                <TextField text={name} margin='0px 0px 0px 14px' />
+                                            </Subdiv>
+                                            {
+                                                sub && open && sub?.map((dd, i)=> {
+                                                    return <Subdiv2 key={i} onClick={() => router.push(dd)} style={{ background: (pathname === dd || pathname.includes(dd)) ? "#FFC268" : "white", borderRadius: (pathname === dd || pathname.includes(dd)) ? "10px" : "0" }}>
+                                                        <TextField text={dd} margin='0px 0px 0px 14px' textTransform='capitalize' />
+                                                    </Subdiv2>
+                                                })
+                                            }
+
+                                        </div>
                                     )
                                 })
                             }
@@ -158,7 +181,7 @@ const Layouts = ({ children }) => {
                 </Sider>
                 <Layout className="site-layout" style={{ marginLeft: 200 }}>
                     <MenuDiv>
-                        <Sub style={{cursor: 'pointer'}} onClick={() => router.back()}>
+                        <Sub style={{ cursor: 'pointer' }} onClick={() => router.back()}>
                             <Image src={arrowLeft} alt='arrow-left' />
                         </Sub>
                         <Header style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', background: 'white' }}>
@@ -211,6 +234,15 @@ const Subdiv = styled.div`
     align-items: center;
     padding: 12px 6px;
     margin-right: 6px;
+    cursor: pointer;
+`
+
+
+const Subdiv2 = styled.div`
+    display: flex;
+    align-items: center;
+    padding: 12px 6px;
+    margin: 10px 15px;
     cursor: pointer;
 `
 

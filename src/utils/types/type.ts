@@ -33,10 +33,25 @@ export type ButtonType = {
     disabled?: boolean
 }
 
+export type AddEquipment = {
+    type: string,
+    name: string,
+    brand: string,
+    price: string,
+    file: string,
+    description: string
+}
+
+export type AddAppliance = {
+    type: string,
+    watt: string
+}
+
 export type InputType = {
     label: string,
     value: string,
     errorMsg?: string,
+    multiple?: boolean,
     isMultiline?: boolean,
     isPassword?: boolean,
     disabled?: boolean,

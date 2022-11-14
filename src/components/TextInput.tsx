@@ -10,7 +10,7 @@ import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Sizes } from '../utils/constant/constant';
 
 
-const TextInput: NextPage<InputType> = ({ label, onChange, value, errorMsg, isPassword, isMultiline, disabled, type, handleTextChange, required }) => {
+const TextInput: NextPage<InputType> = ({ label, onChange, value, errorMsg, isPassword, isMultiline, disabled, type, handleTextChange, required, multiple }) => {
     const [showPassword, setShowPassword] = useState(true)
     const handleClickShowPassword = () => {
     };
@@ -25,12 +25,17 @@ const TextInput: NextPage<InputType> = ({ label, onChange, value, errorMsg, isPa
 
     return (
         <Container>
-            <TextField text={label} fontSize={Sizes?.size30}  lineHeight='34px' />
+            <TextField text={label} fontSize={Sizes?.size30} lineHeight='34px' />
             {
-                isPassword ? <PasswordField
-                    placeholder="input password"
-                    iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                /> : <InputField placeholder="Email address" />
+                multiple ?  <Textarea rows={5} />
+                    : <div>
+                        {
+                            isPassword ? <PasswordField
+                                placeholder="input password"
+                                iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                            /> : <InputField placeholder="Email address" />
+                        }
+                    </div>
             }
 
         </Container>
@@ -70,4 +75,10 @@ border-radius: 16px;
     outline: none;
     box-shadow: 0px 0px 2px red;
 }
+`
+
+const Textarea = styled.textarea`
+width: 100%;
+border: 1px solid #D1D1D1;
+border-radius: 16px;
 `

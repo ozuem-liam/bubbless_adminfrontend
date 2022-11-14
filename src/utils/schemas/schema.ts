@@ -18,3 +18,18 @@ export const SignupSchema = yup.object().shape({
     .min(8, ({min}) => `Password must be at least ${min} characters`)
     .required('Password is required')
 });
+
+
+export const AddEquipmentSchema = yup.object().shape({
+  type: yup.string().required('Type is required'),
+  name: yup.string().required('Name is required'),
+  brand: yup.string().required('Brand is required'),
+  price: yup.string().required('Price is required'),
+  file: yup.string().required('File is required'),
+  description: yup.string().required('Description is required')
+})
+
+export const AddApplianceSchema = yup.object().shape({
+  type: yup.string().required('Type is required'),
+  watt: yup.string().required('Watt is required'),
+})
