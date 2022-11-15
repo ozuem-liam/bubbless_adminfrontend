@@ -10,14 +10,11 @@ import TextInput from './TextInput';
 
 function AddInstallation({ modalOpen, handleCancel }) {
     return (
-        <Modals title="Add Appliance" open={modalOpen} onCancel={handleCancel} footer={null}>
+        <Modals title="Add installation cost" open={modalOpen} onCancel={handleCancel} footer={null}>
                 <Div>
-                    <TextInput label={'Equipment type'} value={''} />
-                    <TextInput label={'Name'} value={''} />
-                    <TextInput label={'Brand'} value={''} />
-                    <TextInput label={'Price'} value={''} />
-                    <TextInput label={'File'} value={''} />
-                    <TextInput label={'Description'} multiple={true} value={''} />
+                    <TextInput label={'Cost name'} value={''} />
+                    <TextInput label={'Cost type'} value={''} />
+                    <TextInput label={'Value'} value={''} />
                     <br/>
                     <br/>
                     <Button children='Add' />

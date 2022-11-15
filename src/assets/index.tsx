@@ -28,3 +28,6 @@ export const square: StaticImageData = require('../assets/svg/receive-square.svg
 export const info: StaticImageData = require('../assets/svg/info-circle.svg');
 export const pic: StaticImageData = require('../assets/svg/pic.svg');
 export const star: StaticImageData = require('../assets/svg/star.svg');
+export const user: StaticImageData = require('../assets/svg/user.svg');
+export const received: StaticImageData = require('../assets/svg/received.svg');
+export const send: StaticImageData = require('../assets/svg/send.svg');

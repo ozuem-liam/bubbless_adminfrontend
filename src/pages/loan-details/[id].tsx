@@ -98,11 +98,10 @@ function loanDetails() {
               </Col>
               <Col span={12} >
                 <MenuDiv>
+                  <div style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', background: 'red'}}>
                   <Img src={pic} alt='' />
-
-                </MenuDiv>
-
-                <SubmitDiv>
+                  </div>
+                  <SubmitDiv>
                   <SubmitDiv2>
                     <TextField text='Submitted documents' fontSize={'14px'} lineHeight='20px' fontWeight='bold' fontFamily='Mont-SemiBold' />
                   </SubmitDiv2>
@@ -123,6 +122,29 @@ function loanDetails() {
                     </Sub3>
                   </Box>
                 </SubmitDiv>
+                </MenuDiv>
+
+                {/* <SubmitDiv>
+                  <SubmitDiv2>
+                    <TextField text='Submitted documents' fontSize={'14px'} lineHeight='20px' fontWeight='bold' fontFamily='Mont-SemiBold' />
+                  </SubmitDiv2>
+                  <Box>
+                    <Sub3>
+                      <div style={{ width: '80%' }}>
+                        <TextField text='Consumer Credit Report' color={'#54A6FF'} />
+                      </div>
+                      <Image src={square} alt='' />
+                      <Image src={more} alt='' />
+                    </Sub3>
+                    <Sub3>
+                      <div style={{ width: '80%' }}>
+                        <TextField text='Consumer Credit Report' color={'#54A6FF'} />
+                      </div>
+                      <Image src={square} alt='' />
+                      <Image src={more} alt='' />
+                    </Sub3>
+                  </Box>
+                </SubmitDiv> */}
 
               </Col>
             </Row>
@@ -471,14 +493,15 @@ const Container = styled.div`
 const MenuDiv = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-end;
+  // justify-content: flex-end;
+  // align-items: flex-end;
   width: 100%;
   padding-top: 30px;
 `
 
 const Img = styled(Image)`
-  width: 50%;
+  // width: 50%;
+  width: 100%;
 
   @media screen and (max-width: 1100px) {
     width: 100%;
@@ -488,9 +511,11 @@ const Img = styled(Image)`
 const SubmitDiv = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-end;
+  justify-content: flex-start;
+  align-items: flex-start;
   margin-top: 50px;
+  margin-left: 100px;
+  background: red;
 `
 
 const SubmitDiv2 = styled.div`

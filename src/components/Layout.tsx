@@ -73,8 +73,15 @@ const Layouts = ({ children }) => {
             route: '/equipment',
             icon: equip,
             sub: [
-                'list',
-                'request'
+                {
+                    name: 'List',
+                    route: '/list'
+                },
+                {
+                    name: 'Request',
+                    route: '/request'
+                }
+               
             ]
         },
         {
@@ -95,6 +102,7 @@ const Layouts = ({ children }) => {
             name: 'Investment',
             route: '/investment',
             icon: startUp,
+            secondRoute: '/all-investors'
         },
         {
             id: 7,
@@ -155,8 +163,8 @@ const Layouts = ({ children }) => {
                                             </Subdiv>
                                             {
                                                 sub && open && sub?.map((dd, i)=> {
-                                                    return <Subdiv2 key={i} onClick={() => router.push(dd)} style={{ background: (pathname === dd || pathname.includes(dd)) ? "#FFC268" : "white", borderRadius: (pathname === dd || pathname.includes(dd)) ? "10px" : "0" }}>
-                                                        <TextField text={dd} margin='0px 0px 0px 14px' textTransform='capitalize' />
+                                                    return <Subdiv2 key={i} onClick={() => router.push(dd?.route)} style={{ background: (pathname === dd?.route || pathname.includes(dd?.route)) ? "#FFC268" : "white", borderRadius: (pathname === dd?.route || pathname.includes(dd?.route)) ? "10px" : "0" }}>
+                                                        <TextField text={dd?.name} margin='0px 0px 0px 14px' textTransform='capitalize' />
                                                     </Subdiv2>
                                                 })
                                             }
