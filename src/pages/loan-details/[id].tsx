@@ -47,7 +47,7 @@ function loanDetails() {
           </Contain>
           <RowContain>
             <Sub>
-              <TextField text='Consumer Credit Report' color={'#54A6FF'} />
+              <TextField text='Consumer Credit Report' fontSize={'10px'} color={'#54A6FF'} />
               <Image src={square} alt='' />
               <Image src={more} alt='' />
             </Sub>
@@ -84,70 +84,44 @@ function loanDetails() {
       <Hr />
       {
         type === "kyc" && <ComponentDiv2>
-          <Container>
-            <Row gutter={[16, 16]}>
-              <Col span={12} >
-                <TextInput label={'First name'} value={''} />
-                <TextInput label={'Last name'} value={''} />
-                <TextInput label={'Email'} value={''} />
-                <TextInput label={'Phone number'} value={''} />
-                <TextInput label={'Income'} value={''} />
-                <TextInput label={'BVN'} value={''} />
-                <TextInput label={'Business name'} value={''} />
-                <TextInput label={'Business Address'} value={''} />
-              </Col>
-              <Col span={12} >
-                <MenuDiv>
-                  <div style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', background: 'red'}}>
-                  <Img src={pic} alt='' />
-                  </div>
-                  <SubmitDiv>
+          <Container style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Row1>
+              <TextInput label={'First name'} value={''} />
+              <TextInput label={'Last name'} value={''} />
+              <TextInput label={'Email'} value={''} />
+              <TextInput label={'Phone number'} value={''} />
+              <TextInput label={'Income'} value={''} />
+              <TextInput label={'BVN'} value={''} />
+              <TextInput label={'Business name'} value={''} />
+              <TextInput label={'Business Address'} value={''} />
+            </Row1>
+            <Row2>
+              <MenuDiv>
+                <Img src={"https://res.cloudinary.com/doouwbecx/image/upload/v1659633074/1_ktfkhp.png"} alt='' />
+
+                <SubmitDiv>
                   <SubmitDiv2>
                     <TextField text='Submitted documents' fontSize={'14px'} lineHeight='20px' fontWeight='bold' fontFamily='Mont-SemiBold' />
                   </SubmitDiv2>
                   <Box>
                     <Sub3>
                       <div style={{ width: '80%' }}>
-                        <TextField text='Consumer Credit Report' color={'#54A6FF'} />
+                        <TextField text='Consumer Credit Report' fontSize={'10px'} color={'#54A6FF'} />
                       </div>
                       <Image src={square} alt='' />
                       <Image src={more} alt='' />
                     </Sub3>
                     <Sub3>
                       <div style={{ width: '80%' }}>
-                        <TextField text='Consumer Credit Report' color={'#54A6FF'} />
+                        <TextField text='Consumer Credit Report' fontSize={'10px'} color={'#54A6FF'} />
                       </div>
                       <Image src={square} alt='' />
                       <Image src={more} alt='' />
                     </Sub3>
                   </Box>
                 </SubmitDiv>
-                </MenuDiv>
-
-                {/* <SubmitDiv>
-                  <SubmitDiv2>
-                    <TextField text='Submitted documents' fontSize={'14px'} lineHeight='20px' fontWeight='bold' fontFamily='Mont-SemiBold' />
-                  </SubmitDiv2>
-                  <Box>
-                    <Sub3>
-                      <div style={{ width: '80%' }}>
-                        <TextField text='Consumer Credit Report' color={'#54A6FF'} />
-                      </div>
-                      <Image src={square} alt='' />
-                      <Image src={more} alt='' />
-                    </Sub3>
-                    <Sub3>
-                      <div style={{ width: '80%' }}>
-                        <TextField text='Consumer Credit Report' color={'#54A6FF'} />
-                      </div>
-                      <Image src={square} alt='' />
-                      <Image src={more} alt='' />
-                    </Sub3>
-                  </Box>
-                </SubmitDiv> */}
-
-              </Col>
-            </Row>
+              </MenuDiv>
+            </Row2>
           </Container>
         </ComponentDiv2>
       }
@@ -253,7 +227,7 @@ function loanDetails() {
                 </td>
               </tr>
             </table>
-  
+
             <Hr2 />
             <TextField text='Energy Summary' fontSize='12px' lineHeight='18px' fontFamily='Mont-Bold' />
             <Hr3 />
@@ -276,10 +250,10 @@ function loanDetails() {
         </ComponentDiv2>
       }
 
-{
+      {
         type === "installer" && <ComponentDiv2>
           <Payment>
-          <RowBtw style={{ marginTop: '25px' }}>
+            <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Name' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
               <TextField text='Installer name' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
@@ -314,11 +288,11 @@ function loanDetails() {
       }
 
 
-{
+      {
         type === "history" && <ComponentDiv2>
           <TextField text='Total loan application (1) ' fontSize='16px' fontWeight='700' lineHeight='22px' fontFamily='Mont-SemiBold' margin='0px 0px 0px 25px' />
           <Payment>
-          <RowBtw style={{ marginTop: '25px' }}>
+            <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Name' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
               <TextField text='Installer name' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
@@ -499,12 +473,13 @@ const MenuDiv = styled.div`
   padding-top: 30px;
 `
 
-const Img = styled(Image)`
-  // width: 50%;
-  width: 100%;
+const Img = styled.img`
+  width: 50%;
+  height: 200px;
 
   @media screen and (max-width: 1100px) {
-    width: 100%;
+    width: 70%;
+    height: 200px;
   }
 `
 
@@ -514,8 +489,6 @@ const SubmitDiv = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   margin-top: 50px;
-  margin-left: 100px;
-  background: red;
 `
 
 const SubmitDiv2 = styled.div`
@@ -530,13 +503,14 @@ const SubmitDiv2 = styled.div`
 const Box = styled.div`
 border: 1px solid #D1D1D1;
 border-radius: 12px;
-width: 370px;
+width: 50%;
 padding: 20px;
 margin-top: 10px;
 height: 280px;
 
 @media screen and (max-width: 1100px) {
-  width: 350px;
+  width: 70%;
+  height: 200px;
 }
 `
 
@@ -555,4 +529,12 @@ const RowBtw = styled.div`
 `
 const RowStart = styled.div`
 display: flex;
+`
+
+const Row1 = styled.div`
+width: 48%;
+`
+
+const Row2 = styled.div`
+width: 48%;
 `
