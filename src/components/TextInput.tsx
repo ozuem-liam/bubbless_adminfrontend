@@ -27,17 +27,22 @@ const TextInput: NextPage<InputType> = ({ label, onChange, value, errorMsg, isPa
         <Container>
             <TextField text={label} fontSize={Sizes?.size30} lineHeight='34px' />
             {
-                multiple ?  <Textarea rows={5} />
+                multiple ? <Textarea rows={5} value={value} onChange={onChange} />
                     : <div>
                         {
                             isPassword ? <PasswordField
                                 placeholder={label}
+                                value={value} onChange={onChange}
                                 iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                            /> : <InputField placeholder={label} />
+                            /> : <InputField placeholder={label} value={value} onChange={onChange} />
                         }
                     </div>
             }
-
+            {errorMsg !== undefined ? (
+                <ErrorDiv>
+                    <Text>{errorMsg}</Text>
+                </ErrorDiv>
+            ) : null}
         </Container>
 
 
@@ -81,4 +86,16 @@ const Textarea = styled.textarea`
 width: 100%;
 border: 1px solid #D1D1D1;
 border-radius: 16px;
+`
+
+const Text = styled.p`
+  font-size: 12px;
+  color: red;
+  text-transform: capitalize
+`
+
+
+
+const ErrorDiv = styled.div`
+  margin-top: 5px;
 `

@@ -16,6 +16,7 @@ import Image from 'next/image'
 import { arrowDown, arrowLeft, bag, config, dashboard, equip, equipemnt, feedback, loan, logo1, logout, notification, people, placeholder, site, startUp, walletMinus } from '../assets';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import secureLocalStorage from 'react-secure-storage';
 
 
 
@@ -45,12 +46,21 @@ const Layouts = ({ children }) => {
     const pathname = router?.pathname
     const [open, setOpen] = useState(false)
 
+    var user: any = secureLocalStorage.getItem('user')
+    var userInfo  = JSON.parse(user) 
+
+
     const menu = (
         <Menu>
             <Menu.Item>item 1</Menu.Item>
             <Menu.Item>item 2</Menu.Item>
         </Menu>
     );
+
+    const logOut = () => {
+        secureLocalStorage.clear()
+        return router.push('/')
+    }
 
     const sideMenu = [
         {
@@ -178,7 +188,7 @@ const Layouts = ({ children }) => {
                             {
                                 sideBottom?.map(({ name, icon, route, id }) => {
                                     return (
-                                        <Subdiv key={id} onClick={() => router.push(route)} style={{ background: pathname === route ? "#FFC268" : "white", borderRadius: pathname === route ? "10px" : "0" }}>
+                                        <Subdiv key={id} onClick={route === "logout" ? () => logOut() : () => router.push(route)} style={{ background: pathname === route ? "#FFC268" : "white", borderRadius: pathname === route ? "10px" : "0" }}>
                                             <Image src={icon} alt='' />
                                             <TextField text={name} margin='0px 0px 0px 14px' />
                                         </Subdiv>
@@ -201,7 +211,7 @@ const Layouts = ({ children }) => {
                                 <Image src={placeholder} alt='placeholder' />
                             </Div2>
                             <Div3>
-                                <TextField text='John Doe' />
+                                <TextField text={userInfo?.first_name + " " + userInfo?.last_name} />
                             </Div3>
                             <Dropdown overlay={menu}>
                                 <Image src={arrowDown} alt='arrowDown' />

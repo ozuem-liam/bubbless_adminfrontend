@@ -1,16 +1,66 @@
 
+import { useFormik } from 'formik'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
+import { useAppDispatch } from '../app/hook'
 
 import Button from '../components/Button'
 import TextField from '../components/TextField'
 import TextInput from '../components/TextInput'
+import { signInUser } from '../slices/AuthSlice'
 import { Sizes } from '../utils/constant/constant'
+import { LoginSchema } from '../utils/schemas/schema'
+import { LoginFormData } from '../utils/types/type'
+import { ToastContainer, toast } from 'react-toastify';
+import secureLocalStorage from 'react-secure-storage'
+
 
 
 const LoginScreen = () => {
     const router = useRouter()
+    const dispatch = useAppDispatch()
+    const [loader, setLoader] = useState(false)
+
+    const initialValues: LoginFormData = {
+        email: '',
+        password: '',
+    };
+
+    const handleFormSubmit = async (data: any) => {
+        setLoader(true)
+        try {
+            var response = await dispatch(signInUser(data))
+            if(signInUser.fulfilled.match(response)){
+                console.log({response})
+                secureLocalStorage.setItem("token", response?.payload?.data?.token)
+                secureLocalStorage.setItem("user", JSON.stringify(response?.payload?.data))
+                setLoader(false)
+
+                return router.push('/')
+            }
+            else {
+                var errMsg = response?.payload as string
+                toast.error(errMsg)
+                setLoader(false)
+            
+            }
+        }
+        catch(e){
+            console.log({e})
+            setLoader(false)
+        }
+    }
+    
+    const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
+        useFormik({
+            initialValues,
+            validationSchema: LoginSchema,
+            onSubmit: (data: LoginFormData) => handleFormSubmit(data),
+        });
+
+
+        
     return (
         <Div>
 
@@ -21,17 +71,19 @@ const LoginScreen = () => {
                 </View>
                 <Hr />
                 <View2>
-                    <TextInput label={'Email address'} value={''} />
-                    <TextInput label={'Password'} value={''} isPassword />
+                    <TextInput label={'Email address'} value={values?.email} onChange={handleChange('email')}    errorMsg={touched.email ? errors.email : undefined} />
+                    <TextInput label={'Password'} value={values?.password} onChange={handleChange('password')}    errorMsg={touched.password ? errors.password : undefined} isPassword />
                     <div style={{ cursor: 'pointer' }} onClick={() => router.push('/reset-password')}>
                         <TextField text='Forgot your password' fontFamily='Mont-SemiBold' fontWeight='600' margin='5px 0px 0px 0px' />
                     </div>
 
                     <Br />
-                    <Button children='Log In' handlePress={() => router.push('/dashboard')} />
+                    <Button isLoading={loader} children='Log In' handlePress={handleSubmit} />
                 </View2>
 
             </LoginDiv>
+
+            <ToastContainer position='top-center' />
         </Div>
     )
 }
