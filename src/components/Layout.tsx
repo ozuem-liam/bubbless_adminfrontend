@@ -57,7 +57,7 @@ const Layouts = ({ children }) => {
             id: 1,
             name: 'Dashboard',
             route: '/',
-            secondRoute: '/loan-activities',
+            secondRoute: '/loan-activities' || '/dashboard',
             icon: dashboard,
         },
         {

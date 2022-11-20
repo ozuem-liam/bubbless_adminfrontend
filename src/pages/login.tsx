@@ -28,7 +28,7 @@ const LoginScreen = () => {
                     </div>
 
                     <Br />
-                    <Button children='Log In' handlePress={() => { }} />
+                    <Button children='Log In' handlePress={() => router.push('/dashboard')} />
                 </View2>
 
             </LoginDiv>

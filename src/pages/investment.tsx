@@ -47,6 +47,7 @@ function Investment() {
         );
       },
       width: '30%',
+      responsive: ['lg'],
     },
     {
       title: 'Type',
@@ -57,6 +58,7 @@ function Investment() {
         );
       },
       width: '30%',
+      responsive: ['lg'],
     },
     {
       title: 'Amount',
@@ -67,6 +69,7 @@ function Investment() {
         );
       },
       width: '20%',
+      responsive: ['lg'],
     },
     {
       title: 'Date',
@@ -77,6 +80,7 @@ function Investment() {
         );
       },
       width: '20%',
+      responsive: ['lg'],
     },
   ];
 
@@ -229,7 +233,7 @@ function Investment() {
         </Row>
         <br />
         <Row>
-          <Col span={16}>
+          <Col md={24} lg={24} xl={15}>
             <InvestmentCardFour>
               <RowBtw>
                 <TextField text='Investors' fontFamily='Mont-Bold' fontWeight='700' fontSize='14px' lineHeight='34px' />
@@ -241,7 +245,7 @@ function Investment() {
             </InvestmentCardFour>
           </Col>
 
-          <Col span={8}>
+          <Col md={24} lg={24} xl={9}>
             <InvestmentCardFour>
               <RowBtw>
                 <TextField text='Support' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />

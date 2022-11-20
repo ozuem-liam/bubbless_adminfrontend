@@ -6,8 +6,8 @@ import LoginScreen from './login'
 const index = () => {
   return (
     <div>
-      {/* <LoginScreen /> */}
-      <Dashboard />
+      <LoginScreen />
+      {/* <Dashboard /> */}
     </div>
   )
 }
