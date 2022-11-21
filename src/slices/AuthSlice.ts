@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import secureLocalStorage from "react-secure-storage";
 import type { RootState } from "../app/store";
-import { postAuthRequest } from "../utils/helper/helper";
+import { postRequest } from "../utils/server";
 import { LoginFormData, LoginState, SignupType } from "../utils/types/type";
 
 
@@ -17,37 +17,13 @@ const initialState: LoginState = {
 
 
 
-export const createUser = createAsyncThunk(
-  'auth/signUp',
-  async (payload: SignupType, { rejectWithValue }) => {
-
-    const data = {
-      first_name: payload.fName,
-      last_name: payload?.lName,
-      email: payload?.email,
-      password: payload?.password
-    }
-    try {
-      const response = await postAuthRequest("/auth", data)
-      if (response?.status === 200) {
-        secureLocalStorage.setItem("token", response?.data?.data?.accessToken)
-        return response?.data
-      }
-
-    }
-    catch (e) {
-
-      return rejectWithValue(e?.response?.data?.message)
-    }
-  }
-)
 
 
 export const forgetPassword = createAsyncThunk(
   'auth/forgetPassword',
   async (payload: { email: string, redirect_url: string }, { rejectWithValue }) => {
     try {
-      const response = await postAuthRequest("/auth/request_password_reset", payload)
+      const response = await postRequest("/auth/request_password_reset", payload)
       if (response?.status === 200) {
         return response?.data
       }
@@ -66,9 +42,9 @@ export const signInUser = createAsyncThunk(
   'auth/signin',
   async (payload: LoginFormData, { rejectWithValue }) => {
     try {
-      const response = await postAuthRequest("/auth/login", payload)
+      const response = await postRequest("/auth/login", payload)
       if (response?.status === 200) {
-        secureLocalStorage.setItem("token", response?.data?.data?.accessToken)
+       
         return response?.data
       }
 
@@ -86,18 +62,6 @@ export const AuthSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(createUser.pending, (state, action) => {
-      state.loading = true
-    }),
-      builder.addCase(createUser.fulfilled, (state, action: PayloadAction<any>) => {
-        state.loading = false,
-          state.userInfo = action.payload?.data
-
-      }),
-      builder.addCase(createUser.rejected, (state, action) => {
-        state.loading = false,
-          state.error = action.payload
-      }),
       builder.addCase(signInUser.pending, (state, action) => {
         state.loading = true
       }),

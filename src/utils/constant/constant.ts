@@ -60,9 +60,25 @@ export let Colors: {
     gray300: "#2A60B7",
     gray200: "#1A4393",
     gray100: "#102E7A",
+    lightGray: "#C7C7C7"
 
 }
 
 export let Sizes: {
-
+    size8: "0.5em",
+    size10: "0.625em",
+    size11: "0.6875em",
+    size12: "0.7500em",
+    size13: "0.8125em",
+    size14: "0.8759em",
+    size15: "0.93753m",
+    size16: "1em",
+    size18: "1.125em",
+    size20: '1.2500em',
+    size22: "1.3750em",
+    size24: "1.5em",
+    size25: '1.5625em',
+    size30: "1.875em",
+    size40: "2.5em",
+    size80: "5em"
 }
