@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import secureLocalStorage from "react-secure-storage";
 import type { RootState } from "../app/store";
-import { postRequest } from "../utils/server";
+import { getRequest, postRequest } from "../utils/server";
 import { LoginFormData, LoginState, SignupType } from "../utils/types/type";
 
 
@@ -21,9 +21,9 @@ const initialState: LoginState = {
 
 export const forgetPassword = createAsyncThunk(
   'auth/forgetPassword',
-  async (payload: { email: string, redirect_url: string }, { rejectWithValue }) => {
+  async (payload: { email: string}, { rejectWithValue }) => {
     try {
-      const response = await postRequest("/auth/request_password_reset", payload)
+      const response = await postRequest("/auth/initiate-password-reset", payload)
       if (response?.status === 200) {
         return response?.data
       }
@@ -56,6 +56,24 @@ export const signInUser = createAsyncThunk(
   }
 )
 
+export const getProfile = createAsyncThunk(
+  'auth/getProfile',
+  async () => {
+    try {
+      const response = await getRequest("/auth/profile")
+      if (response?.status === 200) {
+        return response?.data
+      }
+
+    }
+    catch (e) {
+      console.log(e?.response?.data?.message)
+    }
+
+  }
+)
+
+
 
 export const AuthSlice = createSlice({
   name: 'auth',
@@ -80,13 +98,23 @@ export const AuthSlice = createSlice({
     builder.addCase(forgetPassword.rejected, (state, action) => {
       state.error = action.error.message
     })
+    builder.addCase(getProfile.pending, (state, action) => {
+      state.loading = true
+    }),
+      builder.addCase(getProfile.fulfilled, (state, action) => {
+        state.loading = false,
+        state.userData = action?.payload?.data
+      })
+    builder.addCase(getProfile.rejected, (state, action) => {
+      state.error = action.error.message
+    })
    
   }
 })
 
-export const loginState = (state: RootState) => state.auth.userData;
+export const loginState = (state: RootState) => state.auth.userInfo;
 
-export const userState = (state: RootState) => state.auth.userInfo;
+export const userState = (state: RootState) => state.auth.userData;
 
 export default AuthSlice.reducer;
 

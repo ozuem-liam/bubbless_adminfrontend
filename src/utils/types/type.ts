@@ -11,6 +11,11 @@ export type LoginFormData = {
     password: string;
 }
 
+export type ResetFormData = {
+    email: string;
+}
+
+
 export type SignupType = {
     email: string;
     password: string;

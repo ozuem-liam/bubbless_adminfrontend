@@ -6,7 +6,7 @@ import TextInput from './TextInput'
 
 function AddEquipmentApplianceModal({modalOpen, handleCancel}) {
   return (
-    <Modals title="Add Equipment" open={modalOpen} onCancel={handleCancel} footer={null}>
+    <Modals title="Add Applaince" open={modalOpen} onCancel={handleCancel} footer={null}>
                 <Div>
                     <TextInput label={'Appliance type'} value={''} />
                     <TextInput label={'Watt'} value={''} />
