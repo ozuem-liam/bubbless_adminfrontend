@@ -42,6 +42,19 @@ export const postRequest =  async (url: string, payload?) => {
   }
 }
 
+export const updateRequest =  async (url: string, payload?) => {
+  var res = await axios.put(Base_url + url, payload, {
+    headers: {
+      authorization: `Bearer ${secureLocalStorage.getItem("token")}`,
+    }
+  })
+  if(res?.status === 200){
+    return res
+  }
+  if(res?.status === 401 || getToken === null){
+
+  }
+}
 
 export const deleteRequest = (url: string) => {
   return axios.delete(Base_url + url, {

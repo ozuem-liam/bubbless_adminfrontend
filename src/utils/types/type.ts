@@ -1,6 +1,7 @@
 
 import { FormikErrors, FormikTouched } from "formik";
 import { StaticImageData } from "next/image";
+import { type } from "os";
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 import { number } from "yup";
@@ -15,6 +16,14 @@ export type ResetFormData = {
     email: string;
 }
 
+export type EquipmentType = {
+    equipment_type: string, 
+    name: string, 
+    brand: string, 
+    price: number, 
+    secification_file: string, 
+    description: string
+}
 
 export type SignupType = {
     email: string;

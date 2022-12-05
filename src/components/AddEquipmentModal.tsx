@@ -1,6 +1,12 @@
 import { Modal } from 'antd';
+import { useFormik } from 'formik';
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import { useAppDispatch } from '../app/hook';
+import { createEquipment, getEquipment } from '../slices/EquipmentSlice';
+import { AddApplianceSchema, AddEquipmentSchema } from '../utils/schemas/schema';
+import { EquipmentType } from '../utils/types/type';
 import Button from './Button';
 import TextInput from './TextInput';
 
@@ -9,18 +15,70 @@ import TextInput from './TextInput';
 
 
 function AddEquipmentModal({ modalOpen, handleCancel }) {
+    const [applaince, setAppliance] = useState<any>()
+    const [loader, setLoader] = useState(false)
+    const dispatch = useAppDispatch()
+
+    const initialValues: EquipmentType = {
+        equipment_type: "", 
+        name: "", 
+        brand: "", 
+        price: 0, 
+        secification_file: "file.pdf", 
+        description: ""
+      }
+    
+      const handleFormSubmit = async (data) => {
+        setLoader(true)
+        const payload = {
+            equipment_type: data?.equipment_type, 
+            name: data?.name, 
+            brand: data?.brand, 
+            price: data?.price, 
+            secification_file: data?. secification_file, 
+            description: data?.description
+        }
+    
+        try {
+          var response = await dispatch(createEquipment(payload))
+          if (createEquipment.fulfilled.match(response)) {
+            toast.success(response?.payload?.message)
+            dispatch(getEquipment()).then(dd => console.log(dd?.payload))
+            setLoader(false)
+          }
+          else {
+            var errMsg = response?.payload as string
+            toast.error(errMsg)
+            setLoader(false)
+          }
+        }
+        catch (e) {
+          console.log({ e })
+          setLoader(false)
+        }
+      }
+    
+    
+      const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
+        useFormik({
+          initialValues,
+          validationSchema: AddEquipmentSchema,
+          onSubmit: (data: EquipmentType) => handleFormSubmit(data),
+        });
+    
+
     return (
         <Modals title="Add Appliance" open={modalOpen} onCancel={handleCancel} footer={null}>
                 <Div>
-                    <TextInput label={'Equipment type'} value={''} />
-                    <TextInput label={'Name'} value={''} />
-                    <TextInput label={'Brand'} value={''} />
-                    <TextInput label={'Price'} value={''} />
-                    <TextInput label={'File'} value={''} />
-                    <TextInput label={'Description'} multiple={true} value={''} />
+                    <TextInput label={'Equipment type'} value={values?.equipment_type} onChange={handleChange('equipment_type')} errorMsg={touched.equipment_type ? errors.equipment_type : undefined} />
+                    <TextInput label={'Name'} value={values?.name} onChange={handleChange('name')} errorMsg={touched.name ? errors.name : undefined} />
+                    <TextInput label={'Brand'} value={values?.brand} onChange={handleChange('brand')} errorMsg={touched.brand ? errors.brand : undefined}  />
+                    <TextInput label={'Price'} value={values?.price.toString()} onChange={handleChange('price')} errorMsg={touched.price ? errors.price : undefined} />
+                    <TextInput label={'File'} value={values?.secification_file} onChange={handleChange('secification_file')} errorMsg={touched.secification_file ? errors.secification_file : undefined} />
+                    <TextInput label={'Description'} multiple={true} value={values?.description} onChange={handleChange('description')} errorMsg={touched.description ? errors.description : undefined} />
                     <br/>
                     <br/>
-                    <Button children='Add' />
+                    <Button isLoading={loader} handlePress={handleSubmit}  children='Add' />
                 </Div>
         </Modals>
     )

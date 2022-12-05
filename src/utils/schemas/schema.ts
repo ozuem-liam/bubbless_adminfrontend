@@ -25,15 +25,17 @@ export const SignupSchema = yup.object().shape({
 
 
 export const AddEquipmentSchema = yup.object().shape({
-  type: yup.string().required('Type is required'),
+  equipment_type: yup.string().required('Type is required'),
   name: yup.string().required('Name is required'),
   brand: yup.string().required('Brand is required'),
-  price: yup.string().required('Price is required'),
-  file: yup.string().required('File is required'),
+  price: yup.number().required('Price is required'),
+  secification_file: yup.string().required('File is required'),
   description: yup.string().required('Description is required')
+
 })
 
 export const AddApplianceSchema = yup.object().shape({
-  type: yup.string().required('Type is required'),
-  watt: yup.string().required('Watt is required'),
+  name: yup.string().required('Name is required'),
+  watts: yup.string().required('Watt is required'),
 })
+

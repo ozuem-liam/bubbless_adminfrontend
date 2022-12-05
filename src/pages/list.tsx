@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Layouts from '../components/Layout'
 import TextField from '../components/TextField'
@@ -12,6 +12,8 @@ import SearchField from '../components/SearchField'
 import AddEquipmentModal from '../components/AddEquipmentModal'
 import AddEquipmentApplianceModal from '../components/AddEquipmentApplianceModal'
 import EquipmentDetail from '../components/EquipmentDetail'
+import { useAppDispatch } from '../app/hook'
+import { getAppliance } from '../slices/ApplianceSlice'
 
 
 interface DataType {
@@ -34,7 +36,12 @@ function List() {
   const [equipOpen, setEquipOpen] = useState(false);
   const [applianceOpen, setApplianceOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
+  const dispatch = useAppDispatch()
+  const [applaince, setAppliance] = useState<any>()
 
+  useEffect(() => {
+      dispatch(getAppliance()).then(dd => setAppliance(dd?.payload?.data?.appliances))
+  }, [])
 
   const handleEuipClose = () => {
     setEquipOpen(false)
@@ -46,6 +53,7 @@ function List() {
   const handleDetailClose = () => {
     setDetailOpen(false)
   }
+
 
 
   const columns: ColumnsType<DataType> = [
@@ -152,23 +160,14 @@ function List() {
     }
   ];
 
-  const data2: DataType2[] = [
-    {
-      key: '1',
-      type: 'Medium - Television Set',
-      vottage: "N1,000,000"
-    },
-    {
-      key: '2',
-      type: 'Big - Refridgerator',
-      vottage: "N1,000,000"
-    },
-    {
-      key: '3',
-      type: 'Big - Refridgerator',
-      vottage: "N1,000,000"
+  const data2: DataType2[] = applaince?.map((data, i )=> {
+    return {
+      key: i,
+      type: data?.name,
+      vottage: `N${data?.watts}`
     }
-  ];
+  })
+ 
 
   return (
     <Layouts>
