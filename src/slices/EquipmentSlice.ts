@@ -53,11 +53,18 @@ export const createEquipmentRequest = createAsyncThunk(
 
 export const updateEquipment = createAsyncThunk(
   'equipment/updateEquipment',
-  async (payload: any, { rejectWithValue }) => {
+  async (payload: {equipment_type: string, name: string, brand: string, price: number, secification_file: string, description: string, id: string}, { rejectWithValue }) => {
     try {
-      const response = await updateRequest(`/equipment/update/${payload?.id}`, payload)
+      const data = {
+        equipment_type: payload.equipment_type, 
+        name: payload.name, 
+        brand: payload.brand, 
+        price: payload.price, 
+        secification_file: payload.secification_file, 
+        description: payload.description
+      }
+      const response = await updateRequest(`/equipment/update/${payload?.id}`, data)
       if (response?.status === 200) {
-       
         return response?.data
       }
 
@@ -72,16 +79,10 @@ export const updateEquipment = createAsyncThunk(
 export const getEquipment = createAsyncThunk(
   'equipment/getEquipment',
   async () => {
-    try {
-      const response = await getRequest("/equipment")
+      const response = await getRequest("/equipment") as any
       if (response?.status === 200) {
         return response?.data
       }
-
-    }
-    catch (e) {
-      console.log(e?.response?.data?.message)
-    }
 
   }
 )

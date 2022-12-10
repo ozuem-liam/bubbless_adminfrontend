@@ -36,13 +36,13 @@ export const createAppliance = createAsyncThunk(
 
 export const updateAppliance = createAsyncThunk(
   'appliance/updateAppliance',
-  async (payload: {name: string, watts: string, id: string}, { rejectWithValue }) => {
+  async (payload: {name: string, watts: number, id: string}, { rejectWithValue }) => {
     const data = {
         name: payload?.name,
         watts: payload?.watts
     }
     try {
-      const response = await updateRequest(`/appliance/update/${payload?.id}`, payload)
+      const response = await updateRequest(`/appliance/update/${payload?.id}`, data)
       if (response?.status === 200) {
        
         return response?.data
@@ -60,7 +60,7 @@ export const getAppliance = createAsyncThunk(
   'appliance/getAppliance',
   async () => {
     try {
-      const response = await getRequest("/appliance")
+      const response = await getRequest("/appliance") as any
       if (response?.status === 200) {
         return response?.data
       }

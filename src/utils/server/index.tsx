@@ -18,12 +18,14 @@ export const getRequest = async (url: string) => {
         authorization: `Bearer ${secureLocalStorage.getItem("token")}`,
       },
     })
-
     if(res?.status === 200){
       return res
     }
+    
     if(res?.status === 401 || getToken === null){
-
+      secureLocalStorage.clear()
+      localStorage.clear()
+      return window.location.href = '/'
     }
 }
 

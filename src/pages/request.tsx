@@ -32,13 +32,7 @@ function Request() {
   const [detailOpen, setDetailOpen] = useState(false);
 
 
-  const handleEuipClose = () => {
-    setEquipOpen(false)
-  }
 
-  const handleApplianceClose = () => {
-    setApplianceOpen(false)
-  }
   const handleDetailClose = () => {
     setDetailOpen(false)
   }
@@ -199,10 +193,6 @@ function Request() {
 
         <RowBtw>
           <TextField text='Equipment' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='32px' />
-          <div>
-            <NoButtonTextColored> + New Appliance</NoButtonTextColored>
-            <ButtonTextColored> + New Equipment</ButtonTextColored>
-          </div>
         </RowBtw>
 
         <Card>
@@ -219,7 +209,7 @@ function Request() {
               </div>
             </RowStart>
             <SmallDiv>
-              <SearchField placeholder={'Search by name, email or ID'} />
+              <SearchField placeholder={'Search by name, email or ID'} value={''} handleChange={() => {}} />
             </SmallDiv>
           </RowBtw>
          {
@@ -234,8 +224,6 @@ function Request() {
          }
         </Card>
 
-        <AddEquipmentModal modalOpen={equipOpen} handleCancel={() => handleEuipClose()} />
-        <AddEquipmentApplianceModal  modalOpen={applianceOpen} handleCancel={() => handleApplianceClose()} />
         <EquipmentDetail  modalOpen={detailOpen} handleCancel={() => handleDetailClose()} />
       </ComponentDiv>
     </Layouts>

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Layouts from '../components/Layout'
 import TextField from '../components/TextField'
@@ -9,6 +9,8 @@ import Image from 'next/image'
 
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import { useRouter } from 'next/router'
+import { useAppDispatch } from '../app/hook'
+import { getLoan } from '../slices/LoanSlice'
 
 
 interface DataType {
@@ -38,6 +40,13 @@ interface DataType2 {
 function Loan() {
   const [type, setType] = useState('request')
   const router = useRouter()
+  const dispatch = useAppDispatch()
+
+
+
+  useEffect(() => {
+    dispatch(getLoan()).then(dd => console.log({dd}))
+  }, [])
 
   const columns: ColumnsType<DataType> = [
     {

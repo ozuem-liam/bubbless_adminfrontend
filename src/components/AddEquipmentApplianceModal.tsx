@@ -10,63 +10,38 @@ import { AddApplianceSchema } from '../utils/schemas/schema'
 import Button from './Button'
 import TextInput from './TextInput'
 
-function AddEquipmentApplianceModal({ modalOpen, handleCancel }) {
-  const [loader, setLoader] = useState(false)
-  const dispatch = useAppDispatch()
-  const [applaince, setAppliance] = useState<any>()
+function AddEquipmentApplianceModal({ modalOpen, handleCancel, handleFormSubmit, loader, edit, handleEditSubmit }) {
+  
 
   const initialValues: { name: string, watts: number } = {
-    name: '',
-    watts: 0
+    name: edit ? edit?.type : '',
+    watts: edit ? edit?.vottage.replace(/N/g, '') : 0
   }
 
-  const handleFormSubmit = async (data) => {
-    setLoader(true)
-    const payload = {
-      name: data?.name,
-      watts: parseInt(data?.watts)
-    }
 
-    try {
-      var response = await dispatch(createAppliance(payload))
-      if (createAppliance.fulfilled.match(response)) {
-        toast.success(response?.payload?.message)
-        dispatch(getAppliance()).then(dd => setAppliance(dd?.payload?.data?.appliances))
-        setLoader(false)
-      }
-      else {
-        var errMsg = response?.payload as string
-        toast.error(errMsg)
-        setLoader(false)
-      }
-    }
-    catch (e) {
-      console.log({ e })
-      setLoader(false)
-    }
-  }
 
 
   const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
     useFormik({
       initialValues,
       validationSchema: AddApplianceSchema,
-      onSubmit: (data: { name: string, watts: number }) => handleFormSubmit(data),
+      onSubmit: (data: { name: string, watts: number }) => edit ? handleEditSubmit(data) : handleFormSubmit(data),
+      enableReinitialize: true
     });
 
 
 
   return (
-    <Modals title="Add Applaince" open={modalOpen} onCancel={handleCancel} footer={null}>
+    <Modals title={edit ? "Update Appliance" : "Add Applaince"} open={modalOpen} onCancel={handleCancel} footer={null}>
       <Div>
         <TextInput label={'Appliance type'} value={values?.name} onChange={handleChange('name')} errorMsg={touched.name ? errors.name : undefined} />
         <TextInput label={'Watt'} value={values?.watts?.toString()} onChange={handleChange('watts')} errorMsg={touched.watts ? errors.watts : undefined} />
         <br />
         <br />
-        <Button isLoading={loader} children='Add' handlePress={handleSubmit} />
+        <Button isLoading={loader} children={edit ? 'Update' : 'Add'} handlePress={handleSubmit} />
       </Div>
 
-      <ToastContainer position='top-center' />
+     
     </Modals>
   )
 }

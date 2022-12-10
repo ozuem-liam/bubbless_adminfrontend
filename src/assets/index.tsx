@@ -31,3 +31,5 @@ export const star: StaticImageData = require('../assets/svg/star.svg');
 export const user: StaticImageData = require('../assets/svg/user.svg');
 export const received: StaticImageData = require('../assets/svg/received.svg');
 export const send: StaticImageData = require('../assets/svg/send.svg');
+export const edit2: StaticImageData = require('../assets/svg/edit-2.svg');
+export const trash: StaticImageData = require('../assets/svg/trash.svg');

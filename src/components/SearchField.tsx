@@ -7,10 +7,12 @@ import styled from 'styled-components';
 
 
 
-function SearchField({placeholder}) {
+function SearchField({placeholder, value, handleChange}) {
     return (
         <InputField
             placeholder={placeholder}
+            value={value}
+            onChange={handleChange}
             prefix={<SearchOutlined style={{ color: 'rgba(0,0,0,.45)' }} />}
         />
     )

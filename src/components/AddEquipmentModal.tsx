@@ -14,74 +14,44 @@ import TextInput from './TextInput';
 
 
 
-function AddEquipmentModal({ modalOpen, handleCancel }) {
-    const [applaince, setAppliance] = useState<any>()
-    const [loader, setLoader] = useState(false)
-    const dispatch = useAppDispatch()
+function AddEquipmentModal({ modalOpen, handleCancel, handleFormSubmit, loader, edit, handleEditSubmit }) {
 
-    const initialValues: EquipmentType = {
-        equipment_type: "", 
-        name: "", 
-        brand: "", 
-        price: 0, 
-        secification_file: "file.pdf", 
-        description: ""
-      }
-    
-      const handleFormSubmit = async (data) => {
-        setLoader(true)
-        const payload = {
-            equipment_type: data?.equipment_type, 
-            name: data?.name, 
-            brand: data?.brand, 
-            price: data?.price, 
-            secification_file: data?. secification_file, 
-            description: data?.description
-        }
-    
-        try {
-          var response = await dispatch(createEquipment(payload))
-          if (createEquipment.fulfilled.match(response)) {
-            toast.success(response?.payload?.message)
-            dispatch(getEquipment()).then(dd => console.log(dd?.payload))
-            setLoader(false)
-          }
-          else {
-            var errMsg = response?.payload as string
-            toast.error(errMsg)
-            setLoader(false)
-          }
-        }
-        catch (e) {
-          console.log({ e })
-          setLoader(false)
-        }
-      }
-    
-    
-      const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
-        useFormik({
-          initialValues,
-          validationSchema: AddEquipmentSchema,
-          onSubmit: (data: EquipmentType) => handleFormSubmit(data),
-        });
-    
+  const initialValues: EquipmentType = {
+    equipment_type: edit ? edit?.type : "",
+    name: edit ? edit?.name : "",
+    brand: edit ? edit?.brand : "",
+    price: edit ? edit?.price : 0,
+    secification_file: "file.pdf",
+    description: edit ? edit?.description : ""
+  }
 
-    return (
-        <Modals title="Add Appliance" open={modalOpen} onCancel={handleCancel} footer={null}>
-                <Div>
-                    <TextInput label={'Equipment type'} value={values?.equipment_type} onChange={handleChange('equipment_type')} errorMsg={touched.equipment_type ? errors.equipment_type : undefined} />
-                    <TextInput label={'Name'} value={values?.name} onChange={handleChange('name')} errorMsg={touched.name ? errors.name : undefined} />
-                    <TextInput label={'Brand'} value={values?.brand} onChange={handleChange('brand')} errorMsg={touched.brand ? errors.brand : undefined}  />
-                    <TextInput label={'Price'} value={values?.price.toString()} onChange={handleChange('price')} errorMsg={touched.price ? errors.price : undefined} />
-                    <TextInput label={'File'} value={values?.secification_file} onChange={handleChange('secification_file')} errorMsg={touched.secification_file ? errors.secification_file : undefined} />
-                    <TextInput label={'Description'} multiple={true} value={values?.description} onChange={handleChange('description')} errorMsg={touched.description ? errors.description : undefined} />
-                    <br/>
-                    <br/>
-                    <Button isLoading={loader} handlePress={handleSubmit}  children='Add' />
-                </Div>
-        </Modals>
-    )
+
+
+
+  const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
+    useFormik({
+      initialValues,
+      validationSchema: AddEquipmentSchema,
+      onSubmit: (data: EquipmentType) => edit ? handleEditSubmit(data) : handleFormSubmit(data),
+      enableReinitialize: true
+    });
+
+
+  return (
+    <Modals title={edit ? "Update Equipment" : "Add Appliance"} open={modalOpen} onCancel={handleCancel} footer={null}>
+      <Div>
+        <TextInput label={'Equipment type'} value={values?.equipment_type} onChange={handleChange('equipment_type')} errorMsg={touched.equipment_type ? errors.equipment_type : undefined} />
+        <TextInput label={'Name'} value={values?.name} onChange={handleChange('name')} errorMsg={touched.name ? errors.name : undefined} />
+        <TextInput label={'Brand'} value={values?.brand} onChange={handleChange('brand')} errorMsg={touched.brand ? errors.brand : undefined} />
+        <TextInput label={'Price'} value={values?.price.toString()} onChange={handleChange('price')} errorMsg={touched.price ? errors.price : undefined} />
+        <TextInput label={'File'} value={values?.secification_file} onChange={handleChange('secification_file')} errorMsg={touched.secification_file ? errors.secification_file : undefined} />
+        <TextInput label={'Description'} multiple={true} value={values?.description} onChange={handleChange('description')} errorMsg={touched.description ? errors.description : undefined} />
+        <br />
+        <br />
+        <Button isLoading={loader} handlePress={handleSubmit} children={edit ? "Update" : 'Add'} />
+      </Div>
+    </Modals>
+  )
 }
 
 export default AddEquipmentModal
