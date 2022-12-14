@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Layouts from '../components/Layout'
 import TextField from '../components/TextField'
@@ -11,6 +11,13 @@ import type { ColumnsType, TableProps } from 'antd/es/table';
 import SearchField from '../components/SearchField'
 
 import SiteDetail from '../components/SiteDetail'
+import { useAppDispatch } from '../app/hook'
+import { deleteSiting, getSiting } from '../slices/SitingSlice'
+import { EllipsisOutlined } from "@ant-design/icons"
+import { Dropdown, Space } from 'antd';
+import { Menu } from "antd"
+import { trash } from '../assets'
+import { toast, ToastContainer } from 'react-toastify'
 
 
 interface DataType {
@@ -18,6 +25,7 @@ interface DataType {
   name: string;
   id: string;
   installer: string;
+  installerId: string;
   status: string;
 }
 
@@ -25,11 +33,64 @@ function Sites() {
   const router = useRouter()
   const [type, setType] = useState('equipment')
   const [detailOpen, setDetailOpen] = useState(false);
-
+  const dispatch = useAppDispatch()
+  const [searchValue, setSearchValue] = useState<string>("")
+  const [sitings, setSitings] = useState<any>()
 
   const handleDetailClose = () => {
     setDetailOpen(false)
   }
+
+  useEffect(() => {
+    dispatch(getSiting()).then(data => setSitings(data?.payload?.data?.sitings))
+  }, [])
+
+  const filterSiting = sitings?.filter(data => data?.id?.toLowerCase().includes(searchValue?.toLowerCase()) || data?.site_name?.toLowerCase().includes(searchValue?.toLowerCase()) || data?.consumer_name?.toLowerCase().includes(searchValue?.toLowerCase()))
+
+
+  const deleteSitingData = async (data) => {
+    try {
+      var response = await dispatch(deleteSiting(data?.id))
+      if(deleteSiting.fulfilled.match(response)) {
+        console.log({response})
+        dispatch(getSiting()).then(data => setSitings(data?.payload?.data?.sitings))
+          toast.success("Siting deleted successfully")
+      }
+      else {
+        var errMsg = await response?.payload as string
+        toast.error(errMsg)
+      }
+    }
+    catch(e) {
+      console.log([e])
+    }
+  }
+ 
+
+  const menu = (data) => (
+    <Menu
+      items={[
+        // {
+        //   key: '1',
+        //   label: (
+        //     <Menudiv>
+        //       <Image src={edit2} alt='' />
+        //       <TextField text='Update' margin='0px 5px' color='#54A6FF' fontSize='12px' />
+        //     </Menudiv>
+        //   ),
+        // },
+        {
+          key: '2',
+          label: (
+            <Menudiv onClick={() => deleteSitingData(data)}>
+              <Image src={trash} alt='' />
+              <TextField text='Delete' margin='0px 5px' color='#FF4423' fontSize='12px' />
+            </Menudiv>
+          )
+        }
+      ]}
+    />
+  );
 
 
   const columns: ColumnsType<DataType> = [
@@ -67,13 +128,36 @@ function Sites() {
       width: '20%',
     },
     {
+      title: 'Installer id',
+      dataIndex: 'installerId',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
       title: 'Status',
       dataIndex: 'status',
       render: (value) => {
         return (
-          <Colored style={{ background: value === "Request" ? "#E0E9F4" : value === "Procurred" ? "#E0E9F4": value === "Delivered" ? "#AED6C3" : "", borderRadius: "23px",width: '100px', padding: '10px' }}>
+          <Colored style={{ background: value === "Active" ? "#AED6C3" : "#E0E9F4", borderRadius: "23px",width: '100px', padding: '10px' }}>
           <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
         </Colored>
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Action',
+      dataIndex: '',
+      render: (value) => {
+        return (
+          <Dropdown overlay={menu(value)}>
+            <EllipsisOutlined />
+          </Dropdown>
+
         );
       },
       width: '20%',
@@ -87,29 +171,18 @@ function Sites() {
   };
 
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'Cole Benson',
-      id: 'SolarEdge Hybrid 24KVA Sola...',
-      installer: "SolarEdge",
-      status: "N1,000,000"
-    },
-    {
-      key: '2',
-      name: 'Cole Benson',
-      id: 'SolarEdge Hybrid 24KVA Sola...',
-      installer: "SolarEdge",
-      status: "N1,000,000"
-    },
-    {
-      key: '3',
-      name: 'Cole Benson',
-      id: 'SolarEdge Hybrid 24KVA Sola...',
-      installer: "SolarEdge",
-      status: "N1,000,000"
-    },
-  ];
+  const data = filterSiting?.map((data, i) => {
+    return {
+      key: i,
+      name: data?.site_name,
+      id: data?.id,
+      installer: data?.consumer_name,
+      installerId: data?.installer_id,
+      status: data?.is_active ? "Active" : "Inactive"
+    }
+  })
+  
+  
 
 
 
@@ -130,7 +203,7 @@ function Sites() {
               </div>
             </RowStart>
             <SmallDiv>
-              <SearchField placeholder={'Search by name, email or ID'} />
+              <SearchField placeholder={'Search by name or ID'} value={searchValue} handleChange={(e) =>setSearchValue(e.target.value)} />
             </SmallDiv>
           </RowBtw>
           
@@ -141,6 +214,8 @@ function Sites() {
 
         <SiteDetail modalOpen={detailOpen} handleCancel={() => handleDetailClose()} />
       </ComponentDiv>
+
+      <ToastContainer />
     </Layouts>
   )
 }
@@ -213,4 +288,9 @@ const RowStart = styled.div`
 
 const Colored = styled.div`
 
+`
+
+const Menudiv = styled.div`
+  display: flex;
+  align-items: center;
 `

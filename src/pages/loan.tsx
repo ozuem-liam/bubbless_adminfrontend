@@ -41,11 +41,11 @@ function Loan() {
   const [type, setType] = useState('request')
   const router = useRouter()
   const dispatch = useAppDispatch()
-
+  const [loans, setLoans] = useState<any>()
 
 
   useEffect(() => {
-    dispatch(getLoan()).then(dd => console.log({dd}))
+    dispatch(getLoan()).then(dd => setLoans(dd?.payload?.data?.loans))
   }, [])
 
   const columns: ColumnsType<DataType> = [

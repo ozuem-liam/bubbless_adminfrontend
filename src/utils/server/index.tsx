@@ -4,7 +4,7 @@ import secureLocalStorage from "react-secure-storage";
 
 
 
-const Base_url = "https://renewabletek-africa-api.onrender.com/api/v1"
+const Base_url = "https://staging-backend.getrenewabletek.com/api/v1"
 
 
 var getToken = secureLocalStorage.getItem('token')
