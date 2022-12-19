@@ -4,7 +4,7 @@ import secureLocalStorage from "react-secure-storage";
 
 
 
-const Base_url = "https://renewabletek-africa-api.onrender.com/api/v1"
+const Base_url = "https://staging-backend.getrenewabletek.com/api/v1"
 
 
 var getToken = secureLocalStorage.getItem('token')
@@ -18,12 +18,14 @@ export const getRequest = async (url: string) => {
         authorization: `Bearer ${secureLocalStorage.getItem("token")}`,
       },
     })
-
     if(res?.status === 200){
       return res
     }
+    
     if(res?.status === 401 || getToken === null){
-
+      secureLocalStorage.clear()
+      localStorage.clear()
+      return window.location.href = '/'
     }
 }
 
@@ -42,6 +44,19 @@ export const postRequest =  async (url: string, payload?) => {
   }
 }
 
+export const updateRequest =  async (url: string, payload?) => {
+  var res = await axios.put(Base_url + url, payload, {
+    headers: {
+      authorization: `Bearer ${secureLocalStorage.getItem("token")}`,
+    }
+  })
+  if(res?.status === 200){
+    return res
+  }
+  if(res?.status === 401 || getToken === null){
+
+  }
+}
 
 export const deleteRequest = (url: string) => {
   return axios.delete(Base_url + url, {

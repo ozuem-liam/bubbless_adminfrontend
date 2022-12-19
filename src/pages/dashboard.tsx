@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Layouts from '../components/Layout'
 import TextField from '../components/TextField'
 import { Colors, Sizes } from '../utils/constant/constant'
@@ -8,12 +8,19 @@ import styled from 'styled-components'
 import Image from 'next/image'
 import { bag, cloud, equip, equipemnt, loan, wallet } from '../assets'
 import { useRouter } from 'next/router'
+import { useAppDispatch } from '../app/hook'
+import { getProfile } from '../slices/AuthSlice'
 
 
 
 
 function Dashboard() {
   const router = useRouter()
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    // dispatch(getProfile()).then(dd => console.log({dd}))
+  }, [])
 
 
   return (
@@ -76,8 +83,8 @@ function Dashboard() {
               <Card2>
                 <TextField text='Recent activities' fontWeight='bold' fontSize={'16px'} lineHeight='34px' />
                 <View2>
-                  <TextField text='Installer' fontWeight='bold' fontSize={'16px'} lineHeight='34px' />
-                  <TextField text='Consumer Report' margin='0px 10px' fontSize={'16px'} color={"#C7C7C7"} lineHeight='34px' />
+                  <TextField text='Installer' fontWeight='bold' fontSize={'14px'} lineHeight='34px' />
+                  <TextField text='Consumer Report' margin='0px 10px' fontSize={'14px'} color={"#C7C7C7"} lineHeight='34px' />
                 </View2>
                 <View3>
                   <Div>
@@ -116,8 +123,8 @@ function Dashboard() {
                 </div>
 
                 <View2>
-                  <TextField text='Due' fontWeight='bold' fontSize={'16px'} lineHeight='34px' />
-                  <TextField text='Overdue' margin='0px 10px' fontSize={'16px'} color={"#C7C7C7"} lineHeight='34px' />
+                  <TextField text='Due' fontWeight='bold' fontSize={'14px'} lineHeight='34px' />
+                  <TextField text='Overdue' margin='0px 10px' fontSize={'14px'} color={"#C7C7C7"} lineHeight='34px' />
                 </View2>
                 <View3>
                   <Div>
@@ -200,6 +207,10 @@ const View3 = styled.div`
   align-items: center;
   width: 500px;
   padding: 15px 0px;
+
+  @media screen and (max-width: 1200px){
+    width: 100%;
+  }
 `
 const Card2 = styled.div`
   background: white;

@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Layouts from '../components/Layout'
 import TextField from '../components/TextField'
 import { Colors } from '../utils/constant/constant'
-import { Row, Col, Table } from "antd"
+import { Row, Col, Table, Menu } from "antd"
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 
@@ -12,6 +12,15 @@ import SearchField from '../components/SearchField'
 import AddEquipmentModal from '../components/AddEquipmentModal'
 import AddEquipmentApplianceModal from '../components/AddEquipmentApplianceModal'
 import EquipmentDetail from '../components/EquipmentDetail'
+import { useAppDispatch } from '../app/hook'
+import { createAppliance, deleteAppliance, getAppliance, updateAppliance } from '../slices/ApplianceSlice'
+import { toast, ToastContainer } from 'react-toastify'
+import { createEquipment, deleteEquipment, getEquipment, updateEquipment } from '../slices/EquipmentSlice'
+import { EllipsisOutlined } from "@ant-design/icons"
+import { Dropdown, Space } from 'antd';
+import { edit2, trash } from '../assets'
+
+
 
 
 interface DataType {
@@ -30,23 +39,258 @@ interface DataType2 {
 
 function List() {
   const router = useRouter()
-  const [type,setType] = useState('equipment')
+  const [type, setType] = useState('equipment')
   const [equipOpen, setEquipOpen] = useState(false);
   const [applianceOpen, setApplianceOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
+  const dispatch = useAppDispatch()
+  const [applaince, setAppliance] = useState<any>()
+  const [equipment, setEquipment] = useState<any>()
+  const [loader, setLoader] = useState(false)
+  const [search, setSearch] = useState("")
+  const [selectedData, setSelectedData] = useState<any>()
+  const [selectedDataEquip, setSelectedDataEquip] = useState<any>()
 
+
+
+  useEffect(() => {
+    dispatch(getAppliance()).then(dd => setAppliance(dd?.payload?.data?.appliances))
+    dispatch(getEquipment()).then(dd => setEquipment(dd?.payload?.data?.equipments))
+  }, [])
 
   const handleEuipClose = () => {
     setEquipOpen(false)
+    setSelectedDataEquip(null)
+  }
+
+  const openEditEquipment = (data) => {
+    setEquipOpen(true)
+    setSelectedDataEquip(data)
+  }
+
+  const openEditAppliance = (data) => {
+    setApplianceOpen(true)
+    setSelectedData(data)
   }
 
   const handleApplianceClose = () => {
     setApplianceOpen(false)
+    setSelectedData(null)
   }
   const handleDetailClose = () => {
     setDetailOpen(false)
   }
 
+  const handleFormSubmit = async (data) => {
+    setLoader(true)
+    const payload = {
+      name: data?.name,
+      watts: parseInt(data?.watts)
+    }
+
+    try {
+      var response = await dispatch(createAppliance(payload))
+      if (createAppliance.fulfilled.match(response)) {
+        toast.success(response?.payload?.message)
+        dispatch(getAppliance()).then(dd => setAppliance(dd?.payload?.data?.appliances))
+        handleApplianceClose()
+        setLoader(false)
+      }
+      else {
+        var errMsg = response?.payload as string
+        toast.error(errMsg)
+        setLoader(false)
+      }
+    }
+    catch (e) {
+      console.log({ e })
+      setLoader(false)
+    }
+  }
+
+  const handleEditSubmit = async (data) => {
+    setLoader(true)
+    const payload = {
+      name: data?.name,
+      watts: parseInt(data?.watts),
+      id: selectedData?.key
+    }
+
+    try {
+      var response = await dispatch(updateAppliance(payload))
+      if (updateAppliance.fulfilled.match(response)) {
+        toast.success(response?.payload?.message)
+        dispatch(getAppliance()).then(dd => setAppliance(dd?.payload?.data?.appliances))
+        handleApplianceClose()
+        setLoader(false)
+      }
+      else {
+        var errMsg = response?.payload as string
+        toast.error(errMsg)
+        setLoader(false)
+      }
+    }
+    catch (e) {
+      console.log({ e })
+      setLoader(false)
+    }
+  }
+
+  const deleteApplainceField = async (data) => {
+    setLoader(true)
+    try {
+      var response = await dispatch(deleteAppliance(data?.key))
+      if (deleteAppliance.fulfilled.match(response)) {
+        toast.success(response?.payload?.message)
+        dispatch(getAppliance()).then(dd => setAppliance(dd?.payload?.data?.appliances))
+        setLoader(false)
+      }
+      else {
+        var errMsg = response?.payload as string
+        toast.error(errMsg)
+        setLoader(false)
+      }
+    }
+    catch (e) {
+      console.log({ e })
+      setLoader(false)
+    }
+  }
+
+  const handleFormSubmit2 = async (data) => {
+    setLoader(true)
+    const payload = {
+      equipment_type: data?.equipment_type,
+      name: data?.name,
+      brand: data?.brand,
+      price: parseInt(data?.price),
+      secification_file: data?.secification_file,
+      description: data?.description
+    }
+
+    try {
+      var response = await dispatch(createEquipment(payload))
+      if (createEquipment.fulfilled.match(response)) {
+        toast.success(response?.payload?.message)
+        dispatch(getEquipment()).then(dd => setEquipment(dd?.payload?.data?.equipments))
+        handleEuipClose()
+        setLoader(false)
+      }
+      else {
+        var errMsg = response?.payload as string
+        toast.error(errMsg)
+        setLoader(false)
+      }
+    }
+    catch (e) {
+      console.log({ e })
+      setLoader(false)
+    }
+  }
+
+  const deleteEquimentField = async (data) => {
+    setLoader(true)
+    try {
+      var response = await dispatch(deleteEquipment(data?.key))
+      if (deleteEquipment.fulfilled.match(response)) {
+        toast.success(response?.payload?.message)
+        dispatch(getEquipment()).then(dd => setEquipment(dd?.payload?.data?.equipments))
+        setLoader(false)
+      }
+      else {
+        var errMsg = response?.payload as string
+        toast.error(errMsg)
+        setLoader(false)
+      }
+    }
+    catch (e) {
+      console.log({ e })
+      setLoader(false)
+    }
+  }
+
+  const handleEquipmentUpdate = async (data) => {
+    setLoader(true)
+    const payload = {
+      equipment_type: data?.equipment_type,
+      name: data?.name,
+      brand: data?.brand,
+      price: parseInt(data?.price),
+      secification_file: data?.secification_file,
+      description: data?.description,
+      id: selectedDataEquip.key
+    }
+
+
+    try {
+      var response = await dispatch(updateEquipment(payload))
+      if (updateEquipment.fulfilled.match(response)) {
+        toast.success(response?.payload?.message)
+        dispatch(getAppliance()).then(dd => setAppliance(dd?.payload?.data?.appliances))
+        handleEuipClose()
+        setLoader(false)
+      }
+      else {
+        var errMsg = response?.payload as string
+        toast.error(errMsg)
+        setLoader(false)
+      }
+    }
+    catch (e) {
+      console.log({ e })
+      setLoader(false)
+    }
+  }
+
+  const menu = (data) => (
+    <Menu
+      items={[
+        {
+          key: '1',
+          label: (
+            <Menudiv onClick={() => openEditEquipment(data)}>
+              <Image src={edit2} alt='' />
+              <TextField text='Update' margin='0px 5px' color='#54A6FF' fontSize='12px' />
+            </Menudiv>
+          ),
+        },
+        {
+          key: '2',
+          label: (
+            <Menudiv onClick={() => deleteEquimentField(data)}>
+              <Image src={trash} alt='' />
+              <TextField text='Delete' margin='0px 5px' color='#FF4423' fontSize='12px' />
+            </Menudiv>
+          )
+        }
+      ]}
+    />
+  );
+
+  const menu2 = (data) => (
+    <Menu
+      items={[
+        {
+          key: '1',
+          label: (
+            <Menudiv onClick={() => openEditAppliance(data)}>
+              <Image src={edit2} alt='' />
+              <TextField text='Update' margin='0px 5px' color='#54A6FF' fontSize='12px' />
+            </Menudiv>
+          ),
+        },
+        {
+          key: '2',
+          label: (
+            <Menudiv onClick={() => deleteApplainceField(data)}>
+              <Image src={trash} alt='' />
+              <TextField text='Delete' margin='0px 5px' color='#FF4423' fontSize='12px' />
+            </Menudiv>
+          )
+        }
+      ]}
+    />
+  );
 
   const columns: ColumnsType<DataType> = [
     {
@@ -73,6 +317,16 @@ function List() {
       width: '30%',
     },
     {
+      title: 'Description',
+      dataIndex: 'description',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '30%',
+    },
+    {
       title: 'Brand',
       dataIndex: 'brand',
       render: (value) => {
@@ -88,6 +342,19 @@ function List() {
       render: (value) => {
         return (
           <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Action',
+      dataIndex: '',
+      render: (value) => {
+        return (
+          <Dropdown overlay={menu(value)}>
+            <EllipsisOutlined />
+          </Dropdown>
+
         );
       },
       width: '20%',
@@ -117,6 +384,19 @@ function List() {
         );
       },
       width: '30%',
+    },
+    {
+      title: 'Action',
+      dataIndex: '',
+      render: (value) => {
+        return (
+          <Dropdown overlay={menu2(value)}>
+            <EllipsisOutlined />
+          </Dropdown>
+
+        );
+      },
+      width: '20%',
     }
   ];
 
@@ -128,47 +408,29 @@ function List() {
     console.log('params', pagination, filters, sorter, extra);
   };
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      type: 'Cole Benson',
-      name: 'SolarEdge Hybrid 24KVA Sola...',
-      brand: "SolarEdge",
-      price: "N1,000,000"
-    },
-    {
-      key: '2',
-      type: 'Cole Benson',
-      name: 'SolarEdge Hybrid 24KVA Sola...',
-      brand: "SolarEdge",
-      price: "N1,000,000"
-    },
-    {
-      key: '3',
-      type: 'Cole Benson',
-      name: 'SolarEdge Hybrid 24KVA Sola...',
-      brand: "SolarEdge",
-      price: "N1,000,000"
-    }
-  ];
+  const filterEquip = equipment?.filter(data => data?.name.toLowerCase().includes(search.toLowerCase()))
+  const filterAppliance = applaince?.filter(data => data?.name.toLowerCase().includes(search.toLowerCase()))
 
-  const data2: DataType2[] = [
-    {
-      key: '1',
-      type: 'Medium - Television Set',
-      vottage: "N1,000,000"
-    },
-    {
-      key: '2',
-      type: 'Big - Refridgerator',
-      vottage: "N1,000,000"
-    },
-    {
-      key: '3',
-      type: 'Big - Refridgerator',
-      vottage: "N1,000,000"
+
+  const data: DataType[] = filterEquip?.map(data => {
+    return {
+      key: data?._id,
+      type: data?.equipment_type,
+      name: data?.name,
+      description: data?.description,
+      brand: data?.brand,
+      price: data?.price
     }
-  ];
+  })
+
+  const data2: DataType2[] = filterAppliance?.map((data, i) => {
+    return {
+      key: data?._id,
+      type: data?.name,
+      vottage: `N${data?.watts}`
+    }
+  })
+
 
   return (
     <Layouts>
@@ -183,32 +445,35 @@ function List() {
         </RowBtw>
 
         <Card>
-          <RowBtw> 
+          <RowBtw>
             <RowStart>
-              <div onClick={() => setType('equipment')} style={{cursor: 'pointer'}}>
+              <div onClick={() => setType('equipment')} style={{ cursor: 'pointer' }}>
                 <TextField text='Equipment' color={type === "equipment" ? 'black' : '#C7C7C7'} fontFamily={type === "equipment" ? 'Mont-Bold' : 'Mont-SemiBold'} fontSize='14px' lineHeight='20px' />
               </div>
-              <div onClick={() => setType('appliances')} style={{cursor: 'pointer'}}>
+              <div onClick={() => setType('appliances')} style={{ cursor: 'pointer' }}>
                 <TextField text='Appliances' color={type === "appliances" ? 'black' : '#C7C7C7'} fontFamily={type === "appliances" ? 'Mont-Bold' : 'Mont-SemiBold'} fontSize='14px' lineHeight='20px' />
               </div>
             </RowStart>
             <SmallDiv>
-              <SearchField placeholder={'Search by name, email or ID'} />
+              <SearchField placeholder={'Search by name'} value={search} handleChange={(e) => setSearch(e.target.value)} />
+
             </SmallDiv>
           </RowBtw>
-         {
-          type === "equipment" &&  <Table columns={columns} dataSource={data} onChange={onChange} />
-         }
+          {
+            type === "equipment" && <Table columns={columns} dataSource={data} onChange={onChange} />
+          }
 
-{
-          type === "appliances" &&  <Table columns={columns2} dataSource={data2} onChange={onChange2} />
-         }
+          {
+            type === "appliances" && <Table columns={columns2} dataSource={data2} onChange={onChange2} />
+          }
         </Card>
 
-        <AddEquipmentModal modalOpen={equipOpen} handleCancel={() => handleEuipClose()} />
-        <AddEquipmentApplianceModal  modalOpen={applianceOpen} handleCancel={() => handleApplianceClose()} />
-        <EquipmentDetail  modalOpen={detailOpen} handleCancel={() => handleDetailClose()} />
+        <AddEquipmentModal modalOpen={equipOpen} handleCancel={() => handleEuipClose()} handleEditSubmit={(info) => handleEquipmentUpdate(info)} handleFormSubmit={(info) => handleFormSubmit2(info)} loader={loader} edit={selectedDataEquip} />
+        <AddEquipmentApplianceModal modalOpen={applianceOpen} handleCancel={() => handleApplianceClose()} handleEditSubmit={(info) => handleEditSubmit(info)} handleFormSubmit={(info) => handleFormSubmit(info)} loader={loader} edit={selectedData} />
+        <EquipmentDetail modalOpen={detailOpen} handleCancel={() => handleDetailClose()} />
       </ComponentDiv>
+
+      <ToastContainer position='top-center' />
     </Layouts>
   )
 }
@@ -276,5 +541,10 @@ const RowStart = styled.div`
   display: flex;
   width: 300px;
   justify-content: space-between;
+  align-items: center;
+`
+
+const Menudiv = styled.div`
+  display: flex;
   align-items: center;
 `

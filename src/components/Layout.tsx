@@ -1,5 +1,5 @@
-import { Layout, Menu, Dropdown } from 'antd';
-import React, { useState } from 'react';
+import { Layout, Menu, Dropdown, Badge } from 'antd';
+import React, { useEffect, useState } from 'react';
 import {
     AppstoreOutlined,
     BarChartOutlined,
@@ -17,6 +17,8 @@ import { arrowDown, arrowLeft, bag, config, dashboard, equip, equipemnt, feedbac
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import secureLocalStorage from 'react-secure-storage';
+import { useAppDispatch, useAppSelector } from '../app/hook';
+import { getProfile, userState } from '../slices/AuthSlice';
 
 
 
@@ -45,9 +47,16 @@ const Layouts = ({ children }) => {
     const router = useRouter()
     const pathname = router?.pathname
     const [open, setOpen] = useState(false)
+    const userStates = useAppSelector(userState)
+    const dispatch = useAppDispatch()
 
     var user: any = secureLocalStorage.getItem('user')
-    var userInfo  = JSON.parse(user) 
+    var userInfo = JSON.parse(user)
+
+ 
+    useEffect(() => {
+        dispatch(getProfile())
+    }, [])
 
 
     const menu = (
@@ -91,7 +100,7 @@ const Layouts = ({ children }) => {
                     name: 'Request',
                     route: '/request'
                 }
-               
+
             ]
         },
         {
@@ -165,14 +174,14 @@ const Layouts = ({ children }) => {
                                 sideMenu?.map(({ name, icon, route, id, secondRoute, sub }) => {
                                     return (
                                         <div>
-                                            <Subdiv key={id} onClick={name === "Equipment" ? () => setOpen(!open) : () => router.push(route)} style={{ 
-                                                  background: pathname === "equipment" ? "white" : (pathname === route || pathname.includes(secondRoute) && pathname !== "equipment") ? "#FFC268" : "white", borderRadius: (pathname === route || pathname.includes(secondRoute)) ? "10px" : pathname === "equipment" ? "0" : "0" 
-                                                }}>
+                                            <Subdiv key={id} onClick={name === "Equipment" ? () => setOpen(!open) : () => router.push(route)} style={{
+                                                background: pathname === "equipment" ? "white" : (pathname === route || pathname.includes(secondRoute) && pathname !== "equipment") ? "#FFC268" : "white", borderRadius: (pathname === route || pathname.includes(secondRoute)) ? "10px" : pathname === "equipment" ? "0" : "0"
+                                            }}>
                                                 <Image src={icon} alt='' />
                                                 <TextField text={name} margin='0px 0px 0px 14px' />
                                             </Subdiv>
                                             {
-                                                sub && open && sub?.map((dd, i)=> {
+                                                sub && open && sub?.map((dd, i) => {
                                                     return <Subdiv2 key={i} onClick={() => router.push(dd?.route)} style={{ background: (pathname === dd?.route || pathname.includes(dd?.route)) ? "#FFC268" : "white", borderRadius: (pathname === dd?.route || pathname.includes(dd?.route)) ? "10px" : "0" }}>
                                                         <TextField text={dd?.name} margin='0px 0px 0px 14px' textTransform='capitalize' />
                                                     </Subdiv2>
@@ -204,14 +213,18 @@ const Layouts = ({ children }) => {
                             <Image src={arrowLeft} alt='arrow-left' />
                         </Sub>
                         <Header style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', background: 'white' }}>
+
                             <Div>
-                                <Image src={notification} alt='notification' />
+                                <Badge count={userStates?.notifications?.length}>
+                                    <Image src={notification} alt='notification' />
+                                </Badge>
                             </Div>
+
                             <Div2>
                                 <Image src={placeholder} alt='placeholder' />
                             </Div2>
                             <Div3>
-                                <TextField text={userInfo?.first_name + " " + userInfo?.last_name} />
+                                <TextField text={userStates?.first_name + " " + userStates?.last_name} />
                             </Div3>
                             <Dropdown overlay={menu}>
                                 <Image src={arrowDown} alt='arrowDown' />
