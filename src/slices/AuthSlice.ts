@@ -60,7 +60,7 @@ export const getProfile = createAsyncThunk(
   'auth/getProfile',
   async () => {
     try {
-      const response = await getRequest("/auth/profile")
+      const response: any = await getRequest("/auth/profile")
       if (response?.status === 200) {
         return response?.data
       }
