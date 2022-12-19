@@ -185,7 +185,7 @@ function Installer() {
               </div>
             </RowStart>
             <SmallDiv>
-              <SearchField placeholder={'Search by name, email or ID'} />
+              <SearchField value={'value'} handleChange={() => console.log("log")} placeholder={'Search by name, email or ID'} />
             </SmallDiv>
           </RowBtw>
 
