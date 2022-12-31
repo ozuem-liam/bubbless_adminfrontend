@@ -33,6 +33,8 @@ export const getRequest = async (url: string) => {
 export const postRequest =  async (url: string, payload?) => {
   var res = await axios.post(Base_url + url, payload, {
     headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
       authorization: `Bearer ${secureLocalStorage.getItem("token")}`,
     }
   })

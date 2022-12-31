@@ -47,6 +47,12 @@ function Loan() {
   useEffect(() => {
     dispatch(getLoan()).then(dd => setLoans(dd?.payload?.data?.loans))
   }, [])
+  
+
+  const requestLoan = loans?.filter(data => data?.status === "requested")
+  const approvedLoan = loans?.filter(data => data?.status === "approved")
+  const rejectedLoan = loans?.filter(data => data?.status === "rejected")
+
 
   const columns: ColumnsType<DataType> = [
     {
@@ -87,23 +93,11 @@ function Loan() {
       dataIndex: 'status',
       render: (value) => {
         return (
-          <Colored style={{ background: value === "pending" ? "#FFE488" : "", borderRadius: value === "pending" ? "43px" : "none", width: '100px', padding: '10px' }}>
-            <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
+          <Colored style={{ background: value === "requested" ? "#FFE488" : "", borderRadius: value === "requested" ? "43px" : "none", width: '100px', padding: '10px' }}>
+            <TextField textAlign='center' color='white' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
           </Colored>
         );
       },
-      // filters: [
-      //   {
-      //     text: 'London',
-      //     value: 'London',
-      //   },
-      //   {
-      //     text: 'New York',
-      //     value: 'New York',
-      //   },
-      // ],
-      // onFilter: (value: string, record) => record.address.startsWith(value),
-      // filterSearch: true,
       width: '40%',
     },
   ];
@@ -147,12 +141,11 @@ function Loan() {
       dataIndex: 'status',
       render: (value) => {
         return (
-          <Colored style={{ background: value === "pending" ? "#FFE488" : "red", borderRadius: value === "pending" ? "43px" : "43px",width: '100px', padding: '10px' }}>
-            <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
+          <Colored style={{ background: value === "rejected" ? "red" : "", borderRadius: value === "rejected" ? "43px" : "43px",width: '100px', padding: '10px' }}>
+            <TextField textAlign='center' color='white' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
           </Colored>
         );
       },
-      // filters: [
       //   {
       //     text: 'London',
       //     value: 'London',
@@ -203,104 +196,54 @@ function Loan() {
       width: '20%',
     },
     {
-      title: 'Approved by',
-      dataIndex: 'approvedBy',
+      title: 'Status',
+      dataIndex: 'status',
       render: (value) => {
         return (
-          <Colored style={{ background: value === "pending" ? "#FFE488" : "", borderRadius: value === "pending" ? "43px" : "none" }}>
-            <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <Colored style={{ background: value === "approved" ? "green" : "red", borderRadius: value === "approved" ? "43px" : "43px",width: '100px', padding: '10px' }}>
+            <TextField textAlign='center' color='white' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
           </Colored>
         );
       },
-      // filters: [
-      //   {
-      //     text: 'London',
-      //     value: 'London',
-      //   },
-      //   {
-      //     text: 'New York',
-      //     value: 'New York',
-      //   },
-      // ],
-      // onFilter: (value: string, record) => record.address.startsWith(value),
-      // filterSearch: true,
       width: '40%',
     },
   ];
 
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "pending"
-    },
-    {
-      key: '2',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "pending"
-    },
-    {
-      key: '3',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "pending"
+  const data = requestLoan?.map(pp => {
+    return {
+      key: pp?.id,
+      consumer: pp?.first_name + " " + pp?.last_name,
+      amount: pp?.loan_amount,
+      date: pp?.createdAt,
+      status: pp?.status,
+      ...pp
     }
-  ];
+  })
+  
 
-  const data3: DataType3[] = [
-    {
-      key: '1',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "rejected"
-    },
-    {
-      key: '2',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "rejected"
-    },
-    {
-      key: '3',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "rejected"
+  const data3 = rejectedLoan?.map(pp => {
+    return {
+      key: pp?.id,
+      consumer: pp?.first_name + " " + pp?.last_name,
+      amount: pp?.loan_amount,
+      date: pp?.createdAt,
+      status: pp?.status,
+      ...pp
     }
-  ];
+  })
 
 
-  const data2: DataType2[] = [
-    {
-      key: '1',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      approvedBy: "Samuel Nwachukwu"
-    },
-    {
-      key: '2',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      approvedBy: "Samuel Nwachukwu"
-    },
-    {
-      key: '3',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      approvedBy: "Samuel Nwachukwu"
+  const data2 = approvedLoan?.map(pp => {
+    return {
+      key: pp?.id,
+      consumer: pp?.first_name + " " + pp?.last_name,
+      amount: pp?.loan_amount,
+      date: pp?.createdAt,
+      status: pp?.status,
+      ...pp
     }
-  ];
+  })
 
   const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
@@ -326,11 +269,11 @@ function Loan() {
               <TextField text='Request' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text='105' fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={requestLoan?.length} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text='N200,000' fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={requestLoan?.map((a,b) => a?.loan_amount)?.reduce((a,b) => a+b, 0)} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
             </Card>
           </Col>
@@ -339,11 +282,11 @@ function Loan() {
               <TextField text='Approved' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text='50' fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={approvedLoan?.length} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text='N200,000' fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={approvedLoan?.map((a,b) => a?.loan_amount)?.reduce((a,b) => a + b, 0)} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
             </Card>
           </Col>
@@ -352,11 +295,11 @@ function Loan() {
               <TextField text='Rejected' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text='100' fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={rejectedLoan?.length} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text='N200,000' fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={rejectedLoan?.map((a,b) => a?.loan_amount)?.reduce((a,b) => a+b, 0)} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
             </Card>
           </Col>

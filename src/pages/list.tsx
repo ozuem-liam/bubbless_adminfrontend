@@ -157,14 +157,18 @@ function List() {
     }
   }
 
-  const handleFormSubmit2 = async (data) => {
+  const handleFormSubmit2 = async (data, file) => {
+    if(!file) {
+      toast.error("File upload is required")
+      return;
+    }
     setLoader(true)
     const payload = {
       equipment_type: data?.equipment_type,
       name: data?.name,
       brand: data?.brand,
       price: parseInt(data?.price),
-      secification_file: data?.secification_file,
+      secification_file: file?.fileUrl,
       description: data?.description
     }
 
@@ -209,14 +213,18 @@ function List() {
     }
   }
 
-  const handleEquipmentUpdate = async (data) => {
+  const handleEquipmentUpdate = async (data, file) => {
+    if(!file) {
+      toast.error("File upload is required")
+      return;
+    }
     setLoader(true)
     const payload = {
       equipment_type: data?.equipment_type,
       name: data?.name,
       brand: data?.brand,
       price: parseInt(data?.price),
-      secification_file: data?.secification_file,
+      secification_file: file?.fileUrl,
       description: data?.description,
       id: selectedDataEquip.key
     }
@@ -419,7 +427,8 @@ function List() {
       name: data?.name,
       description: data?.description,
       brand: data?.brand,
-      price: data?.price
+      price: data?.price,
+      ...data
     }
   })
 
@@ -427,7 +436,8 @@ function List() {
     return {
       key: data?._id,
       type: data?.name,
-      vottage: `N${data?.watts}`
+      vottage: `N${data?.watts}`,
+      ...data
     }
   })
 
@@ -468,7 +478,7 @@ function List() {
           }
         </Card>
 
-        <AddEquipmentModal modalOpen={equipOpen} handleCancel={() => handleEuipClose()} handleEditSubmit={(info) => handleEquipmentUpdate(info)} handleFormSubmit={(info) => handleFormSubmit2(info)} loader={loader} edit={selectedDataEquip} />
+        <AddEquipmentModal modalOpen={equipOpen} handleCancel={() => handleEuipClose()} handleEditSubmit={(info, file) => handleEquipmentUpdate(info, file)} handleFormSubmit={(info, file) => handleFormSubmit2(info, file)} loader={loader} edit={selectedDataEquip} />
         <AddEquipmentApplianceModal modalOpen={applianceOpen} handleCancel={() => handleApplianceClose()} handleEditSubmit={(info) => handleEditSubmit(info)} handleFormSubmit={(info) => handleFormSubmit(info)} loader={loader} edit={selectedData} />
         <EquipmentDetail modalOpen={detailOpen} handleCancel={() => handleDetailClose()} />
       </ComponentDiv>

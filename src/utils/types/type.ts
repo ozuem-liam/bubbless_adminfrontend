@@ -21,7 +21,6 @@ export type EquipmentType = {
     name: string, 
     brand: string, 
     price: number, 
-    secification_file: string, 
     description: string
 }
 
@@ -79,6 +78,7 @@ export type InputType = {
 
 export type TextProps = {
     text: string;
+    onClick?: (value?: any) => void;
     fontSize?: string;
     textAlign?: 'left' | 'right' | 'center' | 'justify';
     color?: string;

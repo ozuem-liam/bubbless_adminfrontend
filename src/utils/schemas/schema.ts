@@ -29,7 +29,6 @@ export const AddEquipmentSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
   brand: yup.string().required('Brand is required'),
   price: yup.number().required('Price is required'),
-  secification_file: yup.string().required('File is required'),
   description: yup.string().required('Description is required')
 
 })
