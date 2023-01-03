@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Layouts from '../components/Layout'
 import TextField from '../components/TextField'
@@ -13,6 +13,8 @@ import AddEquipmentApplianceModal from '../components/AddEquipmentApplianceModal
 import EquipmentDetail from '../components/EquipmentDetail'
 import AddInstaller from '../components/AddInstaller'
 import { placeholder } from '../assets'
+import { useAppDispatch } from '../app/hook'
+import { getFeedback } from '../slices/FeedbackSlice'
 
 
 interface DataType {
@@ -29,7 +31,13 @@ function Feedback() {
   const router = useRouter()
   const [type,setType] = useState('equipment')
   const [installerOpen, setInstallerOpen] = useState(false);
+  const dispatch = useAppDispatch()
 
+
+
+  useEffect(() => {
+    dispatch(getFeedback()).then(pp => console.log({pp}))
+  }, [])
 
 
   const handleInstallerClose = () => {

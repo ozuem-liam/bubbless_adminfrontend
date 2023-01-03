@@ -5,13 +5,22 @@ import EquipmentReducer from "../slices/EquipmentSlice";
 import ApplianceReducer from "../slices/ApplianceSlice";
 import LoanReducer from "../slices/LoanSlice";
 import SitingReducer from "../slices/SitingSlice";
+import DashboardReducer from "../slices/DashboardSlice";
+import InstallerReducer from "../slices/InstallerSlice";
+import FeedbackReducer from "../slices/FeedbackSlice";
+
+
+
 
 const combinedReducer = combineReducers({
     auth: AuthReducer,
     equipment: EquipmentReducer,
     appliance: ApplianceReducer,
     loan: LoanReducer,
-    siting: SitingReducer
+    siting: SitingReducer,
+    feeback: FeedbackReducer,
+    installer: InstallerReducer,
+    dashboard: DashboardReducer
 })
 
 const reducer = (state: ReturnType<typeof combinedReducer>, action: AnyAction) => {
