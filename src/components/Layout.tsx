@@ -47,7 +47,7 @@ const Layouts = ({ children }) => {
     const router = useRouter()
     const pathname = router?.pathname
     const [open, setOpen] = useState(false)
-    const userStates = useAppSelector(userState)
+    const {account, stats} = useAppSelector(userState)
     const dispatch = useAppDispatch()
 
     var user: any = secureLocalStorage.getItem('user')
@@ -215,7 +215,7 @@ const Layouts = ({ children }) => {
                         <Header style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', background: 'white' }}>
 
                             <Div>
-                                <Badge count={userStates?.notifications?.length}>
+                                <Badge count={account?.notifications?.length}>
                                     <Image src={notification} alt='notification' />
                                 </Badge>
                             </Div>
@@ -224,7 +224,7 @@ const Layouts = ({ children }) => {
                                 <Image src={placeholder} alt='placeholder' />
                             </Div2>
                             <Div3>
-                                <TextField text={userStates?.first_name + " " + userStates?.last_name} />
+                                <TextField text={account?.first_name + " " + account?.last_name} />
                             </Div3>
                             <Dropdown overlay={menu}>
                                 <Image src={arrowDown} alt='arrowDown' />

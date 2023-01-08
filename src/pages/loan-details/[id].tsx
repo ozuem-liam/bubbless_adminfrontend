@@ -11,7 +11,7 @@ import { Row, Col } from "antd"
 import TextInput from '../../components/TextInput'
 import { useRouter } from 'next/router'
 import { useAppDispatch } from '../../app/hook'
-import { getLoan } from '../../slices/LoanSlice'
+import { getLoan, getUserLoanDetail } from '../../slices/LoanSlice'
 
 
 
@@ -22,15 +22,17 @@ function loanDetails() {
   const router = useRouter()
   const [loanDetail, setLoanDetail] = useState<any>()
   const dispatch = useAppDispatch()
-  const id = router?.query?.id
+  const id = router?.query?.id as string
 
   useEffect(() => {
     dispatch(getLoan()).then(dd => {
       var findLoan = dd?.payload?.data?.loans?.find(data => data?.id === id)
       setLoanDetail(findLoan)
     })
+    dispatch(getUserLoanDetail(id)).then(pp => console.log({pp}))
 
   }, [id])
+
 
 
 

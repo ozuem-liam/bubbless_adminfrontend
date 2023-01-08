@@ -30,13 +30,17 @@ function Request() {
   const [equipOpen, setEquipOpen] = useState(false);
   const [applianceOpen, setApplianceOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
-
+  const [detatilInfo, setDetailInfo] = useState(null)
 
 
   const handleDetailClose = () => {
     setDetailOpen(false)
+    setDetailInfo(null)
   }
-
+  const handleDetailOpen = (data) => {
+    setDetailOpen(true)
+    setDetailInfo(data)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
@@ -45,7 +49,7 @@ function Request() {
       render: (value, rowIndex) => {
         var id = rowIndex?.key as number
         return (
-          <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/loan-details/${id}`)}>
+          <div>
             <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
           </div>
         );
@@ -224,7 +228,7 @@ function Request() {
          }
         </Card>
 
-        <EquipmentDetail  modalOpen={detailOpen} handleCancel={() => handleDetailClose()} />
+        <EquipmentDetail  modalOpen={detailOpen} handleCancel={() => handleDetailClose()} info={detatilInfo}  />
       </ComponentDiv>
     </Layouts>
   )

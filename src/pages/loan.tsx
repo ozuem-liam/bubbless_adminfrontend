@@ -45,11 +45,13 @@ function Loan() {
 
 
   useEffect(() => {
-    dispatch(getLoan()).then(dd => setLoans(dd?.payload?.data?.loans))
+    dispatch(getLoan()).then(dd => {
+      setLoans(dd?.payload?.data?.loans)
+    })
   }, [])
   
 
-  const requestLoan = loans?.filter(data => data?.status === "requested")
+  const requestLoan = loans?.filter(data => data?.status === "pending")
   const approvedLoan = loans?.filter(data => data?.status === "approved")
   const rejectedLoan = loans?.filter(data => data?.status === "rejected")
 
@@ -93,7 +95,7 @@ function Loan() {
       dataIndex: 'status',
       render: (value) => {
         return (
-          <Colored style={{ background: value === "requested" ? "#FFE488" : "", borderRadius: value === "requested" ? "43px" : "none", width: '100px', padding: '10px' }}>
+          <Colored style={{ background: value === "pending" ? "#FFE488" : "", borderRadius: value === "pending" ? "43px" : "none", width: '100px', padding: '10px' }}>
             <TextField textAlign='center' color='white' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
           </Colored>
         );

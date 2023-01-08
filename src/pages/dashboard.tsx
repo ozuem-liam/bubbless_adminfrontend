@@ -10,6 +10,7 @@ import { bag, cloud, equip, equipemnt, loan, wallet } from '../assets'
 import { useRouter } from 'next/router'
 import { useAppDispatch } from '../app/hook'
 import { getProfile } from '../slices/AuthSlice'
+import { getStat, getStatForDashboard } from '../slices/DashboardSlice'
 
 
 
@@ -19,7 +20,8 @@ function Dashboard() {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    // dispatch(getProfile()).then(dd => console.log({dd}))
+    dispatch(getStatForDashboard()).then(dd => console.log({dd}))
+    dispatch(getStat()).then(dds => console.log({dds}))
   }, [])
 
 

@@ -48,10 +48,14 @@ function List() {
   const [equipment, setEquipment] = useState<any>()
   const [loader, setLoader] = useState(false)
   const [search, setSearch] = useState("")
+  const [detatilInfo, setDetailInfo] = useState(null)
   const [selectedData, setSelectedData] = useState<any>()
   const [selectedDataEquip, setSelectedDataEquip] = useState<any>()
 
-
+  const handleDetailOpen = (data) => {
+    setDetailOpen(true)
+    setDetailInfo(data)
+  }
 
   useEffect(() => {
     dispatch(getAppliance()).then(dd => setAppliance(dd?.payload?.data?.appliances))
@@ -79,6 +83,7 @@ function List() {
   }
   const handleDetailClose = () => {
     setDetailOpen(false)
+    setDetailInfo(null)
   }
 
   const handleFormSubmit = async (data) => {
@@ -307,7 +312,7 @@ function List() {
       render: (value, rowIndex) => {
         var id = rowIndex?.key as number
         return (
-          <div style={{ cursor: 'pointer' }} onClick={() => setDetailOpen(true)}>
+          <div style={{ cursor: 'pointer' }} onClick={() => handleDetailOpen(rowIndex)}>
             <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
           </div>
         );
@@ -376,7 +381,7 @@ function List() {
       render: (value, rowIndex) => {
         var id = rowIndex?.key as number
         return (
-          <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/loan-details/${id}`)}>
+          <div style={{ cursor: 'pointer' }}>
             <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
           </div>
         );
@@ -480,7 +485,7 @@ function List() {
 
         <AddEquipmentModal modalOpen={equipOpen} handleCancel={() => handleEuipClose()} handleEditSubmit={(info, file) => handleEquipmentUpdate(info, file)} handleFormSubmit={(info, file) => handleFormSubmit2(info, file)} loader={loader} edit={selectedDataEquip} />
         <AddEquipmentApplianceModal modalOpen={applianceOpen} handleCancel={() => handleApplianceClose()} handleEditSubmit={(info) => handleEditSubmit(info)} handleFormSubmit={(info) => handleFormSubmit(info)} loader={loader} edit={selectedData} />
-        <EquipmentDetail modalOpen={detailOpen} handleCancel={() => handleDetailClose()} />
+        <EquipmentDetail modalOpen={detailOpen} handleCancel={() => handleDetailClose()} info={detatilInfo} />
       </ComponentDiv>
 
       <ToastContainer position='top-center' />

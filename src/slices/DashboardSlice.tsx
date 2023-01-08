@@ -18,7 +18,18 @@ const initialState = {
 export const getStatForDashboard = createAsyncThunk(
   'dashboard/getStatForDashboard',
   async () => {
-      const response = await getRequest("/admin-action/installer") as any
+      const response = await getRequest("/admin-action/dashboard/get-stats") as any
+      if (response?.status === 200) {
+        return response?.data
+      }
+
+  }
+)
+
+export const getStat = createAsyncThunk(
+  'dashboard/getStat',
+  async () => {
+      const response = await getRequest("/admin-action/get-stats") as any
       if (response?.status === 200) {
         return response?.data
       }
@@ -43,7 +54,17 @@ export const DashboardSlice = createSlice({
     builder.addCase(getStatForDashboard.rejected, (state, action) => {
       // state.error = action.error.message
     })
-   
+    builder.addCase(getStat.pending, (state, action) => {
+      state.loading = true
+    }),
+    builder.addCase(getStat.fulfilled, (state, action: PayloadAction<any>) => {
+      state.loading = false
+        
+    })
+  builder.addCase(getStat.rejected, (state, action) => {
+    // state.error = action.error.message
+  })
+ 
    
   }
 })
