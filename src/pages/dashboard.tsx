@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Layouts from '../components/Layout'
 import TextField from '../components/TextField'
 import { Colors, Sizes } from '../utils/constant/constant'
@@ -18,10 +18,11 @@ import { getStat, getStatForDashboard } from '../slices/DashboardSlice'
 function Dashboard() {
   const router = useRouter()
   const dispatch = useAppDispatch()
+  const [dashboard, setDashboard] = useState(null)
 
   useEffect(() => {
-    dispatch(getStatForDashboard()).then(dd => console.log({dd}))
-    dispatch(getStat()).then(dds => console.log({dds}))
+    dispatch(getStatForDashboard()).then(dd => setDashboard(dd?.payload?.data))
+    // dispatch(getStat()).then(dds => console.log({dds}))
   }, [])
 
 
@@ -36,29 +37,29 @@ function Dashboard() {
             <Col span={6} >
               <Card>
                 <Image src={wallet} width={30} height={30} alt='' />
-                <TextField text='Disbursed Loans' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
-                <TextField text='105' fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
+                <TextField text='Approved Loans' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
+                <TextField text={dashboard?.stats?.total_approved_loans_volume} fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
               </Card>
             </Col>
-            <Col span={6} >
+            {/* <Col span={6} >
               <Card>
                 <Image src={loan} width={30} height={30} alt='' />
                 <TextField text='Loan Volume' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
-                <TextField text='N3.6M' fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
+                <TextField text={`${dashboard?.stats?.total_approved_loan}M`} fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
               </Card>
-            </Col>
+            </Col> */}
             <Col span={6} >
               <Card>
                 <Image src={bag} width={30} height={30} alt='' />
                 <TextField text='Loans Disbursed' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
-                <TextField text='200' fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
+                <TextField text={dashboard?.stats?.total_loans_disbursed ? dashboard?.stats?.total_loans_disbursed : 0} fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
               </Card>
             </Col>
             <Col span={6} >
               <Card>
                 <Image src={equipemnt} width={30} height={30} alt='' />
                 <TextField text='Equipments Request' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
-                <TextField text='200' fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
+                <TextField text={dashboard?.stats?.total_equipments_requested} fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
               </Card>
             </Col>
             <Col span={6} >

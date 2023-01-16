@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import AddInstaller from '../../components/AddInstaller';
 import Layouts from '../../components/Layout'
@@ -6,11 +6,28 @@ import TextField from '../../components/TextField'
 import Image from 'next/image'
 import { more, square } from '../../assets';
 import { Row, Col } from 'antd';
+import { getInstaller } from '../../slices/InstallerSlice';
+import { useRouter } from 'next/router';
+import { useAppDispatch } from '../../app/hook';
 
 
 function InstallerDetail() {
     const [installerOpen, setInstallerOpen] = useState(false);
     const [type, setType] = useState('information')
+    const router = useRouter()
+    const [InstallerDetail, setInstallerDetail] = useState(null)
+    const id = router?.query?.id as string
+    const dispatch = useAppDispatch()
+
+
+    useEffect(() => {
+        dispatch(getInstaller()).then(data => {
+            const filt = data?.payload?.data?.accounts?.find(data => data._id === id);
+            if(filt){
+                setInstallerDetail(filt)
+            }
+        })
+      }, [id])
 
 
     const handleInstallerClose = () => {
@@ -56,34 +73,34 @@ function InstallerDetail() {
                             <Payment>
                                 <RowBtw style={{ marginTop: '25px' }}>
                                     <TextField text='Name' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                                    <TextField text='Installer name' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+                                    <TextField text={InstallerDetail?.first_name + " " + InstallerDetail?.last_name} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
                                 </RowBtw>
                                 <RowBtw style={{ marginTop: '25px' }}>
                                     <TextField text='ID' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                                    <TextField text='10101010101' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+                                    <TextField text={InstallerDetail?._id} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
                                 </RowBtw>
                                 <RowBtw style={{ marginTop: '25px' }}>
                                     <TextField text='Address' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                                    <TextField text='Site Address' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+                                    <TextField text={InstallerDetail?.address} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
                                 </RowBtw>
                                 <RowBtw style={{ marginTop: '25px' }}>
                                     <TextField text='Email' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                                    <TextField text='email@installer.com' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+                                    <TextField text={InstallerDetail?.email} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
                                 </RowBtw>
                                 <RowBtw style={{ marginTop: '25px' }}>
                                     <TextField text='Phone No' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                                    <TextField text='0810000000' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+                                    <TextField text={InstallerDetail?.phone} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
                                 </RowBtw>
-                                <RowBtw style={{ marginTop: '25px' }}>
+                                {/* <RowBtw style={{ marginTop: '25px' }}>
                                     <TextField text='Rate' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
                                     <TextField text='N10,000 per hour' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
-                                </RowBtw>
+                                </RowBtw> */}
                             </Payment>
                         </ComponentDiv2>
                         <Menu>

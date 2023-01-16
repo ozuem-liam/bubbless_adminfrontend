@@ -39,10 +39,10 @@ export const forgetPassword = createAsyncThunk(
 
 
 export const signInUser = createAsyncThunk(
-  'auth/signin',
+  'admin/login',
   async (payload: LoginFormData, { rejectWithValue }) => {
     try {
-      const response = await postRequest("/auth/login", payload)
+      const response = await postRequest("/admin/login", payload)
       if (response?.status === 200) {
        
         return response?.data
@@ -60,7 +60,7 @@ export const getProfile = createAsyncThunk(
   'auth/getProfile',
   async () => {
     try {
-      const response: any = await getRequest("/auth/profile")
+      const response: any = await getRequest("/admin/profile")
       if (response?.status === 200) {
         return response?.data
       }
@@ -102,8 +102,8 @@ export const AuthSlice = createSlice({
       state.loading = true
     }),
       builder.addCase(getProfile.fulfilled, (state, action) => {
-        state.loading = false,
-        state.userData = action?.payload?.data
+        state.loading = false
+       state.userData = action?.payload?.data
       })
     builder.addCase(getProfile.rejected, (state, action) => {
       state.error = action.error.message

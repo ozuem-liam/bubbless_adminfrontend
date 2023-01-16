@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Layouts from '../components/Layout'
 import TextField from '../components/TextField'
@@ -12,6 +12,8 @@ import SearchField from '../components/SearchField'
 import AddEquipmentModal from '../components/AddEquipmentModal'
 import AddEquipmentApplianceModal from '../components/AddEquipmentApplianceModal'
 import EquipmentDetail from '../components/EquipmentDetail'
+import { useAppDispatch } from '../app/hook'
+import { getEquipmentRequest } from '../slices/EquipmentSlice'
 
 
 interface DataType {
@@ -31,6 +33,23 @@ function Request() {
   const [applianceOpen, setApplianceOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const [detatilInfo, setDetailInfo] = useState(null)
+  const dispatch = useAppDispatch()
+  const [requested, setRequested] = useState([])
+  const [procured, setProcured] = useState([])
+  const [delivered, setDelivered] = useState([])
+  const [search, setSearch] = useState("")
+
+
+  useEffect(() => {
+    dispatch(getEquipmentRequest("Requested")).then(oo => setRequested(oo?.payload?.data))
+    dispatch(getEquipmentRequest("Procured")).then(oo => setProcured(oo?.payload?.data))
+    dispatch(getEquipmentRequest("Delivered")).then(oo => setDelivered(oo?.payload?.data))
+  }, [])
+
+
+  const filterProc = procured?.filter(data => data?.name.toLowerCase().includes(search.toLowerCase()))
+  const filterDeliver = delivered?.filter(data => data?.name.toLowerCase().includes(search.toLowerCase()))
+  const filterRequest = requested?.filter(data => data?.name.toLowerCase().includes(search.toLowerCase()))
 
 
   const handleDetailClose = () => {
@@ -107,89 +126,40 @@ function Request() {
 
 
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'Solar panel',
-      supplier: 'Adex Ltd',
-      type: "Lorem Ipsum",
-      price: "N1,000,000",
-      status: "Request"
-    },
-    {
-        key: '1',
-        name: 'Solar panel',
-        supplier: 'Adex Ltd',
-        type: "Lorem Ipsum",
-        price: "N1,000,000",
-        status: "Request"
-      },
-      {
-        key: '1',
-        name: 'Solar panel',
-        supplier: 'Adex Ltd',
-        type: "Lorem Ipsum",
-        price: "N1,000,000",
-        status: "Request"
-      },
+  const data = filterRequest?.map(data => {
+    return  {
+      key: data._id,
+      name: data?.name,
+      supplier: data?.supplier,
+      type: data?.equipment_type,
+      price: `N${data?.price}`,
+      status: data?.status
+    }
+  })
+  
 
-  ];
-
-  const data2: DataType[] = [
-    {
-      key: '1',
-      name: 'Solar panel',
-      supplier: 'Adex Ltd',
-      type: "Lorem Ipsum",
-      price: "N1,000,000",
-      status: "Procurred"
-    },
-    {
-        key: '1',
-        name: 'Solar panel',
-        supplier: 'Adex Ltd',
-        type: "Lorem Ipsum",
-        price: "N1,000,000",
-        status: "Procurred"
-      },
-      {
-        key: '1',
-        name: 'Solar panel',
-        supplier: 'Adex Ltd',
-        type: "Lorem Ipsum",
-        price: "N1,000,000",
-        status: "Procurred"
-      },
-
-  ];
-  const data3: DataType[] = [
-    {
-      key: '1',
-      name: 'Solar panel',
-      supplier: 'Adex Ltd',
-      type: "Lorem Ipsum",
-      price: "N1,000,000",
-      status: "Delivered"
-    },
-    {
-        key: '1',
-        name: 'Solar panel',
-        supplier: 'Adex Ltd',
-        type: "Lorem Ipsum",
-        price: "N1,000,000",
-        status: "Delivered"
-      },
-      {
-        key: '1',
-        name: 'Solar panel',
-        supplier: 'Adex Ltd',
-        type: "Lorem Ipsum",
-        price: "N1,000,000",
-        status: "Delivered"
-      },
-
-  ];
+  const data2 = filterProc?.map(data => {
+    return  {
+      key: data._id,
+      name: data?.name,
+      supplier: data?.supplier,
+      type: data?.equipment_type,
+      price: `N${data?.price}`,
+      status: data?.status
+    }
+  })
  
+  const data3 = filterDeliver?.map(data => {
+    return  {
+      key: data._id,
+      name: data?.name,
+      supplier: data?.supplier,
+      type: data?.equipment_type,
+      price: `N${data?.price}`,
+      status: data?.status
+    }
+  })
+
 
   return (
     <Layouts>
@@ -213,7 +183,7 @@ function Request() {
               </div>
             </RowStart>
             <SmallDiv>
-              <SearchField placeholder={'Search by name, email or ID'} value={''} handleChange={() => {}} />
+              <SearchField placeholder={'Search by name, email or ID'} value={search} handleChange={(e) => setSearch(e.target.value)} />
             </SmallDiv>
           </RowBtw>
          {

@@ -87,6 +87,17 @@ export const getEquipment = createAsyncThunk(
   }
 )
 
+export const getEquipmentRequest = createAsyncThunk(
+  'equipment/getEquipmentRequest',
+  async (payload: string) => {
+      const response = await getRequest(`/admin-action/get-equipment-request?status=${payload}`) as any
+      if (response?.status === 200) {
+        return response?.data
+      }
+
+  }
+)
+
 
 export const deleteEquipment = createAsyncThunk(
     'equipment/deleteEquipment',
@@ -144,6 +155,15 @@ export const EquipmentSlice = createSlice({
         state.loading = false
       })
     builder.addCase(getEquipment.rejected, (state, action) => {
+      state.error = action.error.message
+    })
+    builder.addCase(getEquipmentRequest.pending, (state, action) => {
+      state.loading = true
+    }),
+      builder.addCase(getEquipmentRequest.fulfilled, (state, action) => {
+        state.loading = false
+      })
+    builder.addCase(getEquipmentRequest.rejected, (state, action) => {
       state.error = action.error.message
     })
     builder.addCase(deleteEquipment.pending, (state, action) => {

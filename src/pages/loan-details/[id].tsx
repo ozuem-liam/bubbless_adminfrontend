@@ -25,14 +25,10 @@ function loanDetails() {
   const id = router?.query?.id as string
 
   useEffect(() => {
-    dispatch(getLoan()).then(dd => {
-      var findLoan = dd?.payload?.data?.loans?.find(data => data?.id === id)
-      setLoanDetail(findLoan)
-    })
-    dispatch(getUserLoanDetail(id)).then(pp => console.log({pp}))
+
+    dispatch(getUserLoanDetail(id)).then(pp => setLoanDetail(pp?.payload?.data))
 
   }, [id])
-
 
 
 
@@ -55,12 +51,12 @@ function loanDetails() {
           <Contain>
             <div>
               <TextField text='Loan Amount' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-              <TextField text={loanDetail?.loan_amount} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+              <TextField text={loanDetail?.loan?.loan_amount} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
             </div>
             <EmptyContain></EmptyContain>
             <div>
               <TextField text='Loan Amount' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-              <TextField text={loanDetail?.loan_amount} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+              <TextField text={loanDetail?.loan?.loan_amount} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
             </div>
           </Contain>
           <RowContain>
@@ -104,10 +100,10 @@ function loanDetails() {
         type === "kyc" && <ComponentDiv2>
           <Container style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Row1>
-              <TextInput label={'First name'} value={loanDetail?.first_name} />
-              <TextInput label={'Last name'} value={loanDetail?.last_name} />
+              <TextInput label={'First name'} value={loanDetail?.loan?.first_name} />
+              <TextInput label={'Last name'} value={loanDetail?.loan?.last_name} />
               <TextInput label={'Email'} value={''} />
-              <TextInput label={'Phone number'} value={loanDetail?.phone} />
+              <TextInput label={'Phone number'} value={loanDetail?.loan?.phone} />
               <TextInput label={'Income'} value={''} />
               <TextInput label={'BVN'} value={''} />
               <TextInput label={'Business name'} value={''} />
@@ -115,7 +111,7 @@ function loanDetails() {
             </Row1>
             <Row2>
               <MenuDiv>
-                <Img src={"https://res.cloudinary.com/doouwbecx/image/upload/v1659633074/1_ktfkhp.png"} alt='' />
+                <Img src={ loanDetail?.loan?.profile_image ? loanDetail?.loan?.profile_image : "https://res.cloudinary.com/doouwbecx/image/upload/v1659633074/1_ktfkhp.png"} alt='' />
 
                 <SubmitDiv>
                   <SubmitDiv2>
@@ -271,34 +267,34 @@ function loanDetails() {
           <Payment>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Name' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='Installer name' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?.last_name + " " + loanDetail?.installer?.first_name} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='ID' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='10101010101' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?._id} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Address' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='Site Address' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?.address} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Email' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='email@installer.com' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?.email} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Phone No' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='0810000000' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?.phone} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
-            <RowBtw style={{ marginTop: '25px' }}>
+            {/* <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Rate' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
               <TextField text='N10,000 per hour' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
-            </RowBtw>
+            </RowBtw> */}
           </Payment>
         </ComponentDiv2>
       }

@@ -4,7 +4,7 @@ import React, { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { useAppDispatch } from '../app/hook';
-import { createEquipment, getEquipment } from '../slices/EquipmentSlice';
+
 import { fileUpload } from '../slices/LoanSlice';
 import { AddApplianceSchema, AddEquipmentSchema } from '../utils/schemas/schema';
 import { EquipmentType } from '../utils/types/type';

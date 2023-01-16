@@ -47,29 +47,29 @@ const Layouts = ({ children }) => {
     const router = useRouter()
     const pathname = router?.pathname
     const [open, setOpen] = useState(false)
-    const {account, stats} = useAppSelector(userState)
+    const account = useAppSelector(userState)
     const dispatch = useAppDispatch()
 
     var user: any = secureLocalStorage.getItem('user')
     var userInfo = JSON.parse(user)
 
- 
     useEffect(() => {
         dispatch(getProfile())
     }, [])
 
-
-    const menu = (
-        <Menu>
-            <Menu.Item>item 1</Menu.Item>
-            <Menu.Item>item 2</Menu.Item>
-        </Menu>
-    );
-
-    const logOut = () => {
+ const logOut = () => {
         secureLocalStorage.clear()
         return router.push('/')
     }
+
+
+    const menu = (
+        <Menu onClick={() => logOut()}>
+            <Menu.Item>Log out</Menu.Item>
+        </Menu>
+    );
+
+   
 
     const sideMenu = [
         {

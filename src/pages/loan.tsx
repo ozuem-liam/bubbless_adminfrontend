@@ -10,7 +10,7 @@ import Image from 'next/image'
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import { useRouter } from 'next/router'
 import { useAppDispatch } from '../app/hook'
-import { getLoan } from '../slices/LoanSlice'
+import { getLoan, getLoanStat } from '../slices/LoanSlice'
 
 
 interface DataType {
@@ -41,19 +41,28 @@ function Loan() {
   const [type, setType] = useState('request')
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const [loans, setLoans] = useState<any>()
+  const [approvedLoans, setApprovedLoans] = useState<any>()
+  const [pendingLoans, setPendingLoans] = useState<any>()
+  const [rejectedLoans, setRejectedLoans] = useState<any>()
+  const [loanStat, setLoanStat] = useState<any>()
 
 
   useEffect(() => {
-    dispatch(getLoan()).then(dd => {
-      setLoans(dd?.payload?.data?.loans)
+    dispatch(getLoanStat()).then(dd => {
+      setLoanStat(dd?.payload?.stats)
+    })
+    dispatch(getLoan("approved")).then(dd => {
+      setApprovedLoans(dd?.payload?.data)
+    })
+    dispatch(getLoan("rejected")).then(dd => {
+      setRejectedLoans(dd?.payload?.data)
+    })
+    dispatch(getLoan("pending")).then(dd => {
+      setPendingLoans(dd?.payload?.data)
     })
   }, [])
   
 
-  const requestLoan = loans?.filter(data => data?.status === "pending")
-  const approvedLoan = loans?.filter(data => data?.status === "approved")
-  const rejectedLoan = loans?.filter(data => data?.status === "rejected")
 
 
   const columns: ColumnsType<DataType> = [
@@ -212,7 +221,7 @@ function Loan() {
   ];
 
 
-  const data = requestLoan?.map(pp => {
+  const data = pendingLoans?.loans?.map(pp => {
     return {
       key: pp?.id,
       consumer: pp?.first_name + " " + pp?.last_name,
@@ -224,7 +233,7 @@ function Loan() {
   })
   
 
-  const data3 = rejectedLoan?.map(pp => {
+  const data3 = rejectedLoans?.loans?.map(pp => {
     return {
       key: pp?.id,
       consumer: pp?.first_name + " " + pp?.last_name,
@@ -236,7 +245,7 @@ function Loan() {
   })
 
 
-  const data2 = approvedLoan?.map(pp => {
+  const data2 = approvedLoans?.loans?.map(pp => {
     return {
       key: pp?.id,
       consumer: pp?.first_name + " " + pp?.last_name,
@@ -271,11 +280,11 @@ function Loan() {
               <TextField text='Request' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={requestLoan?.length} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={loanStat?.all_loans?.count ? loanStat?.all_loans?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={requestLoan?.map((a,b) => a?.loan_amount)?.reduce((a,b) => a+b, 0)} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={loanStat?.all_loans?.volume ? loanStat?.all_loans?.volume : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
             </Card>
           </Col>
@@ -284,11 +293,11 @@ function Loan() {
               <TextField text='Approved' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={approvedLoan?.length} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={loanStat?.approved_loan?.count ? loanStat?.approved_loan?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={approvedLoan?.map((a,b) => a?.loan_amount)?.reduce((a,b) => a + b, 0)} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={loanStat?.approved_loan?.volume ? loanStat?.approved_loan?.volume : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
             </Card>
           </Col>
@@ -297,11 +306,11 @@ function Loan() {
               <TextField text='Rejected' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={rejectedLoan?.length} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={loanStat?.rejected_loan?.count ? loanStat?.rejected_loan?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={rejectedLoan?.map((a,b) => a?.loan_amount)?.reduce((a,b) => a+b, 0)} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={loanStat?.rejected_loan?.volume ? loanStat?.rejected_loan?.volume : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
             </Card>
           </Col>

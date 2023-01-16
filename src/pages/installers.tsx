@@ -15,6 +15,9 @@ import AddInstaller from '../components/AddInstaller'
 import { placeholder } from '../assets'
 import { useAppDispatch } from '../app/hook'
 import { getInstaller } from '../slices/InstallerSlice'
+import { Email } from '@material-ui/icons'
+import { Dropdown, Space, Menu } from 'antd';
+import { EllipsisOutlined } from "@ant-design/icons"
 
 
 interface DataType {
@@ -23,7 +26,8 @@ interface DataType {
   consumer: number;
   site: number;
   equipment: number;
-  status: string
+  status: string,
+  email: string
 }
 
 
@@ -33,6 +37,10 @@ function Installer() {
   const [type,setType] = useState('equipment')
   const [installerOpen, setInstallerOpen] = useState(false);
   const dispatch = useAppDispatch()
+ const [installer, setInstaller] = useState([])
+ const [search, setSearch] = useState("")
+
+
 
 
   const handleInstallerClose = () => {
@@ -41,8 +49,23 @@ function Installer() {
 
 
   useEffect(() => {
-    dispatch(getInstaller()).then(data => console.log({data}))
+    dispatch(getInstaller()).then(data => setInstaller(data?.payload?.data?.accounts))
   }, [])
+
+
+
+  const menu = (data) => (
+    <Menu
+      items={[
+        {
+          key: '1',
+          
+        },
+
+      ]}
+    />
+  );
+
 
 
   const columns: ColumnsType<DataType> = [
@@ -56,7 +79,7 @@ function Installer() {
              <Image src={placeholder} alt='' />
              <div style={{marginLeft: '10px'}}>
               <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
-              <TextField text={'adewalemusa@gmail.com'} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' margin='-5px 0px 0px 0px' color='#90A3BF' />
+              <TextField text={rowIndex?.email} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' margin='-5px 0px 0px 0px' color='#90A3BF' />
              </div>
             
           </div>
@@ -111,9 +134,9 @@ function Installer() {
       dataIndex: '',
       render: (value) => {
         return (
-          <Colored style={{width: '100px', padding: '0px' }}>
-          <TextField textAlign='center' textTransform='capitalize' text={'---'} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
-        </Colored>
+          <Dropdown overlay={menu(value)}>
+          <EllipsisOutlined />
+        </Dropdown>
         );
       },
       width: '20%',
@@ -127,35 +150,24 @@ function Installer() {
   };
 
 
+  const filterInstaller = installer?.filter(data => data?.first_name.toLowerCase().includes(search.toLowerCase()) || data?.last_name.toLowerCase().includes(search.toLowerCase())) 
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'Cole Benson',
+  const data = filterInstaller?.map(dd => {
+    return  {
+      key: dd?._id,
+      name: dd?.last_name + " " + dd?.first_name,
+      email: dd?.email,
       consumer: 2,
       site: 4,
       equipment: 10,
-      status: 'Approved'
-    },
-    {
-      key: '2',
-      name: 'Cole Benson',
-      consumer: 2,
-      site: 4,
-      equipment: 10,
-      status: 'Pending'
-    },
-    {
-      key: '3',
-      name: 'Cole Benson',
-      consumer: 2,
-      site: 4,
-      equipment: 10,
-      status: 'Approved'
-    },
-   
-  ];
-
+      status: dd?.status,
+      ...dd
+    }
+  })
+  
+  
+  
+  
 
 
   const rowSelection = {
@@ -191,7 +203,7 @@ function Installer() {
               </div>
             </RowStart>
             <SmallDiv>
-              <SearchField value={'value'} handleChange={() => console.log("log")} placeholder={'Search by name, email or ID'} />
+              <SearchField  value={search} handleChange={(e) => setSearch(e.target.value)} placeholder={'Search by name, email or ID'} />
             </SmallDiv>
           </RowBtw>
 
