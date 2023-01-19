@@ -110,7 +110,7 @@ function Request() {
         dataIndex: 'status',
         render: (value) => {
           return (
-            <Colored style={{ background: value === "Request" ? "#E0E9F4" : value === "Procurred" ? "#E0E9F4": value === "Delivered" ? "#AED6C3" : "", borderRadius: "23px",width: '100px', padding: '10px' }}>
+            <Colored style={{ background: value === "Request" ? "#E0E9F4" : value === "Procured" ? "#E0E9F4": value === "Delivered" ? "#AED6C3" : "", borderRadius: "23px",width: '100px', padding: '10px' }}>
               <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
             </Colored>
           );

@@ -16,6 +16,17 @@ export type ResetFormData = {
     email: string;
 }
 
+export type InstallerType = {
+    first_name: string, 
+    last_name: string, 
+    password: string,
+    email: string, 
+    phone: number, 
+    business_name: string, 
+    address: string, 
+    user_type: string, 
+}
+
 export type EquipmentType = {
     equipment_type: string, 
     name: string, 

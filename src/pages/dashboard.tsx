@@ -11,6 +11,7 @@ import { useRouter } from 'next/router'
 import { useAppDispatch } from '../app/hook'
 import { getProfile } from '../slices/AuthSlice'
 import { getStat, getStatForDashboard } from '../slices/DashboardSlice'
+import { getDueLoans } from '../slices/LoanSlice'
 
 
 
@@ -22,6 +23,7 @@ function Dashboard() {
 
   useEffect(() => {
     dispatch(getStatForDashboard()).then(dd => setDashboard(dd?.payload?.data))
+    dispatch(getDueLoans("pending")).then(cc => console.log({cc}))
     // dispatch(getStat()).then(dds => console.log({dds}))
   }, [])
 

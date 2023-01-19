@@ -150,7 +150,7 @@ function InstallerDetail() {
                     </RowStart2>
                     <br/>
                     <br/>
-                    <ButtonTextColored>Create account</ButtonTextColored>
+                    {/* <ButtonTextColored>Create account</ButtonTextColored> */}
                     <br/>
                     <br/>
                 </Card>

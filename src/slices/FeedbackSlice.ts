@@ -17,7 +17,7 @@ const initialState = {
 export const getFeedback = createAsyncThunk(
   'feedback/getFeedback',
   async () => {
-      const response = await getRequest("/feedback/admin/feedback-subject") as any
+      const response = await getRequest("/feedback/admin/conversations") as any
       if (response?.status === 200) {
         return response?.data
       }

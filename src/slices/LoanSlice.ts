@@ -47,6 +47,17 @@ export const getUserLoanDetail = createAsyncThunk(
     }
 )
 
+export const getDueLoans = createAsyncThunk(
+    'loan/getDueLoans',
+    async (payload: string) => {
+        const response = await getRequest(`/admin-action/get-loans-info?status=${payload}`) as any
+        if (response?.status === 200) {
+            return response?.data
+        }
+
+    }
+)
+
 
 
 export const fileUpload = createAsyncThunk(
@@ -76,6 +87,15 @@ export const LoanSlice = createSlice({
             state.loading = true
         }),
             builder.addCase(getLoan.fulfilled, (state, action) => {
+                state.loading = false
+            })
+        builder.addCase(getDueLoans.rejected, (state, action) => {
+            state.error = action.error.message
+        }),
+        builder.addCase(getDueLoans.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(getDueLoans.fulfilled, (state, action) => {
                 state.loading = false
             })
         builder.addCase(getLoan.rejected, (state, action) => {

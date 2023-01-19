@@ -15,7 +15,7 @@ const initialState = {
 
 export const createInstaller = createAsyncThunk(
   'installer/createInstaller',
-  async (payload: {first_name: string, last_name: string, email: string, phone: number, business_name: string, address: string, user_type: string, status: string}, { rejectWithValue }) => {
+  async (payload: {first_name: string,password: string, last_name: string, email: string, phone: string, business_name: string, address: string, user_type: string, status: string}, { rejectWithValue }) => {
     try {
       const response = await postRequest("/admin-action/installer/register", payload)
       if (response?.status === 200) {

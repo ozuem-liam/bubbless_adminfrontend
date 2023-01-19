@@ -45,6 +45,7 @@ function Installer() {
 
   const handleInstallerClose = () => {
     setInstallerOpen(false)
+    dispatch(getInstaller()).then(data => setInstaller(data?.payload?.data?.accounts))
   }
 
 
