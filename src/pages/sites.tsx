@@ -59,7 +59,6 @@ function Sites() {
     try {
       var response = await dispatch(deleteSiting(data?.id))
       if(deleteSiting.fulfilled.match(response)) {
-        console.log({response})
         dispatch(getSiting()).then(data => setSitings(data?.payload?.data?.sitings))
           toast.success("Siting deleted successfully")
       }

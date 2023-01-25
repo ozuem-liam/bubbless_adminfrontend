@@ -16,6 +16,29 @@ export type ResetFormData = {
     email: string;
 }
 
+export type LoanConfig = {
+    number: number,
+    period: string,
+    interest_rate: number,
+    min_value: number, 
+    max_value: number
+}
+
+export type InstallationConfig = {
+    name: string,
+    value: number,
+    cost_type: string
+}
+
+export type InvestmentConfig = {
+    name: string,
+    number: number,
+    period: string, 
+    interest_rate: number, 
+    min_value: number, 
+    max_value: number
+}
+
 export type InstallerType = {
     first_name: string, 
     last_name: string, 
@@ -79,7 +102,7 @@ export type InputType = {
     isMultiline?: boolean,
     isPassword?: boolean,
     disabled?: boolean,
-    type?: string,
+    number?: boolean,
     required?: boolean,
     handleClick?: (value?: any) => void,
     onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,

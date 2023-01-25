@@ -42,7 +42,38 @@ export const getInstaller = createAsyncThunk(
   }
 )
 
+export const createInstallerCosting = createAsyncThunk(
+  'installer/createInstallerCosting',
+  async (payload: {name: string,value: number,cost_type: string}) => {
+      const response = await postRequest(`/installer-cost/create-installation-cost`, payload) as any
+      if (response?.status === 200) {
+          return response?.data
+      }
 
+  }
+)
+
+export const deleteInstallerCosting = createAsyncThunk(
+  'installer/deleteInstallerCosting',
+  async (payload: string) => {
+      const response = await deleteRequest(`/installer-cost//${payload}`) as any
+      if (response?.status === 200) {
+          return response?.data
+      }
+
+  }
+)
+
+export const getInstallerCosting = createAsyncThunk(
+  'installer/getInstallerCosting',
+  async () => {
+      const response = await getRequest(`/installer-cost`) as any
+      if (response?.status === 200) {
+          return response?.data
+      }
+
+  }
+)
 
 export const InstallerSlice = createSlice({
   name: 'installer',
@@ -67,7 +98,33 @@ export const InstallerSlice = createSlice({
     builder.addCase(getInstaller.rejected, (state, action) => {
       state.error = action.error.message
     })
-   
+    builder.addCase(getInstallerCosting.pending, (state, action) => {
+      state.loading = true
+  }),
+      builder.addCase(getInstallerCosting.fulfilled, (state, action) => {
+          state.loading = false
+      })
+  builder.addCase(getInstallerCosting.rejected, (state, action) => {
+      state.error = action.error.message
+  })
+  builder.addCase(deleteInstallerCosting.pending, (state, action) => {
+      state.loading = true
+  }),
+      builder.addCase(deleteInstallerCosting.fulfilled, (state, action) => {
+          state.loading = false
+      })
+  builder.addCase(deleteInstallerCosting.rejected, (state, action) => {
+      state.error = action.error.message
+  })
+  builder.addCase(createInstallerCosting.pending, (state, action) => {
+      state.loading = true
+  }),
+      builder.addCase(createInstallerCosting.fulfilled, (state, action) => {
+          state.loading = false
+      })
+  builder.addCase(createInstallerCosting.rejected, (state, action) => {
+      state.error = action.error.message
+  })
   }
 })
 

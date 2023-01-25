@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { deleteRequest, getRequest, postRequest, updateRequest } from "../utils/server";
+import { deleteRequest, getRequest, patchRequest, postRequest, updateRequest } from "../utils/server";
 
 
 
@@ -25,6 +25,17 @@ export const getFeedback = createAsyncThunk(
   }
 )
 
+export const getFeedbackSubject = createAsyncThunk(
+  'feedback/getFeedbackSubject',
+  async (payload: {installerId: string, customerId: string}) => {
+      const response = await getRequest(`/feedback/admin/conversations/${payload?.installerId}/${payload?.customerId}`) as any
+      if (response?.status === 200) {
+        return response?.data
+      }
+
+  }
+)
+
 
 
 export const FeedbackSlice = createSlice({
@@ -42,6 +53,16 @@ export const FeedbackSlice = createSlice({
     builder.addCase(getFeedback.rejected, (state, action) => {
       // state.error = action.error.message
     })
+    builder.addCase(getFeedbackSubject.pending, (state, action) => {
+      state.loading = true
+    }),
+    builder.addCase(getFeedbackSubject.fulfilled, (state, action: PayloadAction<any>) => {
+      state.loading = false
+        
+    })
+  builder.addCase(getFeedbackSubject.rejected, (state, action) => {
+    // state.error = action.error.message
+  })
   }
 })
 

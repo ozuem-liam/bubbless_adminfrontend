@@ -48,6 +48,30 @@ export const AddInstallerSchema = yup.object().shape({
 
 })
 
+export const ConfigLoanSchema = yup.object().shape({
+  period: yup.string().required('Period is required'),
+  number: yup.number().required('Number is required'),
+  interest_rate: yup.number().required('Interest rate is required'),
+  min_value: yup.number().required('Min value is required'),
+  max_value: yup.number().required('Max value is required'),
+
+})
+export const ConfigInvestmentSchema = yup.object().shape({
+  name: yup.string().required('Name is required'),
+  period: yup.string().required('Period is required'),
+  number: yup.number().required('Number is required'),
+  interest_rate: yup.number().required('Interest rate is required'),
+  min_value: yup.number().required('Min value is required'),
+  max_value: yup.number().required('Max value is required'),
+
+})
+export const ConfigInstallationSchema = yup.object().shape({
+  name: yup.string().required('Name is required'),
+  value: yup.number().required('Value is required'),
+  cost_type: yup.string().required('Cost type is required'),
+
+})
+
 export const AddApplianceSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
   watts: yup.string().required('Watt is required'),

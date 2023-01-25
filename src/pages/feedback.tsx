@@ -17,6 +17,7 @@ import { useAppDispatch } from '../app/hook'
 import { getFeedback } from '../slices/FeedbackSlice'
 import { Dropdown, Space, Menu } from 'antd';
 import { EllipsisOutlined } from "@ant-design/icons"
+import FeedbackDetail from '../components/FeedbackDetail'
 
 
 
@@ -37,14 +38,23 @@ function Feedback() {
   const [installerOpen, setInstallerOpen] = useState(false);
   const [feedbacks, setFeedbacks] = useState(null)
   const dispatch = useAppDispatch()
+  const [detatilInfo, setDetailInfo] = useState(null)
+  const [detailOpen, setDetailOpen] = useState(false);
 
+  const handleDetailOpen = (data) => {
+    setDetailOpen(true)
+    setDetailInfo(data)
+  }
+
+  const handleDetailClose = () => {
+    setDetailOpen(false)
+  }
 
 
   useEffect(() => {
     dispatch(getFeedback()).then(pp => setFeedbacks(pp?.payload?.data))
   }, [])
 
- 
 
   const handleInstallerClose = () => {
     setInstallerOpen(false)
@@ -59,7 +69,7 @@ function Feedback() {
       render: (value, rowIndex) => {
         var id = rowIndex?.installer_id as number
         return (
-          <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => router.push(`/installer-detail/${id}`)}>
+          <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => handleDetailOpen(rowIndex)}>
              {
               !rowIndex?.customer_image ? 
               <Image src={placeholder}  alt=''/>
@@ -191,7 +201,7 @@ function Feedback() {
         </Card>
 
         <AddInstaller modalOpen={installerOpen} handleCancel={() => handleInstallerClose()} />
-
+        <FeedbackDetail modalOpen={detailOpen} handleCancel={() => handleDetailClose()} info={detatilInfo}  />
       </ComponentDiv>
     </Layouts>
   )

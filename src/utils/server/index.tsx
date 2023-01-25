@@ -30,6 +30,24 @@ export const getRequest = async (url: string) => {
 }
 
 
+export const patchRequest = async (url: string, payload?) => {
+  var res = await axios.patch(Base_url + url, payload,
+    {
+      headers: {
+        authorization: `Bearer ${secureLocalStorage.getItem("token")}`,
+      },
+    })
+    if(res?.status === 200){
+      return res
+    }
+    
+    if(res?.status === 401 || getToken === null){
+      secureLocalStorage.clear()
+      localStorage.clear()
+      return window.location.href = '/'
+    }
+}
+
 export const postRequest =  async (url: string, payload?) => {
   var res = await axios.post(Base_url + url, payload, {
     headers: {

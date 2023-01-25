@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import AddLoan from '../components/AddLoan'
 import AddUser from '../components/AddUser'
@@ -8,9 +8,17 @@ import Layouts from '../components/Layout'
 import TextField from '../components/TextField'
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import { useRouter } from 'next/router'
-import { Row, Col, Table } from "antd"
+import { Row, Col, Table, Menu } from "antd"
 import AddInstallation from '../components/AddInstallation'
 import AddInvestment from '../components/AddInvestment'
+import { useAppDispatch } from '../app/hook'
+import { createConfigLoan, deleteConfigLoan, getConfigLoan } from '../slices/LoanSlice'
+import { toast, ToastContainer } from 'react-toastify'
+import { EllipsisOutlined } from "@ant-design/icons"
+import { Dropdown, Space } from 'antd';
+import { createInstallerCosting, deleteInstallerCosting, getInstallerCosting } from '../slices/InstallerSlice'
+import { createInvestorCosting, getInvestorCosting } from '../slices/InvestmentSlice'
+
 
 
 interface DataType {
@@ -30,7 +38,20 @@ function Configuration() {
   const [loanOpen, setLoanOpen] = useState(false)
   const [installationOpen, setInstallationOpen] = useState(false)
   const [investmentOpen, setInvestmentOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const dispatch = useAppDispatch()
+  const [loanPeriods, setLoanPeriods] = useState(null)
+  const [installerCostings, setInstallerCosting] = useState(null)
+  const [investmentCostings, setInvestmentCosting] = useState(null)
+
+  useEffect(() => {
+    dispatch(getConfigLoan()).then(dd => setLoanPeriods(dd?.payload?.data))
+    dispatch(getInstallerCosting()).then(dd => setInstallerCosting(dd?.payload?.data))
+    dispatch(getInvestorCosting()).then(dd => setInvestmentCosting(dd?.payload?.data))
+  }, [])
+
+
 
   const handleLoanClose = () => {
     setLoanOpen(false)
@@ -48,34 +69,100 @@ function Configuration() {
     setInvestmentOpen(false)
   }
 
+  const deleteLoan = async (data) => {
+    setLoading(true)
+     try {
+        var response = await dispatch(deleteConfigLoan(data?.key))
+        if(deleteConfigLoan.fulfilled.match(response)){
+          setLoading(false)
+          dispatch(getConfigLoan()).then(dd => setLoanPeriods(dd?.payload?.data))
+          toast.success("Loan period deleted successfully")
+          handleLoanClose()
+        }
+        else {
+          setLoading(false)
+          toast.error("Unable to delete loan period")
+        }
+     }
+     catch(e) {
+      console.log(e)
+      setLoading(false)
+     }
+  }
+
+  const deleteInstaller = async (data) => {
+    setLoading(true)
+    try {
+       var response = await dispatch(deleteInstallerCosting(data?.key))
+       if(deleteInstallerCosting.fulfilled.match(response)){
+         setLoading(false)
+         dispatch(getInstallerCosting()).then(dd => setInstallerCosting(dd?.payload?.data))
+         toast.success("Installer costing deleted successfully")
+         handleLoanClose()
+       }
+       else {
+         setLoading(false)
+         toast.error("Unable to delete Installer costing")
+       }
+    }
+    catch(e) {
+     console.log(e)
+     setLoading(false)
+    }
+  }
+
+  const menu = (data) => (
+    <Menu
+      items={[
+        {
+          key: '1',
+          label: (
+            <Menudiv onClick={() => deleteLoan(data)}>
+              <TextField text='Delete' margin='0px 5px' color='#54A6FF' fontSize='12px' />
+            </Menudiv>
+          ),
+        },
+
+      ]}
+    />
+  );
+
+  const menu2 = (data) => (
+    <Menu
+      items={[
+        {
+          key: '1',
+          label: (
+            <Menudiv onClick={() => deleteInstaller(data)}>
+              <TextField text='Delete' margin='0px 5px' color='#54A6FF' fontSize='12px' />
+            </Menudiv>
+          ),
+        },
+
+      ]}
+    />
+  );
+
+ 
+
 
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Consumer',
-      dataIndex: 'consumer',
+      title: 'Number',
+      dataIndex: 'number',
       render: (value, rowIndex) => {
         var id = rowIndex?.key as number
         return (
-          <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/loan-details/${id}`)}>
+          <div style={{ cursor: 'pointer' }}>
             <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
           </div>
         );
       },
-      width: '30%',
+      width: '20%',
     },
     {
-      title: 'Amount',
-      dataIndex: 'amount',
-      render: (value) => {
-        return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
-        );
-      },
-      width: '30%',
-    },
-    {
-      title: 'Date',
-      dataIndex: 'date',
+      title: 'Period',
+      dataIndex: 'period',
       render: (value) => {
         return (
           <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
@@ -83,36 +170,273 @@ function Configuration() {
       },
       width: '20%',
     },
+    {
+      title: 'Interest Rate',
+      dataIndex: 'interest_rate',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Minimum Value',
+      dataIndex: 'min_value',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Maximum Value',
+      dataIndex: 'max_value',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Action',
+      dataIndex: '',
+      render: (value) => {
+        return (
+          <Dropdown overlay={menu(value)}>
+          <EllipsisOutlined />
+        </Dropdown>
+        );
+      },
+      width: '20%',
+    },
 
   ];
 
-  const data: DataType[] = [
+  const columnsInvestor: ColumnsType<DataType> = [
     {
-      key: '1',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "pending"
+      title: 'Name',
+      dataIndex: 'name',
+      render: (value, rowIndex) => {
+        var id = rowIndex?.key as number
+        return (
+          <div style={{ cursor: 'pointer' }}>
+            <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          </div>
+        );
+      },
+      width: '20%',
     },
     {
-      key: '2',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "pending"
+      title: 'Number',
+      dataIndex: 'number',
+      render: (value, rowIndex) => {
+        var id = rowIndex?.key as number
+        return (
+          <div style={{ cursor: 'pointer' }}>
+            <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          </div>
+        );
+      },
+      width: '20%',
     },
     {
-      key: '3',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "pending"
+      title: 'Period',
+      dataIndex: 'period',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Interest Rate',
+      dataIndex: 'interest_rate',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Minimum Value',
+      dataIndex: 'min_value',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Maximum Value',
+      dataIndex: 'max_value',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
     }
+
   ];
+
+  const columnInstaller: ColumnsType<DataType> = [
+    {
+      title: 'Cost Name',
+      dataIndex: 'name',
+      render: (value, rowIndex) => {
+        var id = rowIndex?.key as number
+        return (
+          <div style={{ cursor: 'pointer' }}>
+            <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          </div>
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Cost type',
+      dataIndex: 'cost_type',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Value',
+      dataIndex: 'value',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Action',
+      dataIndex: '',
+      render: (value) => {
+        return (
+          <Dropdown overlay={menu2(value)}>
+          <EllipsisOutlined />
+        </Dropdown>
+        );
+      },
+      width: '20%',
+    },
+
+  ];
+  const data = loanPeriods?.map(data => {
+    return {
+      key: data._id,
+      number: data?.number,
+      period: data?.period,
+      interest_rate: data?.interest_rate,
+      min_value: data?.min_value,
+      max_value: data?.max_value,
+      ...data
+    }
+  })
+
+  const dataInvestor = investmentCostings?.map(data => {
+    return {
+      key: data._id,
+      name: data?.name,
+      number: data?.number,
+      period: data?.period,
+      interest_rate: data?.interest_rate,
+      min_value: data?.min_value,
+      max_value: data?.max_value,
+      ...data
+    }
+  })
+
+
+  const dataInstaller = installerCostings?.map(data => {
+    return {
+      key: data._id,
+      name: data?.name,
+      cost_type: data?.cost_type,
+      value: data?.value,
+      ...data
+    }
+  })
+
 
   const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
   };
+
+
+  const handleLoanSubmit = async (data) => {
+     setLoading(true)
+     try {
+        var response = await dispatch(createConfigLoan(data))
+        if(createConfigLoan.fulfilled.match(response)){
+          setLoading(false)
+          dispatch(getConfigLoan()).then(dd => setLoanPeriods(dd?.payload?.data))
+          toast.success("Loan period created successfully")
+          handleLoanClose()
+        }
+        else {
+          setLoading(false)
+          toast.error("Unable to create loan period")
+        }
+     }
+     catch(e) {
+      console.log(e)
+      setLoading(false)
+     }
+  }
+
+  const handleInstallationSubmit = async (data) => {
+    setLoading(true)
+    try {
+       var response = await dispatch(createInstallerCosting(data))
+       if(createInstallerCosting.fulfilled.match(response)){
+         setLoading(false)
+         dispatch(getInstallerCosting()).then(dd => setInstallerCosting(dd?.payload?.data))
+         toast.success("Installer cost created successfully")
+         handleInstallationClose()
+       }
+       else {
+         setLoading(false)
+         toast.error("Unable to create Installer cost")
+       }
+    }
+    catch(e) {
+     console.log(e)
+     setLoading(false)
+    }
+  }
+
+  const handleInvestmentSubmit = async (data) => {
+    setLoading(true)
+    try {
+       var response = await dispatch(createInvestorCosting(data))
+       if(createInvestorCosting.fulfilled.match(response)){
+         setLoading(false)
+         dispatch(getInvestorCosting()).then(dd => setInvestmentCosting(dd?.payload?.data))
+         toast.success("Investor plan created successfully")
+         handleInvestmentClose()
+       }
+       else {
+         setLoading(false)
+         toast.error("Unable to create Investor plan")
+       }
+    }
+    catch(e) {
+     console.log(e)
+     setLoading(false)
+    }
+  }
 
 
   return (
@@ -163,7 +487,7 @@ function Configuration() {
               <ButtonTextColored onClick={() => setInstallationOpen(true)}>+ Add installation cost</ButtonTextColored>
             </RowEnd>
             <Card>
-              <Table columns={columns} dataSource={data} onChange={onChange} />
+              <Table columns={columnInstaller} dataSource={dataInstaller} onChange={onChange} />
             </Card>
           </div>
         }
@@ -174,17 +498,18 @@ function Configuration() {
               <ButtonTextColored onClick={() => setInvestmentOpen(true)}>+ Add investment plan</ButtonTextColored>
             </RowEnd>
             <Card>
-              <Table columns={columns} dataSource={data} onChange={onChange} />
+              <Table columns={columnsInvestor} dataSource={dataInvestor} onChange={onChange} />
             </Card>
           </div>
         }
 
 
         <AddUser modalOpen={userOpen} handleCancel={() => handleUserClose()} />
-        <AddLoan modalOpen={loanOpen} handleCancel={() => handleLoanClose()} />
-        <AddInstallation modalOpen={installationOpen} handleCancel={() => handleInstallationClose()} />
-        <AddInvestment modalOpen={investmentOpen} handleCancel={() => handleInvestmentClose()} />
+        <AddLoan modalOpen={loanOpen} handleCancel={() => handleLoanClose()} isLoading={loading} handleLoanSubmit={(data) => handleLoanSubmit(data)} />
+        <AddInstallation modalOpen={installationOpen} handleCancel={() => handleInstallationClose()} isLoading={loading} handleInstallationSubmit={(data) => handleInstallationSubmit(data)} />
+        <AddInvestment modalOpen={investmentOpen} handleCancel={() => handleInvestmentClose()} isLoading={loading} handleInvestmentSubmit={(data) => handleInvestmentSubmit(data)} />
       </ComponentDiv>
+      <ToastContainer />
     </Layouts>
   )
 }
@@ -242,4 +567,8 @@ const ButtonTextColored = styled.button`
     font-weight: 900;
     border-radius: 8px;
     margin-left: 20px;
+`
+const Menudiv = styled.div`
+  display: flex;
+  align-items: center;
 `

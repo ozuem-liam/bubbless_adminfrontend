@@ -11,7 +11,8 @@ import { Row, Col } from "antd"
 import TextInput from '../../components/TextInput'
 import { useRouter } from 'next/router'
 import { useAppDispatch } from '../../app/hook'
-import { getLoan, getUserLoanDetail } from '../../slices/LoanSlice'
+import { getLoan, getUserLoanDetail, updateLoanStatus } from '../../slices/LoanSlice'
+import { toast } from 'react-toastify'
 
 
 
@@ -31,15 +32,40 @@ function loanDetails() {
   }, [id])
 
 
+  const updateStatus = async(data) => {
+    const payload = {
+      id: id,
+      status: data
+    }
+    try {
+      var response = await dispatch(updateLoanStatus(payload))
+      console.log({response})
+      if(updateLoanStatus.fulfilled.match(response)){
+        toast.success("Status updated successfully")
+        dispatch(getUserLoanDetail(id)).then(pp => setLoanDetail(pp?.payload?.data))
+      }
+      else {
+        var errMsg = response?.payload as string
+        toast.error(errMsg)
+      }
+    }
+    catch(e) {
+      console.log({e})
+    }
+  }
+
+
   return (
     <Layouts>
       <ComponentDiv>
         <View>
           <TextField text='Loans details' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
           <Div>
-            <ButtonText>Decline</ButtonText>
-            <EmptyDiv></EmptyDiv>
-            <ButtonTextColored>Approved</ButtonTextColored>
+            {
+              loanDetail?.status === "approved" ? <ButtonText onClick={() => updateStatus("rejected")}>Decline</ButtonText>
+              : <ButtonTextColored onClick={() => updateStatus("approved")}>Approved</ButtonTextColored>
+            }
+           
           </Div>
         </View>
       </ComponentDiv>
@@ -358,7 +384,7 @@ const Div = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 300px;
+  width: 200px;
 `
 const EmptyDiv = styled.div`
   width: 50px;

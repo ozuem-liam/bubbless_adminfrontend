@@ -10,7 +10,7 @@ import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Sizes } from '../utils/constant/constant';
 
 
-const TextInput: NextPage<InputType> = ({ label, onChange, value, errorMsg, isPassword, isMultiline, disabled, type, handleTextChange, required, multiple }) => {
+const TextInput: NextPage<InputType> = ({ label, onChange, value, errorMsg, isPassword, isMultiline, disabled, number, handleTextChange, required, multiple }) => {
     const [showPassword, setShowPassword] = useState(true)
     const handleClickShowPassword = () => {
     };
@@ -34,7 +34,7 @@ const TextInput: NextPage<InputType> = ({ label, onChange, value, errorMsg, isPa
                                 placeholder={label}
                                 value={value} onChange={onChange}
                                 iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                            /> : <InputField placeholder={label} value={value} onChange={onChange} />
+                            /> : <InputField placeholder={label} type={number ? "number" : "text"} value={value} onChange={onChange} />
                         }
                     </div>
             }
