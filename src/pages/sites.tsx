@@ -155,19 +155,19 @@ function Sites() {
       },
       width: '20%',
     },
-    {
-      title: 'Action',
-      dataIndex: '',
-      render: (value) => {
-        return (
-          <Dropdown overlay={menu(value)}>
-            <EllipsisOutlined />
-          </Dropdown>
+    // {
+    //   title: 'Action',
+    //   dataIndex: '',
+    //   render: (value) => {
+    //     return (
+    //       <Dropdown overlay={menu(value)}>
+    //         <EllipsisOutlined />
+    //       </Dropdown>
 
-        );
-      },
-      width: '20%',
-    }
+    //     );
+    //   },
+    //   width: '20%',
+    // }
   ];
 
 

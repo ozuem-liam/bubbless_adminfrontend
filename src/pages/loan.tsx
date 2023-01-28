@@ -64,7 +64,6 @@ function Loan() {
   
 
 
-
   const columns: ColumnsType<DataType> = [
     {
       title: 'Consumer',
@@ -277,7 +276,7 @@ function Loan() {
         <Row gutter={[16, 16]}>
           <Col span={8} >
             <Card>
-              <TextField text='Request' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
+              <TextField text='All' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
                 <TextField text={loanStat?.all_loans?.count ? loanStat?.all_loans?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
@@ -293,11 +292,11 @@ function Loan() {
               <TextField text='Approved' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={loanStat?.approved_loan?.count ? loanStat?.approved_loan?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={loanStat?.approved_loans?.count ? loanStat?.approved_loans?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={loanStat?.approved_loan?.volume ? loanStat?.approved_loan?.volume : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={loanStat?.approved_loans?.volume ? loanStat?.approved_loans?.volume : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
             </Card>
           </Col>
@@ -306,11 +305,11 @@ function Loan() {
               <TextField text='Rejected' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={loanStat?.rejected_loan?.count ? loanStat?.rejected_loan?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={loanStat?.rejected_loans?.count ? loanStat?.rejected_loans?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={loanStat?.rejected_loan?.volume ? loanStat?.rejected_loan?.volume : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={loanStat?.rejected_loans?.volume ? loanStat?.rejected_loans?.volume : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
             </Card>
           </Col>

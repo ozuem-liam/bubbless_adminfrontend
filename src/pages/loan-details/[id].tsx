@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { info, more, pic, square, star } from '../../assets'
+import { info, loan, more, pic, square, star } from '../../assets'
 import Button from '../../components/Button'
 import Layouts from '../../components/Layout'
 import TextField from '../../components/TextField'
@@ -62,7 +62,7 @@ function loanDetails() {
           <TextField text='Loans details' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
           <Div>
             {
-              loanDetail?.status === "approved" ? <ButtonText onClick={() => updateStatus("rejected")}>Decline</ButtonText>
+              loanDetail?.loan?.status === "approved" ? <ButtonText onClick={() => updateStatus("rejected")}>Decline</ButtonText>
               : <ButtonTextColored onClick={() => updateStatus("approved")}>Approved</ButtonTextColored>
             }
            
@@ -215,71 +215,39 @@ function loanDetails() {
                   <TextField text='Quantity' fontSize='14px' textAlign='center' lineHeight='17px' fontFamily='Mont-SemiBold' />
                 </th>
                 <th style={{ width: '150px' }}>
-                  <TextField text='Hour on per day' textAlign='right' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
+                  <TextField text='Price' textAlign='right' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
                 </th>
               </tr>
-              <tr style={{ height: '50px' }}>
+              {
+               loanDetail?.equipmentRequest?.map(data => {
+                return  <tr style={{ height: '50px' }}>
                 <td style={{ width: '150px' }}>
-                  <TextField text='Equipment' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
+                  <TextField text={data?.name} fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
                 </td>
                 <td style={{ width: '150px' }}>
-                  <TextField text='12' fontSize='14px' textAlign='center' lineHeight='17px' fontFamily='Mont-SemiBold' />
+                  <TextField text={data?.quantity} fontSize='14px' textAlign='center' lineHeight='17px' fontFamily='Mont-SemiBold' />
                 </td>
                 <td style={{ width: '150px' }}>
-                  <TextField text='12H' fontSize='14px' textAlign='right' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-              </tr>
-              <tr style={{ height: '50px' }}>
-                <td style={{ width: '150px' }}>
-                  <TextField text='Equipment' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-                <td style={{ width: '150px' }}>
-                  <TextField text='12' fontSize='14px' textAlign='center' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-                <td style={{ width: '150px' }}>
-                  <TextField text='12H' fontSize='14px' textAlign='right' lineHeight='17px' fontFamily='Mont-SemiBold' />
+                  <TextField text={data?.price} fontSize='14px' textAlign='right' lineHeight='17px' fontFamily='Mont-SemiBold' />
                 </td>
               </tr>
-              <tr style={{ height: '50px' }}>
-                <td style={{ width: '150px' }}>
-                  <TextField text='Equipment' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-                <td style={{ width: '150px' }}>
-                  <TextField text='12' fontSize='14px' textAlign='center' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-                <td style={{ width: '150px' }}>
-                  <TextField text='12H' fontSize='14px' textAlign='right' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-              </tr>
-              <tr style={{ height: '50px' }}>
-                <td style={{ width: '150px' }}>
-                  <TextField text='Equipment' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-                <td style={{ width: '150px' }}>
-                  <TextField text='12' fontSize='14px' textAlign='center' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-                <td style={{ width: '150px' }}>
-                  <TextField text='12H' fontSize='14px' textAlign='right' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-              </tr>
+               })
+              }
+
             </table>
 
             <Hr2 />
             <TextField text='Energy Summary' fontSize='12px' lineHeight='18px' fontFamily='Mont-Bold' />
             <Hr3 />
+            
             <RowBtw style={{ marginTop: '15px' }}>
               <TextField text='Total Watt (Peak Load)' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='1200W' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={`${loanDetail?.sizing?.total_watts}W`} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
             <RowBtw style={{ marginTop: '15px' }}>
               <TextField text='Total Watt Hour / day' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='1200W' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
-
-            </RowBtw>
-            <RowBtw style={{ marginTop: '15px' }}>
-              <TextField text='Kilowat Hours /  month' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='75000KW' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={`${loanDetail?.sizing?.total_watts_per_hour}W`} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
           </Payment>
@@ -398,11 +366,11 @@ background: white;
 `
 
 const ButtonText = styled.button`
-    background: white;
+    background: red;
     width: 100%;
     padding: 10px;
     font-size: 14px;
-    color: black;
+    color: white;
     border: none;
     border-radius: 10px;
     cursor: pointer;

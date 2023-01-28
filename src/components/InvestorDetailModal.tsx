@@ -11,45 +11,42 @@ import TextInput from './TextInput';
 
 
 
-function InvestorDetailModal({ modalOpen, handleCancel }) {
+function InvestorDetailModal({ modalOpen, handleCancel, investorData }) {
     return (
         <Modals title="Investor details" open={modalOpen} onCancel={handleCancel} footer={null}>
             <RowDiv>
                 <Image src={user} alt='' />
                 <Div>
                     <TextField text='Name' color='#424242' fontSize='16px' lineHeight='20px' fontFamily='Mont-Bold' />
-                    <TextField text='Amuyungesin Abba' color='#424242' fontSize='16px' lineHeight='20px' fontFamily='Mont-Bold' />
+                    <TextField text={investorData?.account?.first_name + " " + investorData?.account?.last_name} color='#424242' fontSize='16px' lineHeight='20px' fontFamily='Mont-Bold' />
                     <TextField text='Email' margin='20px 0px 0px 0px' color='#424242' fontSize='16px' lineHeight='20px' fontFamily='Mont-Bold' />
-                    <TextField text='contact@renewablete...' color='#424242' fontSize='16px' lineHeight='20px' fontFamily='Mont-Bold' />
+                    <TextField text={investorData?.account?.email} color='#424242' fontSize='16px' lineHeight='20px' fontFamily='Mont-Bold' />
                 </Div>
             </RowDiv>
 
             <RowStart>
                 <MenuDiv>
                     <TextField text='Total balance' color='#424242' fontFamily='Mont-Regular' fontWeight='700' fontSize='16px' lineHeight='20px' />
-                    <TextField text='N23,000,000' color='#242424' fontFamily='Mont-Bold' fontWeight='700' fontSize='32px' lineHeight='34px' />
+                    <TextField text={`N${investorData?.account?.total_wallet_balance}`} color='#242424' fontFamily='Mont-Bold' fontWeight='700' fontSize='32px' lineHeight='34px' />
                 </MenuDiv>
                 <MenuDiv>
                     <TextField text='No. of plans' color='#424242' fontFamily='Mont-Regular' fontWeight='700' fontSize='16px' lineHeight='20px' />
-                    <TextField text='2' color='#242424' fontFamily='Mont-Bold' fontWeight='700' fontSize='32px' lineHeight='34px' />
+                    <TextField text={investorData?.type} color='#242424' fontFamily='Mont-Bold' fontWeight='700' fontSize='32px' lineHeight='34px' />
                 </MenuDiv>
             </RowStart>
             <hr />
             <TextField text='Plans' margin='0px 0px 10px 0px' color=' #C7C7C7' fontFamily='Mont-SemiBold' fontWeight='400' fontSize='16px' lineHeight='20px' />
-            <RowBtw>
+           {
+            investorData?.plans?.map(data => {
+                return <RowBtw>
                 <TextField text='Golden Goose' color=' #DB846C' fontFamily='Mont-SemiBold' fontWeight='400' fontSize='16px' lineHeight='20px' />
                 <RowDiv>
-                    <TextField text='N2,000,000' color=' #90A3BF' fontFamily='Mont-SemiBold' fontWeight='400' fontSize='16px' lineHeight='20px' />
-                    <TextField text='Feb 9' margin='0px 10px' color=' #90A3BF' fontFamily='Mont-SemiBold' fontWeight='400' fontSize='16px' lineHeight='20px' />
+                    <TextField text={`N${data?.amount}`} color=' #90A3BF' fontFamily='Mont-SemiBold' fontWeight='400' fontSize='16px' lineHeight='20px' />
+                    <TextField text={data?.investment_start_date} margin='0px 10px' color=' #90A3BF' fontFamily='Mont-SemiBold' fontWeight='400' fontSize='16px' lineHeight='20px' />
                 </RowDiv>
             </RowBtw>
-            <RowBtw>
-                <TextField text='Plenty Money' color=' #DB846C' fontFamily='Mont-SemiBold' fontWeight='400' fontSize='16px' lineHeight='20px' />
-                <RowDiv>
-                    <TextField text='N2,000,000' color=' #90A3BF' fontFamily='Mont-SemiBold' fontWeight='400' fontSize='16px' lineHeight='20px' />
-                    <TextField text='Feb 9' margin='0px 10px' color=' #90A3BF' fontFamily='Mont-SemiBold' fontWeight='400' fontSize='16px' lineHeight='20px' />
-                </RowDiv>
-            </RowBtw>
+            })
+           }
             <br/>
             <hr />
             <br/>
@@ -81,11 +78,11 @@ function InvestorDetailModal({ modalOpen, handleCancel }) {
             <RowStart>
                 <MenuDiv>
                     <TextField text='Signup date' color='#242424' font-family='Mont-SemiBold' fontWeight='700' fontSize='16px' lineHeight='20px'/>
-                    <TextField text='2nd Septemeber 2022' color='#242424' font-family='Mont-SemiBold' fontWeight='700' fontSize='10px' lineHeight='20px' />
+                    <TextField text={investorData?.account?.createdAt} color='#242424' font-family='Mont-SemiBold' fontWeight='700' fontSize='10px' lineHeight='20px' />
                 </MenuDiv>
                 <MenuDiv>
                 <TextField text='Last seen' font-family='Mont-SemiBold' fontWeight='700' fontSize='16px' lineHeight='20px' />
-                    <TextField text='2nd July 2022' color='#242424' font-family='Mont-SemiBold' fontWeight='700' fontSize='10px' lineHeight='20px' />
+                    <TextField text={investorData?.account?.last_login} color='#242424' font-family='Mont-SemiBold' fontWeight='700' fontSize='10px' lineHeight='20px' />
                     </MenuDiv>
             </RowStart>
         </Modals>

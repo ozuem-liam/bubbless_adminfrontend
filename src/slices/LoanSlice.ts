@@ -97,7 +97,7 @@ export const getUserLoanDetail = createAsyncThunk(
 export const getDueLoans = createAsyncThunk(
     'loan/getDueLoans',
     async (payload: string) => {
-        const response = await getRequest(`/admin-action/get-loans-info?status=${payload}`) as any
+        const response = await getRequest(`/admin-action/loans/get-loans-info?status=${payload}`) as any
         if (response?.status === 200) {
             return response?.data
         }

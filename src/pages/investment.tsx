@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import Layouts from '../components/Layout'
 import TextField from '../components/TextField'
@@ -9,6 +9,8 @@ import type { ColumnsType, TableProps } from 'antd/es/table';
 import Image from "next/image"
 import { placeholder } from '../assets'
 import InvestorDetailModal from '../components/InvestorDetailModal'
+import { useAppDispatch } from '../app/hook'
+import { getInvestorStat } from '../slices/InvestmentSlice'
 
 
 interface DataType {
@@ -23,10 +25,21 @@ interface DataType {
 function Investment() {
   const router = useRouter()
   const [detailOpen, setDetailOpen] = useState(false);
+  const [investorData, setInvestorData] = useState(null);
+  const dispatch = useAppDispatch()
+ const [investments, setInvestments] = useState(null)
 
+  useEffect(() => {
+    dispatch(getInvestorStat()).then(data => setInvestments(data?.payload?.data))
+  }, [])
 
+  const handleDetailOpen = (data) => {
+    setDetailOpen(true)
+    setInvestorData(data)
+  }
   const handleDetailClose = () => {
     setDetailOpen(false)
+    setInvestorData(null)
   }
 
 
@@ -35,9 +48,8 @@ function Investment() {
       title: 'Name',
       dataIndex: 'name',
       render: (value, rowIndex) => {
-        var id = rowIndex?.key as number
         return (
-          <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => setDetailOpen(true)}>
+          <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => handleDetailOpen(rowIndex)}>
           <Image src={placeholder} alt='' />
           <div style={{marginLeft: '10px'}}>
            <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
@@ -46,18 +58,18 @@ function Investment() {
        </div>
         );
       },
-      width: '30%',
+      width: '40%',
       responsive: ['lg'],
     },
     {
-      title: 'Type',
+      title: 'No of Plan',
       dataIndex: 'type',
       render: (value) => {
         return (
           <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
-      width: '30%',
+      width: '20%',
       responsive: ['lg'],
     },
     {
@@ -84,32 +96,17 @@ function Investment() {
     },
   ];
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'Cole Benson',
-      type: "Plan 1",
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      
-    },
-    {
-      key: '2',
-      name: 'Cole Benson',
-      type: "Plan 2",
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      
-    },
-    {
-      key: '3',
-      name: 'Cole Benson',
-      type: "Plan 3",
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      
-    },
-  ];
+  const data = investments?.results?.map(data => {
+    return {
+      key: data?.account?._id,
+      name: data?.account?.first_name + " " + data?.account?.last_name,
+      type: data?.plans?.length,
+      amount: data?.account?.total_wallet_balance,
+      date: data?.account?.createdAt,
+      ...data
+    }
+  })
+  
 
   const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
@@ -130,19 +127,19 @@ function Investment() {
       <RowBtw style={{ background: 'white', padding: '30px 48px' }}>
         <div>
           <TextField text='Total Investment' textAlign='center' color='#424242' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-          <TextField text='N22,000,000' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+          <TextField text={`N${investments?.stats?.totalInvestment}`} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
         </div>
         <div>
           <TextField text='Registerd Investors' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-          <TextField text='200' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+          <TextField text={investments?.stats?.registeredInvestors} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
         </div>
         <div>
           <TextField text='Active Investors' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-          <TextField text='200' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+          <TextField text={investments?.stats?.activeInvestors} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
         </div>
         <div>
           <TextField text='Interest Accrued' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-          <TextField text='N5,000,000' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+          <TextField text={`N${investments?.stats?.interestAccrued}`} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
         </div>
       </RowBtw>
       <ComponentDiv>
@@ -253,12 +250,12 @@ function Investment() {
                 <TextField text='View All ' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
               </div>
               </RowBtw>
-              <Table columns={columns} dataSource={data} onChange={onChange} />
+           
             </InvestmentCardFour>
           </Col>
         </Row>
 
-        <InvestorDetailModal modalOpen={detailOpen}  handleCancel={handleDetailClose} />
+        <InvestorDetailModal modalOpen={detailOpen}  handleCancel={handleDetailClose} investorData={investorData} />
       </ComponentDiv>
     </Layouts>
   )

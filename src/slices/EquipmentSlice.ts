@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { deleteRequest, getRequest, postRequest, updateRequest } from "../utils/server";
+import { deleteRequest, getRequest, patchRequest, postRequest, updateRequest } from "../utils/server";
 
 
 
@@ -64,6 +64,27 @@ export const updateEquipment = createAsyncThunk(
         description: payload.description
       }
       const response = await updateRequest(`/equipment/update/${payload?.id}`, data)
+      if (response?.status === 200) {
+        return response?.data
+      }
+
+    }
+    catch (e) {
+      return rejectWithValue(e?.response?.data?.message)
+    }
+
+  }
+)
+
+export const updateRequestStatus = createAsyncThunk(
+  'equipment/updateRequestStatus',
+  async (payload: {id: string, status: string}, { rejectWithValue }) => {
+    try {
+      const data = {
+        status: payload?.status
+      }
+
+      const response = await patchRequest(`/admin-action/approve-equipment-request/${payload?.id}`, data) as any
       if (response?.status === 200) {
         return response?.data
       }
@@ -173,6 +194,15 @@ export const EquipmentSlice = createSlice({
           state.loading = false
         })
       builder.addCase(deleteEquipment.rejected, (state, action) => {
+        state.error = action.error.message
+      })
+      builder.addCase(updateRequestStatus.pending, (state, action) => {
+        state.loading = true
+      }),
+        builder.addCase(updateRequestStatus.fulfilled, (state, action) => {
+          state.loading = false
+        })
+      builder.addCase(updateRequestStatus.rejected, (state, action) => {
         state.error = action.error.message
       })
    

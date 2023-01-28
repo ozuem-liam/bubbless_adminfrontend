@@ -46,6 +46,17 @@ export const getInvestorCosting = createAsyncThunk(
   }
 )
 
+export const getInvestorStat = createAsyncThunk(
+    'investor/getInvestorStat',
+    async () => {
+        const response = await getRequest(`/admin-action/investor/stats`) as any
+        if (response?.status === 200) {
+            return response?.data
+        }
+  
+    }
+  )
+
 export const InvestorSlice = createSlice({
   name: 'investor',
   initialState,
@@ -78,6 +89,15 @@ export const InvestorSlice = createSlice({
   builder.addCase(createInvestorCosting.rejected, (state, action) => {
       state.error = action.error.message
   })
+  builder.addCase(getInvestorStat.pending, (state, action) => {
+    state.loading = true
+}),
+    builder.addCase(getInvestorStat.fulfilled, (state, action) => {
+        state.loading = false
+    })
+builder.addCase(getInvestorStat.rejected, (state, action) => {
+    state.error = action.error.message
+})
   }
 })
 

@@ -13,7 +13,12 @@ import AddEquipmentModal from '../components/AddEquipmentModal'
 import AddEquipmentApplianceModal from '../components/AddEquipmentApplianceModal'
 import EquipmentDetail from '../components/EquipmentDetail'
 import { useAppDispatch } from '../app/hook'
-import { getEquipmentRequest } from '../slices/EquipmentSlice'
+import { getEquipmentRequest, updateRequestStatus } from '../slices/EquipmentSlice'
+import { EllipsisOutlined } from "@ant-design/icons"
+import { Dropdown, Space, Menu } from 'antd';
+import { trash } from '../assets'
+import { toast, ToastContainer } from 'react-toastify'
+
 
 
 interface DataType {
@@ -61,6 +66,60 @@ function Request() {
     setDetailInfo(data)
   }
 
+  const upateRequestStatus = async (data, status) => {
+    const payload = {
+      id: data?.key,
+      status: status,
+    }
+    try {
+      var response = await dispatch(updateRequestStatus(payload))
+      if(updateRequestStatus.fulfilled.match(response)){
+        dispatch(getEquipmentRequest("Requested")).then(oo => setRequested(oo?.payload?.data))
+        dispatch(getEquipmentRequest("Procured")).then(oo => setProcured(oo?.payload?.data))
+        dispatch(getEquipmentRequest("Delivered")).then(oo => setDelivered(oo?.payload?.data))
+        toast.success("Update successfull")
+      }
+      else {
+        var errMsg = response?.payload as string
+        toast.error(errMsg)
+      }
+    }
+    catch(e) {
+      console.log({e})
+    }
+  }
+
+  const menu = (data) => (
+    <Menu
+      items={[
+        {
+          key: '2',
+          label: (
+            <Menudiv onClick={() => upateRequestStatus(data, "Procured")}>
+              <TextField text='Update Status' margin='0px 5px' fontSize='12px' />
+            </Menudiv>
+          )
+        }
+      ]}
+    />
+  );
+
+  const menu1 = (data) => (
+    <Menu
+      items={[
+        {
+          key: '2',
+          label: (
+            <Menudiv onClick={() => upateRequestStatus(data, "Delivered")}>
+              <TextField text='Update Status' margin='0px 5px' fontSize='12px' />
+            </Menudiv>
+          )
+        }
+      ]}
+    />
+  );
+
+
   const columns: ColumnsType<DataType> = [
     {
       title: 'Name',
@@ -73,7 +132,7 @@ function Request() {
           </div>
         );
       },
-      width: '30%',
+      width: '20%',
     },
     {
       title: 'Supplier',
@@ -83,7 +142,147 @@ function Request() {
           <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
-      width: '30%',
+      width: '20%',
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Price',
+      dataIndex: 'price',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+        title: 'Status',
+        dataIndex: 'status',
+        render: (value) => {
+          return (
+            <Colored style={{ background: value === "Request" ? "#E0E9F4" : value === "Procured" ? "#E0E9F4": value === "Delivered" ? "#AED6C3" : "", borderRadius: "23px",width: '100px', padding: '10px' }}>
+              <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
+            </Colored>
+          );
+        }
+    },
+        {
+      title: 'Action',
+      dataIndex: '',
+      render: (value) => {
+        return (
+          <Dropdown overlay={menu(value)}>
+            <EllipsisOutlined />
+          </Dropdown>
+
+        );
+      },
+      width: '20%',
+    }
+  ];
+
+  const columns1: ColumnsType<DataType> = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      render: (value, rowIndex) => {
+        var id = rowIndex?.key as number
+        return (
+          <div>
+            <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          </div>
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Supplier',
+      dataIndex: 'supplier',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Price',
+      dataIndex: 'price',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+        title: 'Status',
+        dataIndex: 'status',
+        render: (value) => {
+          return (
+            <Colored style={{ background: value === "Request" ? "#E0E9F4" : value === "Procured" ? "#E0E9F4": value === "Delivered" ? "#AED6C3" : "", borderRadius: "23px",width: '100px', padding: '10px' }}>
+              <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
+            </Colored>
+          );
+        }
+    },
+        {
+      title: 'Action',
+      dataIndex: '',
+      render: (value) => {
+        return (
+          <Dropdown overlay={menu1(value)}>
+            <EllipsisOutlined />
+          </Dropdown>
+
+        );
+      },
+      width: '20%',
+    }
+  ];
+
+  const columns2: ColumnsType<DataType> = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      render: (value, rowIndex) => {
+        var id = rowIndex?.key as number
+        return (
+          <div>
+            <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          </div>
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Supplier',
+      dataIndex: 'supplier',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
     },
     {
       title: 'Type',
@@ -123,7 +322,6 @@ function Request() {
   const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
   };
-
 
 
   const data = filterRequest?.map(data => {
@@ -191,15 +389,17 @@ function Request() {
          }
 
 {
-          type === "procured" &&  <Table columns={columns} dataSource={data2} onChange={onChange} />
+          type === "procured" &&  <Table columns={columns1} dataSource={data2} onChange={onChange} />
          }
          {
-          type === "delivered" &&  <Table columns={columns} dataSource={data3} onChange={onChange} />
+          type === "delivered" &&  <Table columns={columns2} dataSource={data3} onChange={onChange} />
          }
         </Card>
 
         <EquipmentDetail  modalOpen={detailOpen} handleCancel={() => handleDetailClose()} info={detatilInfo}  />
       </ComponentDiv>
+
+      <ToastContainer />
     </Layouts>
   )
 }
@@ -272,4 +472,9 @@ const RowStart = styled.div`
 
 const Colored = styled.div`
 
+`
+
+const Menudiv = styled.div`
+  display: flex;
+  align-items: center;
 `

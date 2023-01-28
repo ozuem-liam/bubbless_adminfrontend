@@ -45,12 +45,12 @@ function Installer() {
 
   const handleInstallerClose = () => {
     setInstallerOpen(false)
-    dispatch(getInstaller()).then(data => setInstaller(data?.payload?.data?.accounts))
+    dispatch(getInstaller()).then(data => setInstaller(data?.payload?.data?.result))
   }
 
 
   useEffect(() => {
-    dispatch(getInstaller()).then(data => setInstaller(data?.payload?.data?.accounts))
+    dispatch(getInstaller()).then(data => setInstaller(data?.payload?.data?.result))
   }, [])
 
 
@@ -69,7 +69,7 @@ function Installer() {
 
 
 
-  const columns: ColumnsType<DataType> = [
+  const columns = [
     {
       title: 'Name',
       dataIndex: 'name',
@@ -77,7 +77,12 @@ function Installer() {
         var id = rowIndex?.key as number
         return (
           <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => router.push(`/installer-detail/${id}`)}>
-             <Image src={placeholder} alt='' />
+             {
+              rowIndex?.image?.length < 1 ?
+              <Image src={placeholder} alt=''  />
+              :  <img src={rowIndex?.image} alt='' width={40} height={40} style={{borderRadius: "50%"}} />
+             }
+            
              <div style={{marginLeft: '10px'}}>
               <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
               <TextField text={rowIndex?.email} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' margin='-5px 0px 0px 0px' color='#90A3BF' />
@@ -86,7 +91,7 @@ function Installer() {
           </div>
         );
       },
-      width: '30%',
+      width: '40%',
     },
     {
       title: 'Consumer',
@@ -96,7 +101,7 @@ function Installer() {
           <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
-      width: '30%',
+      width: '20%',
     },
     {
       title: 'Site',
@@ -108,16 +113,16 @@ function Installer() {
       },
       width: '20%',
     },
-    {
-      title: 'Equipment',
-      dataIndex: 'equipment',
-      render: (value) => {
-        return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
-        );
-      },
-      width: '20%',
-    },
+    // {
+    //   title: 'Equipment',
+    //   dataIndex: 'equipment',
+    //   render: (value) => {
+    //     return (
+    //       <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+    //     );
+    //   },
+    //   width: '20%',
+    // },
     {
       title: 'Status',
       dataIndex: 'status',
@@ -130,18 +135,18 @@ function Installer() {
       },
       width: '20%',
     },
-    {
-      title: '',
-      dataIndex: '',
-      render: (value) => {
-        return (
-          <Dropdown overlay={menu(value)}>
-          <EllipsisOutlined />
-        </Dropdown>
-        );
-      },
-      width: '20%',
-    }
+    // {
+    //   title: '',
+    //   dataIndex: '',
+    //   render: (value) => {
+    //     return (
+    //       <Dropdown overlay={menu(value)}>
+    //       <EllipsisOutlined />
+    //     </Dropdown>
+    //     );
+    //   },
+    //   width: '20%',
+    // }
   ];
 
 
@@ -151,17 +156,17 @@ function Installer() {
   };
 
 
-  const filterInstaller = installer?.filter(data => data?.first_name.toLowerCase().includes(search.toLowerCase()) || data?.last_name.toLowerCase().includes(search.toLowerCase())) 
+  const filterInstaller = installer?.filter(data => data?.account.first_name.toLowerCase().includes(search.toLowerCase()) || data?.account?.last_name.toLowerCase().includes(search.toLowerCase())) 
 
   const data = filterInstaller?.map(dd => {
     return  {
-      key: dd?._id,
-      name: dd?.last_name + " " + dd?.first_name,
-      email: dd?.email,
-      consumer: 2,
-      site: 4,
-      equipment: 10,
-      status: dd?.status,
+      key: dd?.account?._id,
+      image: dd?.account?.company_logo,
+      name: dd?.account?.last_name + " " + dd?.account?.first_name,
+      email: dd?.account?.email,
+      consumer: dd?.customers?.length,
+      site: dd?.sitings?.length,
+      status: dd?.account?.status,
       ...dd
     }
   })

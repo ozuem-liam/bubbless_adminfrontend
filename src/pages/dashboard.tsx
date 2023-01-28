@@ -20,11 +20,14 @@ function Dashboard() {
   const router = useRouter()
   const dispatch = useAppDispatch()
   const [dashboard, setDashboard] = useState(null)
+  const [dueLoans, setDueLoans] = useState([])
+  const [lateLoans, setLateLoans] = useState([])
+  const [loanType, setLoanType] = useState("due")
 
   useEffect(() => {
     dispatch(getStatForDashboard()).then(dd => setDashboard(dd?.payload?.data))
-    dispatch(getDueLoans("pending")).then(cc => console.log({cc}))
-    // dispatch(getStat()).then(dds => console.log({dds}))
+    dispatch(getDueLoans("due")).then(cc => setDueLoans(cc?.payload?.data))
+    dispatch(getDueLoans("late")).then(cc => setLateLoans(cc?.payload?.data))
   }, [])
 
 
@@ -123,56 +126,46 @@ function Dashboard() {
             </Col>
             <Col span={12} >
               <Card2>
-                <div style={{ cursor: 'pointer' }} onClick={() => router.push('/loan-activities')}>
+                <div>
                   <TextField text='Loan activities' fontWeight='bold' fontSize={'16px'} lineHeight='34px' />
                 </div>
 
                 <View2>
-                  <TextField text='Due' fontWeight='bold' fontSize={'14px'} lineHeight='34px' />
-                  <TextField text='Overdue' margin='0px 10px' fontSize={'14px'} color={"#C7C7C7"} lineHeight='34px' />
+                 <div onClick={() => setLoanType("due")}>
+                 <TextField text='Due' fontWeight='bold' color={loanType === "due" ? "blue" : "#C7C7C7"} fontSize={'14px'} lineHeight='34px' />
+                 </div>
+                 <div onClick={() => setLoanType("late")}>
+                 <TextField text='Overdue' margin='0px 10px' fontSize={'14px'} color={loanType === "late" ? "blue" : "#C7C7C7"} lineHeight='34px' />
+                  </div>
                 </View2>
-                <View3>
-                  <Div>
-                    <TextField text='Lorem ipsum' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                    <TextField text='Due on the 18th Aug, 2022' fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
-                  </Div>
-                  <TextField text='N145,00.00' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                </View3>
-                <View3>
-                  <Div>
-                    <TextField text='Lorem ipsum' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                    <TextField text='Due on the 18th Aug, 2022' fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
-                  </Div>
-                  <TextField text='N145,00.00' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                </View3>
-                <View3>
-                  <Div>
-                    <TextField text='Lorem ipsum' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                    <TextField text='Due on the 18th Aug, 2022' fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
-                  </Div>
-                  <TextField text='N145,00.00' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                </View3>
-                <View3>
-                  <Div>
-                    <TextField text='Lorem ipsum' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                    <TextField text='Due on the 18th Aug, 2022' fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
-                  </Div>
-                  <TextField text='N145,00.00' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                </View3>
-                <View3>
-                  <Div>
-                    <TextField text='Lorem ipsum' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                    <TextField text='Due on the 18th Aug, 2022' fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
-                  </Div>
-                  <TextField text='N145,00.00' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                </View3>
-                <View3>
-                  <Div>
-                    <TextField text='Lorem ipsum' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                    <TextField text='Due on the 18th Aug, 2022' fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
-                  </Div>
-                  <TextField text='N145,00.00' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                </View3>
+                {
+                  loanType === "due" && dueLoans?.map(data => {
+                    return (
+                      <View3>
+                      <Div>
+                        <TextField text={data?.customer_name} fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
+                        <TextField text={data?.data?.due_date} fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
+                      </Div>
+                      <TextField text={`N${data?.data?.monthly_payout}`} fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
+                    </View3>
+                    )
+                  })
+                }
+
+{
+                  loanType === "late" && lateLoans?.map(data => {
+                    return (
+                      <View3>
+                      <Div>
+                        <TextField text={data?.customer_name} fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
+                        <TextField text={data?.data?.due_date} fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
+                      </Div>
+                      <TextField text={`N${data?.data?.monthly_payout}`} fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
+                    </View3>
+                    )
+                  })
+                }
+  
               </Card2>
             </Col>
           </Row>
