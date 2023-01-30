@@ -62,7 +62,7 @@ function AddEquipmentModal({ modalOpen, handleCancel, handleFormSubmit, loader, 
         <TextInput label={'Equipment type'} value={values?.equipment_type} onChange={handleChange('equipment_type')} errorMsg={touched.equipment_type ? errors.equipment_type : undefined} />
         <TextInput label={'Name'} value={values?.name} onChange={handleChange('name')} errorMsg={touched.name ? errors.name : undefined} />
         <TextInput label={'Brand'} value={values?.brand} onChange={handleChange('brand')} errorMsg={touched.brand ? errors.brand : undefined} />
-        <TextInput label={'Price'} value={values?.price.toString()} onChange={handleChange('price')} errorMsg={touched.price ? errors.price : undefined} />
+        <TextInput label={'Price'} value={values?.price.toString()} number onChange={handleChange('price')} errorMsg={touched.price ? errors.price : undefined} />
         <RowDiv>
           {
             loading ? <LoadingOutlined /> : <TextField fontFamily='Mont-SemiBold' text={file ? file?.fileUrl : "Upload a file"} fontWeight='bold' />

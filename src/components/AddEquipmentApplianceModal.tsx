@@ -15,9 +15,8 @@ function AddEquipmentApplianceModal({ modalOpen, handleCancel, handleFormSubmit,
 
   const initialValues: { name: string, watts: number } = {
     name: edit ? edit?.type : '',
-    watts: edit ? edit?.vottage.replace(/N/g, '') : 0
+    watts: edit ? edit?.vottage : 0
   }
-
 
 
 
@@ -35,7 +34,7 @@ function AddEquipmentApplianceModal({ modalOpen, handleCancel, handleFormSubmit,
     <Modals title={edit ? "Update Appliance" : "Add Applaince"} open={modalOpen} onCancel={handleCancel} footer={null}>
       <Div>
         <TextInput label={'Appliance type'} value={values?.name} onChange={handleChange('name')} errorMsg={touched.name ? errors.name : undefined} />
-        <TextInput label={'Watt'} value={values?.watts?.toString()} onChange={handleChange('watts')} errorMsg={touched.watts ? errors.watts : undefined} />
+        <TextInput label={'Watt'} value={values?.watts?.toString()} number onChange={handleChange('watts')} errorMsg={touched.watts ? errors.watts : undefined} />
         <br />
         <br />
         <Button isLoading={loader} children={edit ? 'Update' : 'Add'} handlePress={handleSubmit} />

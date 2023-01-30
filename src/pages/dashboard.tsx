@@ -12,7 +12,8 @@ import { useAppDispatch } from '../app/hook'
 import { getProfile } from '../slices/AuthSlice'
 import { getStat, getStatForDashboard } from '../slices/DashboardSlice'
 import { getDueLoans } from '../slices/LoanSlice'
-
+import CurrencyFormat from 'react-currency-format';
+import moment from 'moment'
 
 
 
@@ -43,7 +44,8 @@ function Dashboard() {
               <Card>
                 <Image src={wallet} width={30} height={30} alt='' />
                 <TextField text='Approved Loans' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
-                <TextField text={dashboard?.stats?.total_approved_loans_volume} fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
+                <CurrencyFormat value={dashboard?.stats?.total_approved_loans_volume} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'32px'} lineHeight='34px' />} />
+           
               </Card>
             </Col>
             {/* <Col span={6} >
@@ -57,6 +59,7 @@ function Dashboard() {
               <Card>
                 <Image src={bag} width={30} height={30} alt='' />
                 <TextField text='Loans Disbursed' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
+               
                 <TextField text={dashboard?.stats?.total_loans_disbursed ? dashboard?.stats?.total_loans_disbursed : 0} fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
               </Card>
             </Col>
@@ -131,10 +134,10 @@ function Dashboard() {
                 </div>
 
                 <View2>
-                 <div onClick={() => setLoanType("due")}>
+                 <div style={{cursor: "pointer"}} onClick={() => setLoanType("due")}>
                  <TextField text='Due' fontWeight='bold' color={loanType === "due" ? "blue" : "#C7C7C7"} fontSize={'14px'} lineHeight='34px' />
                  </div>
-                 <div onClick={() => setLoanType("late")}>
+                 <div style={{cursor: "pointer"}} onClick={() => setLoanType("late")}>
                  <TextField text='Overdue' margin='0px 10px' fontSize={'14px'} color={loanType === "late" ? "blue" : "#C7C7C7"} lineHeight='34px' />
                   </div>
                 </View2>
@@ -144,9 +147,10 @@ function Dashboard() {
                       <View3>
                       <Div>
                         <TextField text={data?.customer_name} fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                        <TextField text={data?.data?.due_date} fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
+                        <TextField text={moment(data?.data?.due_date).format("MMM Do YY")} fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
                       </Div>
-                      <TextField text={`N${data?.data?.monthly_payout}`} fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
+                      <CurrencyFormat value={data?.data?.monthly_payout} displayType={'text'} thousandSeparator={true} prefix={'₦'} />
+            
                     </View3>
                     )
                   })
@@ -158,9 +162,10 @@ function Dashboard() {
                       <View3>
                       <Div>
                         <TextField text={data?.customer_name} fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                        <TextField text={data?.data?.due_date} fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
+                        <TextField text={moment(data?.data?.due_date).format("MMM Do YY")} fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
                       </Div>
-                      <TextField text={`N${data?.data?.monthly_payout}`} fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
+                      <CurrencyFormat value={data?.data?.monthly_payout} displayType={'text'} thousandSeparator={true} prefix={'₦'} />
+            
                     </View3>
                     )
                   })

@@ -6,7 +6,8 @@ import { received, send, user } from '../assets';
 import Button from './Button';
 import TextField from './TextField';
 import TextInput from './TextInput';
-
+import CurrencyFormat from "react-currency-format"
+import moment from 'moment';
 
 
 
@@ -27,7 +28,9 @@ function InvestorDetailModal({ modalOpen, handleCancel, investorData }) {
             <RowStart>
                 <MenuDiv>
                     <TextField text='Total balance' color='#424242' fontFamily='Mont-Regular' fontWeight='700' fontSize='16px' lineHeight='20px' />
-                    <TextField text={`N${investorData?.account?.total_wallet_balance}`} color='#242424' fontFamily='Mont-Bold' fontWeight='700' fontSize='32px' lineHeight='34px' />
+                  
+                    <CurrencyFormat value={investorData?.account?.total_wallet_balance} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-Bold' fontSize={'32px'} lineHeight='34px' />} />
+         
                 </MenuDiv>
                 <MenuDiv>
                     <TextField text='No. of plans' color='#424242' fontFamily='Mont-Regular' fontWeight='700' fontSize='16px' lineHeight='20px' />
@@ -41,8 +44,9 @@ function InvestorDetailModal({ modalOpen, handleCancel, investorData }) {
                 return <RowBtw>
                 <TextField text='Golden Goose' color=' #DB846C' fontFamily='Mont-SemiBold' fontWeight='400' fontSize='16px' lineHeight='20px' />
                 <RowDiv>
-                    <TextField text={`N${data?.amount}`} color=' #90A3BF' fontFamily='Mont-SemiBold' fontWeight='400' fontSize='16px' lineHeight='20px' />
-                    <TextField text={data?.investment_start_date} margin='0px 10px' color=' #90A3BF' fontFamily='Mont-SemiBold' fontWeight='400' fontSize='16px' lineHeight='20px' />
+                    <CurrencyFormat value={data?.amount} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-SemiBold' color=' #90A3BF' fontSize={'16px'} lineHeight='20px' />} />
+         
+                    <TextField text={moment(data?.investment_start_date).format("MMM Do YY")} margin='0px 10px' color=' #90A3BF' fontFamily='Mont-SemiBold' fontWeight='400' fontSize='16px' lineHeight='20px' />
                 </RowDiv>
             </RowBtw>
             })
@@ -78,11 +82,11 @@ function InvestorDetailModal({ modalOpen, handleCancel, investorData }) {
             <RowStart>
                 <MenuDiv>
                     <TextField text='Signup date' color='#242424' font-family='Mont-SemiBold' fontWeight='700' fontSize='16px' lineHeight='20px'/>
-                    <TextField text={investorData?.account?.createdAt} color='#242424' font-family='Mont-SemiBold' fontWeight='700' fontSize='10px' lineHeight='20px' />
+                    <TextField text={moment(investorData?.account?.createdAt).format("MMM Do YY")} color='#242424' font-family='Mont-SemiBold' fontWeight='700' fontSize='10px' lineHeight='20px' />
                 </MenuDiv>
                 <MenuDiv>
                 <TextField text='Last seen' font-family='Mont-SemiBold' fontWeight='700' fontSize='16px' lineHeight='20px' />
-                    <TextField text={investorData?.account?.last_login} color='#242424' font-family='Mont-SemiBold' fontWeight='700' fontSize='10px' lineHeight='20px' />
+                    <TextField text={moment(investorData?.account?.last_login).format("MMM Do YY")} color='#242424' font-family='Mont-SemiBold' fontWeight='700' fontSize='10px' lineHeight='20px' />
                     </MenuDiv>
             </RowStart>
         </Modals>

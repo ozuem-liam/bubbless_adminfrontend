@@ -9,7 +9,7 @@ import { Row, Col, Table } from 'antd';
 import { getInstaller } from '../../slices/InstallerSlice';
 import { useRouter } from 'next/router';
 import { useAppDispatch } from '../../app/hook';
-
+import CurrencyFormat from "react-currency-format"
 
 function InstallerDetail() {
     const [installerOpen, setInstallerOpen] = useState(false);
@@ -63,7 +63,7 @@ function InstallerDetail() {
       title: 'Total',
       dataIndex: 'total',
       render: (value) => {
-        return <TextField textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
+        return <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} textTransform='capitalize' fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />} />
       },
       width: '20%',
     },

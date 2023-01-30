@@ -18,7 +18,7 @@ import { EllipsisOutlined } from "@ant-design/icons"
 import { Dropdown, Space } from 'antd';
 import { createInstallerCosting, deleteInstallerCosting, getInstallerCosting } from '../slices/InstallerSlice'
 import { createInvestorCosting, getInvestorCosting } from '../slices/InvestmentSlice'
-
+import CurrencyFormat from "react-currency-format"
 
 
 interface DataType {
@@ -185,7 +185,8 @@ function Configuration() {
       dataIndex: 'min_value',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
         );
       },
       width: '20%',
@@ -195,7 +196,8 @@ function Configuration() {
       dataIndex: 'max_value',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+        
         );
       },
       width: '20%',
@@ -267,7 +269,8 @@ function Configuration() {
       dataIndex: 'min_value',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
         );
       },
       width: '20%',
@@ -277,7 +280,8 @@ function Configuration() {
       dataIndex: 'max_value',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
         );
       },
       width: '20%',
@@ -314,7 +318,8 @@ function Configuration() {
       dataIndex: 'value',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
         );
       },
       width: '20%',

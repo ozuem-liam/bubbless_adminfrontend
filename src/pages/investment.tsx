@@ -11,7 +11,8 @@ import { placeholder } from '../assets'
 import InvestorDetailModal from '../components/InvestorDetailModal'
 import { useAppDispatch } from '../app/hook'
 import { getInvestorStat } from '../slices/InvestmentSlice'
-
+import CurrencyFormat from "react-currency-format"
+import moment from 'moment'
 
 interface DataType {
   key: React.Key;
@@ -77,7 +78,7 @@ function Investment() {
       dataIndex: 'amount',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
         );
       },
       width: '20%',
@@ -88,7 +89,7 @@ function Investment() {
       dataIndex: 'date',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <TextField text={moment(value).format("MMM Do YY")} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
       width: '20%',
@@ -127,11 +128,13 @@ function Investment() {
       <RowBtw style={{ background: 'white', padding: '30px 48px' }}>
         <div>
           <TextField text='Total Investment' textAlign='center' color='#424242' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-          <TextField text={`N${investments?.stats?.totalInvestment}`} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+          <CurrencyFormat value={investments?.stats?.totalInvestment} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-Bold' fontWeight='bold' fontSize={'22px'} lineHeight='34px' />} />
+         
         </div>
         <div>
           <TextField text='Registerd Investors' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
           <TextField text={investments?.stats?.registeredInvestors} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+       
         </div>
         <div>
           <TextField text='Active Investors' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
@@ -139,7 +142,8 @@ function Investment() {
         </div>
         <div>
           <TextField text='Interest Accrued' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-          <TextField text={`N${investments?.stats?.interestAccrued}`} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+          <CurrencyFormat value={investments?.stats?.interestAccrued} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-Bold' fontWeight='bold' fontSize={'22px'} lineHeight='34px' />} />
+         
         </div>
       </RowBtw>
       <ComponentDiv>

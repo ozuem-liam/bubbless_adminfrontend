@@ -13,7 +13,7 @@ import { useRouter } from 'next/router'
 import { useAppDispatch } from '../../app/hook'
 import { getLoan, getUserLoanDetail, updateLoanStatus } from '../../slices/LoanSlice'
 import { toast } from 'react-toastify'
-
+import CurrencyFormat from "react-currency-format"
 
 
 
@@ -75,12 +75,14 @@ function loanDetails() {
           <Contain>
             <div>
               <TextField text='Loan Amount' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-              <TextField text={loanDetail?.loan?.loan_amount} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+              <CurrencyFormat value={loanDetail?.loan?.loan_amount} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'22px'} lineHeight='34px' />} />
+           
             </div>
             <EmptyContain></EmptyContain>
             <div>
               <TextField text='Loan Amount' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-              <TextField text={loanDetail?.loan?.loan_amount} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+              <CurrencyFormat value={loanDetail?.loan?.loan_amount} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'22px'} lineHeight='34px' />} />
+           
             </div>
           </Contain>
           <RowContain>
@@ -176,8 +178,10 @@ function loanDetails() {
                 </div>
               </RowStart>
               <div>
-                <TextField text={`N${loanDetail?.loan?.loan_amount / loanDetail?.loan?.payment_plan?.length}/month`} fontSize='20px' lineHeight='21px' fontFamily='Mont-Bold' />
-                <TextField text={`Total: ${loanDetail?.loan?.loan_amount}`} fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' margin='5px 0px 0px 0px' />
+                <CurrencyFormat value={loanDetail?.loan?.loan_amount / loanDetail?.loan?.payment_plan?.length} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value} months`} fontFamily='Mont-SemiBold' fontSize={'20px'} lineHeight='21px' />} />
+           
+                <CurrencyFormat value={loanDetail?.loan?.loan_amount} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`Total ${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='17px' />} />
+           
               </div>
             </RowBtw>
           </Payment>
@@ -190,9 +194,13 @@ function loanDetails() {
                 loanDetail?.loan?.payment_plan?.map((data, i) => {
                   return (
                     <RowBtw style={{ marginTop: '15px' }}>
+                       <div style={{width: "100px"}}>
                     <TextField text={`Month ${i + 1}`} fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                    <TextField text={data?.monthly_payout} fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
+                       </div>
+                    <CurrencyFormat value={data?.monthly_payout} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='17px' />} />
+                    <div style={{width: "100px"}}>
                     <TextField text={data?.payment_status} fontSize='14px' textTransform='capitalize' lineHeight='17px' fontFamily='Mont-SemiBold' />
+                  </div>
                   </RowBtw>
                   )
                 })
@@ -228,7 +236,7 @@ function loanDetails() {
                   <TextField text={data?.quantity} fontSize='14px' textAlign='center' lineHeight='17px' fontFamily='Mont-SemiBold' />
                 </td>
                 <td style={{ width: '150px' }}>
-                  <TextField text={data?.price} fontSize='14px' textAlign='right' lineHeight='17px' fontFamily='Mont-SemiBold' />
+                  <CurrencyFormat value={data?.price} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} textAlign='right' fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='17px' />} />
                 </td>
               </tr>
                })
@@ -242,12 +250,13 @@ function loanDetails() {
             
             <RowBtw style={{ marginTop: '15px' }}>
               <TextField text='Total Watt (Peak Load)' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text={`${loanDetail?.sizing?.total_watts}W`} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
-
+              <CurrencyFormat value={loanDetail?.sizing?.total_watts} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}W`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
             </RowBtw>
             <RowBtw style={{ marginTop: '15px' }}>
               <TextField text='Total Watt Hour / day' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text={`${loanDetail?.sizing?.total_watts_per_hour}W`} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <CurrencyFormat value={loanDetail?.sizing?.total_watts_per_hour} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}W`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
 
             </RowBtw>
           </Payment>

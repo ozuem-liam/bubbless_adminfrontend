@@ -18,7 +18,7 @@ import { EllipsisOutlined } from "@ant-design/icons"
 import { Dropdown, Space, Menu } from 'antd';
 import { trash } from '../assets'
 import { toast, ToastContainer } from 'react-toastify'
-
+import CurrencyFormat from "react-currency-format"
 
 
 interface DataType {
@@ -159,7 +159,8 @@ function Request() {
       dataIndex: 'price',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
         );
       },
       width: '20%',
@@ -229,7 +230,8 @@ function Request() {
       dataIndex: 'price',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
         );
       },
       width: '20%',
@@ -299,7 +301,8 @@ function Request() {
       dataIndex: 'price',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
         );
       },
       width: '20%',

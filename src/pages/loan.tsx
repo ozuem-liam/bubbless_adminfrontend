@@ -6,11 +6,12 @@ import TextField from '../components/TextField'
 import { Colors } from '../utils/constant/constant'
 import { Row, Col, Table } from "antd"
 import Image from 'next/image'
-
+import CurrencyFormat from "react-currency-format"
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import { useRouter } from 'next/router'
 import { useAppDispatch } from '../app/hook'
 import { getLoan, getLoanStat } from '../slices/LoanSlice'
+import moment from 'moment'
 
 
 interface DataType {
@@ -83,7 +84,8 @@ function Loan() {
       dataIndex: 'amount',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+            
         );
       },
       width: '30%',
@@ -93,7 +95,7 @@ function Loan() {
       dataIndex: 'date',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <TextField text={moment(value).format("MMM Do YY")} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
       width: '20%',
@@ -131,7 +133,7 @@ function Loan() {
       dataIndex: 'amount',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
         );
       },
       width: '30%',
@@ -141,7 +143,7 @@ function Loan() {
       dataIndex: 'date',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <TextField text={moment(value).format("MMM Do YY")} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
       width: '20%',
@@ -190,17 +192,17 @@ function Loan() {
       dataIndex: 'amount',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
         );
       },
-      width: '20%',
+      width: '30%',
     },
     {
       title: 'Date',
       dataIndex: 'date',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <TextField text={moment(value).format("MMM Do YY")} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
       width: '20%',
@@ -283,7 +285,7 @@ function Loan() {
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={loanStat?.all_loans?.volume ? loanStat?.all_loans?.volume : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <CurrencyFormat value={loanStat?.all_loans?.volume ? loanStat?.all_loans?.volume : 0} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />} />
               </RowBtw>
             </Card>
           </Col>
@@ -296,7 +298,7 @@ function Loan() {
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={loanStat?.approved_loans?.volume ? loanStat?.approved_loans?.volume : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <CurrencyFormat value={loanStat?.approved_loans?.volume ? loanStat?.approved_loans?.volume : 0} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />} />
               </RowBtw>
             </Card>
           </Col>
@@ -309,7 +311,7 @@ function Loan() {
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={loanStat?.rejected_loans?.volume ? loanStat?.rejected_loans?.volume : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <CurrencyFormat value={loanStat?.rejected_loans?.volume ? loanStat?.rejected_loans?.volume : 0} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />} />
               </RowBtw>
             </Card>
           </Col>

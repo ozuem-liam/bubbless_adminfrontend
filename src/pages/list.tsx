@@ -19,7 +19,7 @@ import { createEquipment, deleteEquipment, getEquipment, updateEquipment } from 
 import { EllipsisOutlined } from "@ant-design/icons"
 import { Dropdown, Space } from 'antd';
 import { edit2, trash } from '../assets'
-
+import CurrencyFormat from "react-currency-format"
 
 
 
@@ -317,7 +317,7 @@ function List() {
           </div>
         );
       },
-      width: '30%',
+      width: '20%',
     },
     {
       title: 'Name',
@@ -327,7 +327,7 @@ function List() {
           <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
-      width: '30%',
+      width: '20%',
     },
     {
       title: 'Description',
@@ -354,7 +354,8 @@ function List() {
       dataIndex: 'price',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
         );
       },
       width: '20%',
@@ -393,7 +394,7 @@ function List() {
       dataIndex: 'vottage',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
         );
       },
       width: '30%',
@@ -412,6 +413,8 @@ function List() {
       width: '20%',
     }
   ];
+
+
 
   const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
@@ -441,7 +444,7 @@ function List() {
     return {
       key: data?._id,
       type: data?.name,
-      vottage: `N${data?.watts}`,
+      vottage: data?.watts,
       ...data
     }
   })

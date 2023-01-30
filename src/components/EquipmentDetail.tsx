@@ -2,6 +2,9 @@ import { Modal } from 'antd'
 import React from 'react'
 import styled from 'styled-components'
 import TextField from './TextField'
+import CurrencyFormat from "react-currency-format"
+
+
 
 function EquipmentDetail({ modalOpen, handleCancel, info }) {
  
@@ -28,7 +31,8 @@ function EquipmentDetail({ modalOpen, handleCancel, info }) {
       <Div>
         <TextField text='Price' fontWeight='bold' />
         <Subdiv>
-          <TextField text={`N${info?.price}`} fontWeight='bold' textTransform='capitalize' />
+          <CurrencyFormat value={info?.price} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontWeight='bold' fontSize={'14px'} lineHeight='28px' />} />
+       
         </Subdiv>
       </Div>
       <Div>
