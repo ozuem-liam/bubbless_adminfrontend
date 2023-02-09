@@ -46,9 +46,15 @@ function Request() {
 
 
   useEffect(() => {
-    dispatch(getEquipmentRequest("Requested")).then(oo => setRequested(oo?.payload?.data))
-    dispatch(getEquipmentRequest("Procured")).then(oo => setProcured(oo?.payload?.data))
-    dispatch(getEquipmentRequest("Delivered")).then(oo => setDelivered(oo?.payload?.data))
+    dispatch(getEquipmentRequest("Request")).then(oo => {
+      console.log("1",{oo})
+      setRequested(oo?.payload?.data)})
+    dispatch(getEquipmentRequest("Procured")).then(oo => {
+        console.log("2",{oo})
+      setProcured(oo?.payload?.data)})
+    dispatch(getEquipmentRequest("Delivered")).then(oo => {
+        console.log("3",{oo})
+      setDelivered(oo?.payload?.data)})
   }, [])
 
 
@@ -74,7 +80,7 @@ function Request() {
     try {
       var response = await dispatch(updateRequestStatus(payload))
       if(updateRequestStatus.fulfilled.match(response)){
-        dispatch(getEquipmentRequest("Requested")).then(oo => setRequested(oo?.payload?.data))
+        dispatch(getEquipmentRequest("Request")).then(oo => setRequested(oo?.payload?.data))
         dispatch(getEquipmentRequest("Procured")).then(oo => setProcured(oo?.payload?.data))
         dispatch(getEquipmentRequest("Delivered")).then(oo => setDelivered(oo?.payload?.data))
         toast.success("Update successfull")
