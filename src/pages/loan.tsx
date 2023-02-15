@@ -62,7 +62,6 @@ function Loan() {
       setPendingLoans(dd?.payload?.data)
     })
   }, [])
-  
 
 
   const columns: ColumnsType<DataType> = [

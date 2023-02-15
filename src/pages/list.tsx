@@ -239,7 +239,7 @@ function List() {
       var response = await dispatch(updateEquipment(payload))
       if (updateEquipment.fulfilled.match(response)) {
         toast.success(response?.payload?.message)
-        dispatch(getAppliance()).then(dd => setAppliance(dd?.payload?.data?.appliances))
+        dispatch(getEquipment()).then(dd => setEquipment(dd?.payload?.data?.equipments))
         handleEuipClose()
         setLoader(false)
       }

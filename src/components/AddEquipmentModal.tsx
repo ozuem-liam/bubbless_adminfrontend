@@ -65,7 +65,7 @@ function AddEquipmentModal({ modalOpen, handleCancel, handleFormSubmit, loader, 
         <TextInput label={'Price'} value={values?.price.toString()} number onChange={handleChange('price')} errorMsg={touched.price ? errors.price : undefined} />
         <RowDiv>
           {
-            loading ? <LoadingOutlined /> : <TextField fontFamily='Mont-SemiBold' text={file ? file?.fileUrl : "Upload a file"} fontWeight='bold' />
+            loading ? <LoadingOutlined /> : <TextField fontFamily='Mont-SemiBold' text={file ? file?.fileUrl : "Upload a file (pdf)"} fontWeight='bold' />
           }
           <TextField text='UPLOAD' color='#54A6FF' onClick={handleOpenFileInput} />
           <input

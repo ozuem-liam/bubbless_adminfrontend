@@ -43,6 +43,8 @@ function Investment() {
     setInvestorData(null)
   }
 
+ 
+
 
   const columns: ColumnsType<DataType> = [
     {
