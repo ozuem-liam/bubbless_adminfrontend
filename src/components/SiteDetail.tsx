@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import TextField from './TextField'
 
 function SiteDetail({ modalOpen, handleCancel, info }) {
-
+console.log({info})
   return (
     <Modals title="Site details" open={modalOpen} onCancel={handleCancel} footer={null}>
       <Div>
@@ -62,10 +62,10 @@ function SiteDetail({ modalOpen, handleCancel, info }) {
       <TextField text='Equipments' fontWeight='bold' />
       <ul>
       {
-        info?.equipments?.map(data => {
+        info?.equipmentrequests?.map(data => {
           return <li>
              <Div style={{marginTop: '5px'}}>
-        <TextField text={data?.name} fontWeight='bold' />
+        <TextField text={data} fontWeight='bold' />
       </Div>
           </li>
         })

@@ -55,6 +55,7 @@ function loanDetails() {
   }
 
 
+
   return (
     <Layouts>
       <ComponentDiv>
@@ -130,10 +131,10 @@ function loanDetails() {
               <TextInput label={'Last name'} value={loanDetail?.customer?.last_name} />
               <TextInput label={'Email'} value={loanDetail?.customer?.email} />
               <TextInput label={'Phone number'} value={loanDetail?.customer?.phone} />
-              <TextInput label={'Income'} value={''} />
-              <TextInput label={'BVN'} value={''} />
-              <TextInput label={'Business name'} value={''} />
-              <TextInput label={'Business Address'} value={''} />
+              {/* <TextInput label={'Income'} value={''} /> */}
+              <TextInput label={'BVN'} value={loanDetail?.loan?.bvn} />
+              <TextInput label={'Business name'} value={loanDetail?.installer?.business_name} />
+              <TextInput label={'Business Address'} value={loanDetail?.installer?.address}  />
             </Row1>
             <Row2>
               <MenuDiv>
@@ -144,20 +145,23 @@ function loanDetails() {
                     <TextField text='Submitted documents' fontSize={'14px'} lineHeight='20px' fontWeight='bold' fontFamily='Mont-SemiBold' />
                   </SubmitDiv2>
                   <Box>
+                  <a href={loanDetail?.loan?.bank_statement} target="_blank">
                     <Sub3>
                       <div style={{ width: '80%' }}>
-                        <TextField text='Consumer Credit Report' fontSize={'10px'} color={'#54A6FF'} />
+                        <TextField text='Bank Statement' fontSize={'10px'} color={'#54A6FF'} />
                       </div>
                       <Image src={square} alt='' />
                       <Image src={more} alt='' />
                     </Sub3>
+                    </a>
                     <Sub3>
                       <div style={{ width: '80%' }}>
-                        <TextField text='Consumer Credit Report' fontSize={'10px'} color={'#54A6FF'} />
+                        <TextField text='Identification' fontSize={'10px'} color={'#54A6FF'} />
                       </div>
                       <Image src={square} alt='' />
                       <Image src={more} alt='' />
                     </Sub3>
+                
                   </Box>
                 </SubmitDiv>
               </MenuDiv>
