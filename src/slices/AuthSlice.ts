@@ -56,6 +56,31 @@ export const signInUser = createAsyncThunk(
   }
 )
 
+
+export const registerUser = createAsyncThunk(
+  'admin/registerUser',
+  async (payload: SignupType, { rejectWithValue }) => {
+    const data = {
+      first_name: payload?.firstName,
+      last_name: payload?.lastName,
+      email: payload?.email,
+      phone: payload?.mobile,
+      password: payload?.password,
+      user_type: "admin"
+    }
+    try {
+      const response = await postRequest("/admin/register", data)
+      if (response?.status === 200) {    
+        return response?.data
+      }
+    }
+    catch (e) {
+      return rejectWithValue(e?.response?.data?.message)
+    }
+
+  }
+)
+
 export const getProfile = createAsyncThunk(
   'auth/getProfile',
   async () => {
@@ -90,6 +115,15 @@ export const AuthSlice = createSlice({
     builder.addCase(signInUser.rejected, (state, action) => {
       // state.error = action.error.message
     })
+    builder.addCase(registerUser.pending, (state, action) => {
+      state.loading = true
+    }),
+    builder.addCase(registerUser.fulfilled, (state, action: PayloadAction<any>) => {
+      state.loading = false
+    })
+  builder.addCase(registerUser.rejected, (state, action) => {
+    // state.error = action.error.message
+  })
     builder.addCase(forgetPassword.pending, (state, action) => {
       state.loading = true
     }),

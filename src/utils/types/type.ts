@@ -61,9 +61,9 @@ export type EquipmentType = {
 export type SignupType = {
     email: string;
     password: string;
-    fName: string;
-    lName: string;
-    // mobile: string;
+    firstName: string;
+    lastName: string;
+    mobile: string;
 
 }
 export type LoginState = {

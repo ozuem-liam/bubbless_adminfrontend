@@ -15,7 +15,7 @@ export const ResetSchema = yup.object().shape({
 export const SignupSchema = yup.object().shape({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
-  // phoneNumber: yup.string().min(11, ({min}) => `Phone number must be at least ${min} length`).required('Phone is required'),
+  mobile: yup.string().min(11, ({min}) => `Phone number must be at least ${min} length`).required('Phone is required'),
   email: yup.string().email().required('Email is required'),
   password: yup
     .string()

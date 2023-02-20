@@ -24,13 +24,19 @@ function AddLoan({ modalOpen, handleCancel, handleLoanSubmit, isLoading }) {
      }
 
 
-    const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
+    const { values, errors, touched, handleChange, handleSubmit, handleBlur, resetForm } =
     useFormik({
       initialValues,
       validationSchema: ConfigLoanSchema,
-      onSubmit: (data: LoanConfig) => handleLoanSubmit(data),
+      onSubmit: (data: LoanConfig) => handleForm(data),
       enableReinitialize: true
     });
+
+
+    const handleForm = async (data) => {
+          await handleLoanSubmit(data)
+          resetForm()
+      }
 
     return (
         <Modals title="Add loan period" open={modalOpen} onCancel={handleCancel} footer={null}>
@@ -43,7 +49,7 @@ function AddLoan({ modalOpen, handleCancel, handleLoanSubmit, isLoading }) {
                     <TextField text={"Period"} fontSize={Sizes?.size30} lineHeight='34px' />
                     <Select  value={values?.period} onChange={handleChange('period')} >
                     <option value="month">Monthly</option>
-                    <option value="week" >Weekly</option>
+                    {/* <option value="week" >Weekly</option> */}
                     <option value="year" >Yearly</option>
                 </Select>
         
@@ -52,8 +58,8 @@ function AddLoan({ modalOpen, handleCancel, handleLoanSubmit, isLoading }) {
                 </RowDiv>
 
                 <TextInput label={'Interest rate (%) '} number value={values?.interest_rate?.toString()} onChange={handleChange('interest_rate')} errorMsg={touched.interest_rate ? errors.interest_rate : undefined} />
-                <TextInput label={'Minimum Value'} number value={values?.min_value?.toString()} onChange={handleChange('min_value')} errorMsg={touched.min_value ? errors.min_value : undefined} />
-                <TextInput label={'Maximum Value'} number value={values?.max_value?.toString()} onChange={handleChange('max_value')} errorMsg={touched.max_value ? errors.max_value : undefined} />
+                <TextInput label={'Minimum Value (₦)'} number value={values?.min_value?.toString()} onChange={handleChange('min_value')} errorMsg={touched.min_value ? errors.min_value : undefined} />
+                <TextInput label={'Maximum Value (₦)'} number value={values?.max_value?.toString()} onChange={handleChange('max_value')} errorMsg={touched.max_value ? errors.max_value : undefined} />
                 <br />
                 <br />
                 <Button children='Add' isLoading={isLoading} handlePress={handleSubmit} />

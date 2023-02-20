@@ -20,13 +20,18 @@ function AddInstallation({ modalOpen, handleCancel, handleInstallationSubmit, is
         cost_type: "percentile"
      }
 
-     const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
+     const { values, errors, touched, handleChange, handleSubmit, handleBlur, resetForm  } =
     useFormik({
       initialValues,
       validationSchema: ConfigInstallationSchema,
-      onSubmit: (data: InstallationConfig) => handleInstallationSubmit(data),
+      onSubmit: (data: InstallationConfig) => handleForm(data),
       enableReinitialize: true
     });
+
+    const handleForm = async (data) => {
+        await handleInstallationSubmit(data)
+        resetForm()
+    }
 
     return (
         <Modals title="Add installation cost" open={modalOpen} onCancel={handleCancel} footer={null}>

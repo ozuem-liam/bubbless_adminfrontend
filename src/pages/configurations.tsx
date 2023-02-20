@@ -44,6 +44,7 @@ function Configuration() {
   const [loanPeriods, setLoanPeriods] = useState(null)
   const [installerCostings, setInstallerCosting] = useState(null)
   const [investmentCostings, setInvestmentCosting] = useState(null)
+  const [isSuccess, setIsSuccess] = useState(false)
 
   useEffect(() => {
     dispatch(getConfigLoan()).then(dd => setLoanPeriods(dd?.payload?.data))
@@ -430,11 +431,13 @@ function Configuration() {
          setLoading(false)
          dispatch(getInvestorCosting()).then(dd => setInvestmentCosting(dd?.payload?.data))
          toast.success("Investor plan created successfully")
+         setIsSuccess(true)
          handleInvestmentClose()
        }
        else {
+        var errMsg = response?.payload as string
          setLoading(false)
-         toast.error("Unable to create Investor plan")
+         toast.error(errMsg)
        }
     }
     catch(e) {
@@ -512,7 +515,7 @@ function Configuration() {
         <AddUser modalOpen={userOpen} handleCancel={() => handleUserClose()} />
         <AddLoan modalOpen={loanOpen} handleCancel={() => handleLoanClose()} isLoading={loading} handleLoanSubmit={(data) => handleLoanSubmit(data)} />
         <AddInstallation modalOpen={installationOpen} handleCancel={() => handleInstallationClose()} isLoading={loading} handleInstallationSubmit={(data) => handleInstallationSubmit(data)} />
-        <AddInvestment modalOpen={investmentOpen} handleCancel={() => handleInvestmentClose()} isLoading={loading} handleInvestmentSubmit={(data) => handleInvestmentSubmit(data)} />
+        <AddInvestment modalOpen={investmentOpen} handleCancel={() => handleInvestmentClose()} isLoading={loading} handleInvestmentSubmit={(data) => handleInvestmentSubmit(data)} isSuccess={isSuccess} />
       </ComponentDiv>
       <ToastContainer />
     </Layouts>

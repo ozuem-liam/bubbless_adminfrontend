@@ -11,7 +11,7 @@ import Button from './Button';
 import PhoneInputs from './PhoneInput';
 import TextField from './TextField';
 import TextInput from './TextInput';
-
+import { LoadingOutlined } from "@ant-design/icons"
 
 
 
@@ -51,6 +51,7 @@ function AddInstaller({ modalOpen, handleCancel }) {
                 toast.success("Success")
                 setLoader(false)
                 handleCancel()
+                resetForm()
             }
             else {
                 var errMsg = response?.payload as string
@@ -63,7 +64,7 @@ function AddInstaller({ modalOpen, handleCancel }) {
         }
     }
 
-    const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
+    const { values, errors, touched, handleChange, handleSubmit, handleBlur, resetForm } =
     useFormik({
       initialValues,
       validationSchema: AddInstallerSchema,
@@ -83,7 +84,7 @@ function AddInstaller({ modalOpen, handleCancel }) {
                 <PhoneInputs label={"Phone number"} value={values?.phone} handleTextChange={handleChange('phone')} errorMsg={touched.phone ? errors.phone : undefined} />
                 <Select  value={values?.user_type} onChange={handleChange('user_type')} >
                     <option value="installer">Installer</option>
-                    <option value="consumer" >Consumer</option>
+                    {/* <option value="consumer" >Consumer</option> */}
                 </Select>
                 {/* <TextInput label={'Account Number'} value={''} />
                 <TextInput label={'Bank name'} value={''} /> */}
@@ -125,7 +126,7 @@ function AddInstaller({ modalOpen, handleCancel }) {
                 </DivSub>
                 <br/>
                 <div onClick={() => handleSubmit()}>
-  <ButtonTextColored >Create account</ButtonTextColored>
+  <ButtonTextColored >{loader ? <LoadingOutlined /> : "Create account"}</ButtonTextColored>
 
                 </div>
               

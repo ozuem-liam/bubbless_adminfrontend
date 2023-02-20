@@ -8,9 +8,7 @@ import { useRouter } from 'next/router'
 import Image from "next/image"
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import SearchField from '../components/SearchField'
-import AddEquipmentModal from '../components/AddEquipmentModal'
-import AddEquipmentApplianceModal from '../components/AddEquipmentApplianceModal'
-import EquipmentDetail from '../components/EquipmentDetail'
+
 import AddInstaller from '../components/AddInstaller'
 import { placeholder } from '../assets'
 import { useAppDispatch } from '../app/hook'

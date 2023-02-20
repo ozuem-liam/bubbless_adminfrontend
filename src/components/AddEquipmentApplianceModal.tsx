@@ -20,15 +20,24 @@ function AddEquipmentApplianceModal({ modalOpen, handleCancel, handleFormSubmit,
 
 
 
-  const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
+  const { values, errors, touched, handleChange, handleSubmit, handleBlur, resetForm } =
     useFormik({
       initialValues,
       validationSchema: AddApplianceSchema,
-      onSubmit: (data: { name: string, watts: number }) => edit ? handleEditSubmit(data) : handleFormSubmit(data),
+      onSubmit: (data: { name: string, watts: number }) => handleForm(data),
       enableReinitialize: true
     });
 
-
+    const handleForm = async (data) => {
+      if(edit){
+        await handleEditSubmit(data)
+        resetForm()
+      }
+      else {
+        await handleFormSubmit(data)
+        resetForm()
+      }
+    }
 
   return (
     <Modals title={edit ? "Update Appliance" : "Add Applaince"} open={modalOpen} onCancel={handleCancel} footer={null}>

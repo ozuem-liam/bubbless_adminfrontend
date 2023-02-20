@@ -1,7 +1,6 @@
 import { Modal } from 'antd';
 import { useFormik } from 'formik';
 import React, { useRef, useState } from 'react';
-import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { useAppDispatch } from '../app/hook';
 
@@ -12,7 +11,7 @@ import Button from './Button';
 import TextField from './TextField';
 import TextInput from './TextInput';
 import { LoadingOutlined } from '@ant-design/icons';
-
+import { ToastContainer, toast } from 'react-toastify';
 
 
 
@@ -26,6 +25,8 @@ function AddEquipmentModal({ modalOpen, handleCancel, handleFormSubmit, loader, 
     inputRef.current.click();
   };
 
+  
+
   const handleFileChange = (e) => {
     setLoading(true)
     const formData = new FormData();
@@ -33,6 +34,9 @@ function AddEquipmentModal({ modalOpen, handleCancel, handleFormSubmit, loader, 
     dispatch(fileUpload(formData)).then(dd => {
       setLoading(false)
       setFile(dd?.payload?.data)
+      toast.success("upload successfull")
+    }).catch(e => {
+      toast.error("Upload failed")
     })
   }
 
@@ -47,14 +51,28 @@ function AddEquipmentModal({ modalOpen, handleCancel, handleFormSubmit, loader, 
 
 
 
-  const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
+
+  const { values, errors, touched, handleChange, handleSubmit, handleBlur, resetForm } =
     useFormik({
       initialValues,
       validationSchema: AddEquipmentSchema,
-      onSubmit: (data: EquipmentType) => edit ? handleEditSubmit(data, file) : handleFormSubmit(data, file),
+      onSubmit: (data: EquipmentType) => handleForm(data, file),
       enableReinitialize: true
     });
 
+
+    const handleForm = async (data, file) => {
+      if(edit){
+        await handleEditSubmit(data, file)
+        resetForm()
+        setFile("")
+      }
+      else {
+        await handleFormSubmit(data, file)
+        resetForm()
+        setFile("")
+      }
+    }
 
   return (
     <Modals title={edit ? "Update Equipment" : "Add Equipment"} open={modalOpen} onCancel={handleCancel} footer={null}>
@@ -82,6 +100,7 @@ function AddEquipmentModal({ modalOpen, handleCancel, handleFormSubmit, loader, 
         <br />
         <Button isLoading={loader} handlePress={handleSubmit} children={edit ? "Update" : 'Add'} />
       </Div>
+      <ToastContainer position='top-center' />
     </Modals>
   )
 }
