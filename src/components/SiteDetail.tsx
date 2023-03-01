@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import TextField from './TextField'
 
 function SiteDetail({ modalOpen, handleCancel, info }) {
-console.log({info})
+
   return (
     <Modals title="Site details" open={modalOpen} onCancel={handleCancel} footer={null}>
       <Div>

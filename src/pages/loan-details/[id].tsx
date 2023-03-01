@@ -56,6 +56,7 @@ function loanDetails() {
 
 
 
+
   return (
     <Layouts>
       <ComponentDiv>
@@ -154,14 +155,14 @@ function loanDetails() {
                       <Image src={more} alt='' />
                     </Sub3>
                     </a>
-                    <Sub3>
+                    {/* <Sub3>
                       <div style={{ width: '80%' }}>
                         <TextField text='Identification' fontSize={'10px'} color={'#54A6FF'} />
                       </div>
                       <Image src={square} alt='' />
                       <Image src={more} alt='' />
                     </Sub3>
-                
+                 */}
                   </Box>
                 </SubmitDiv>
               </MenuDiv>
@@ -178,7 +179,7 @@ function loanDetails() {
                 <Image src={star} alt='' />
                 <div style={{ marginLeft: '10px' }}>
                   <TextField text={`${loanDetail?.loan?.payment_plan?.length} months`} fontSize='20px' lineHeight='21px' fontFamily='Mont-Bold' />
-                  <TextField text='Interest rate @ 3%' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' margin='5px 0px 0px 0px' />
+                  <TextField text={`Interest rate @ ${loanDetail?.loan?.loan_interest_rate}% `} fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' margin='5px 0px 0px 0px' />
                 </div>
               </RowStart>
               <div>
