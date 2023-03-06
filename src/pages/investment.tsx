@@ -31,7 +31,9 @@ function Investment() {
  const [investments, setInvestments] = useState(null)
 
   useEffect(() => {
-    dispatch(getInvestorStat()).then(data => setInvestments(data?.payload?.data))
+    dispatch(getInvestorStat()).then(data => {
+      setInvestments(data?.payload?.data)
+    })
   }, [])
 
   const handleDetailOpen = (data) => {
@@ -150,59 +152,31 @@ function Investment() {
       </RowBtw>
       <ComponentDiv>
         <Row>
-          <Col span={8}>
-            <InvestmentCardOne>
+          {
+            investments?.planStats?.map(data => {
+              return   <Col span={8}>
+            <InvestmentCardOne style={{background: data?.plan === "gold" ? "#EEE9E2" : data?.plan === "diamond" ? "#E0E9F4" : "#EAE9F0"}}>
               <Sub>
                 <SubMenu>
-                  <TextField text='Week' fontSize='8px' />
+                  {/* <TextField text='Week' fontSize='8px' /> */}
                 </SubMenu>
               </Sub>
               <TextField text='Investment Value' color='#1A202C' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='24px' />
-              <TextField text='N5,000,000' fontWeight='bold' fontFamily='Mont-Bold' fontSize='30px' lineHeight='34px' margin='20px 0px' />
+                <CurrencyFormat value={data?.tatalPlanAmount} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontWeight='bold' fontFamily='Mont-Bold' fontSize='30px' lineHeight='34px' margin='20px 0px' />} />
+       
               <RowBtw>
-                <TextField text='20%' color='#7FB519' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
+                <div></div>
+                {/* <TextField text='20%' color='#7FB519' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' /> */}
                 <SubMenu2>
-                  <TextField text='Plan 1' fontWeight='bold' color='white' fontFamily='Mont-SemiBold' fontSize='10px' lineHeight='20px' />
+                  <TextField text={data?.plan} textTransform="capitalize" fontWeight='bold' color='white' fontFamily='Mont-SemiBold' fontSize='10px' lineHeight='20px' />
                 </SubMenu2>
               </RowBtw>
             </InvestmentCardOne>
           </Col>
-          <Col span={8}>
-            <InvestmentCardTwo>
-              <Sub>
-                <SubMenu>
-                  <TextField text='Week' fontSize='8px' />
-                </SubMenu>
-              </Sub>
-              <TextField text='Investment Value' color='#1A202C' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='24px' />
-              <TextField text='N5,000,000' fontWeight='bold' fontFamily='Mont-Bold' fontSize='30px' lineHeight='34px' margin='20px 0px' />
-              <RowBtw>
-                <TextField text='20%' color='#7FB519' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-                <SubMenu3>
-                  <TextField text='Plan 2' fontWeight='bold' color='white' fontFamily='Mont-SemiBold' fontSize='10px' lineHeight='20px' />
-                </SubMenu3>
-              </RowBtw>
-            </InvestmentCardTwo>
-          </Col>
-          <Col span={8}>
-            <InvestmentCardThree>
-              <Sub>
-                <SubMenu>
-                  <TextField text='Week' fontSize='8px' />
-                </SubMenu>
-              </Sub>
-              <TextField text='Investment Value' color='#1A202C' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='24px' />
-              <TextField text='N5,000,000' fontWeight='bold' fontFamily='Mont-Bold' fontSize='30px' lineHeight='34px' margin='20px 0px' />
-              <RowBtw>
-                <TextField text='20%' color='#7FB519' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-                <SubMenu4>
-                  <TextField text='Plan 3' fontWeight='bold' color='white' fontFamily='Mont-SemiBold' fontSize='10px' lineHeight='20px' />
-                </SubMenu4>
-              </RowBtw>
-            </InvestmentCardThree>
-          </Col>
+            })
+          }
         </Row>
-        <br />
+        {/* <br />
         <Row>
           <Col span={12}>
             <InvestmentCardFour>
@@ -233,7 +207,7 @@ function Investment() {
               </RowBtw>
             </InvestmentCardFour>
           </Col>
-        </Row>
+        </Row> */}
         <br />
         <Row>
           <Col md={24} lg={24} xl={15}>
@@ -329,7 +303,9 @@ const SubMenu = styled.div`
 const SubMenu2 = styled.div`
 background: #5D54B2;
 border-radius: 25px;
-  width: 45px;
+  min-width: 45px;
+  max-width: 100px;
+  padding: 0px 10px;
   display: flex;
   justify-content: center;
 `

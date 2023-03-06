@@ -69,7 +69,7 @@ export const registerUser = createAsyncThunk(
       user_type: "admin"
     }
     try {
-      const response = await postRequest("/admin/register", data)
+      const response = await postRequest("/admin-action/register", data)
       if (response?.status === 200) {    
         return response?.data
       }

@@ -37,6 +37,17 @@ export const getStat = createAsyncThunk(
   }
 )
 
+export const getRecentActivities = createAsyncThunk(
+  'dashboard/getRecentActivities',
+  async (payload: string) => {
+      const response = await getRequest(`/admin-action/notifications?user_type=${payload}`) as any
+      if (response?.status === 200) {
+        return response?.data
+      }
+
+  }
+)
+
 
 
 export const DashboardSlice = createSlice({
@@ -64,7 +75,16 @@ export const DashboardSlice = createSlice({
   builder.addCase(getStat.rejected, (state, action) => {
     // state.error = action.error.message
   })
- 
+  builder.addCase(getRecentActivities.pending, (state, action) => {
+    state.loading = true
+  }),
+  builder.addCase(getRecentActivities.fulfilled, (state, action: PayloadAction<any>) => {
+    state.loading = false
+      
+  })
+builder.addCase(getRecentActivities.rejected, (state, action) => {
+  // state.error = action.error.message
+})
    
   }
 })

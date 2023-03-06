@@ -10,7 +10,7 @@ import { bag, cloud, equip, equipemnt, loan, wallet } from '../assets'
 import { useRouter } from 'next/router'
 import { useAppDispatch } from '../app/hook'
 import { getProfile } from '../slices/AuthSlice'
-import { getStat, getStatForDashboard } from '../slices/DashboardSlice'
+import { getRecentActivities, getStat, getStatForDashboard } from '../slices/DashboardSlice'
 import { getDueLoans } from '../slices/LoanSlice'
 import CurrencyFormat from 'react-currency-format';
 import moment from 'moment'
@@ -24,12 +24,20 @@ function Dashboard() {
   const [dueLoans, setDueLoans] = useState([])
   const [lateLoans, setLateLoans] = useState([])
   const [loanType, setLoanType] = useState("due")
+  const [installerAct, setInstallerAct] = useState<any>(null)
+  const [consumerAct, setConsumerAct] = useState<any>(null)
+  const [actType, setActType] = useState("installer")
+
+
 
   useEffect(() => {
     dispatch(getStatForDashboard()).then(dd => setDashboard(dd?.payload?.data))
     dispatch(getDueLoans("due")).then(cc => setDueLoans(cc?.payload?.data))
     dispatch(getDueLoans("late")).then(cc => setLateLoans(cc?.payload?.data))
+    dispatch(getRecentActivities("installer")).then(pp => setInstallerAct(pp?.payload?.data))
+    dispatch(getRecentActivities("customer")).then(pp => setConsumerAct(pp?.payload?.data))
   }, [])
+
 
 
   return (
@@ -93,38 +101,42 @@ function Dashboard() {
             <Col span={12} >
               <Card2>
                 <TextField text='Recent activities' fontWeight='bold' fontSize={'16px'} lineHeight='34px' />
-                <View2>
+                {/* <View2>
                   <TextField text='Installer' fontWeight='bold' fontSize={'14px'} lineHeight='34px' />
                   <TextField text='Consumer Report' margin='0px 10px' fontSize={'14px'} color={"#C7C7C7"} lineHeight='34px' />
+                </View2> */}
+                   <View2>
+                 <div style={{cursor: "pointer"}} onClick={() => setActType("installer")}>
+                 <TextField text='Installer' fontWeight='bold' color={actType === "installer" ? "blue" : "#C7C7C7"} fontSize={'14px'} lineHeight='34px' />
+                 </div>
+                 <div style={{cursor: "pointer"}} onClick={() => setActType("consumer")}>
+                 <TextField text='Consumer' margin='0px 10px' fontSize={'14px'} color={actType === "consumer" ? "blue" : "#C7C7C7"} lineHeight='34px' />
+                  </div>
                 </View2>
-                <View3>
-                  <Div>
-                    <TextField text='Upcoming maintenance' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                    <TextField text='Consumer Report' fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
-                  </Div>
-                  <TextField text='Consumer Report' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                </View3>
-                <View3>
-                  <Div>
-                    <TextField text='Upcoming maintenance' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                    <TextField text='Consumer Report' fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
-                  </Div>
-                  <TextField text='Consumer Report' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                </View3>
-                <View3>
-                  <Div>
-                    <TextField text='Upcoming maintenance' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                    <TextField text='Consumer Report' fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
-                  </Div>
-                  <TextField text='Consumer Report' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                </View3>
-                <View3>
-                  <Div>
-                    <TextField text='Upcoming maintenance' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                    <TextField text='Consumer Report' fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
-                  </Div>
-                  <TextField text='Consumer Report' fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
-                </View3>
+                {
+                  actType === "consumer" && consumerAct?.notifications?.map(data => {
+                    return      <View3>
+                    <Div>
+                      <TextField text={data?.subject} fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
+                      <TextField text={data?.message} fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
+                    </Div>
+                    <TextField text={data?.user_type + " Report"} fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
+                  </View3>
+                  })
+                }
+
+{
+                  actType === "installer" && installerAct?.notifications?.map(data => {
+                    return      <View3>
+                    <Div>
+                      <TextField text={data?.subject} fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
+                      <TextField text={data?.message} fontSize={'13px'} color={"#C7C7C7"} lineHeight='20px' />
+                    </Div>
+                    <TextField text={data?.user_type + " Report"} fontWeight='bold' fontSize={'13px'} lineHeight='20px' />
+                  </View3>
+                  })
+                }
+
               </Card2>
             </Col>
             <Col span={12} >
