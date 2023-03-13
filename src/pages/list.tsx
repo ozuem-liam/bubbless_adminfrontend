@@ -173,7 +173,7 @@ function List() {
       name: data?.name,
       brand: data?.brand,
       price: parseInt(data?.price),
-      secification_file: file?.fileUrl,
+      specification_file: file,
       description: data?.description
     }
 
@@ -229,7 +229,7 @@ function List() {
       name: data?.name,
       brand: data?.brand,
       price: parseInt(data?.price),
-      secification_file: file?.fileUrl,
+      specification_file: file,
       description: data?.description,
       id: selectedDataEquip.key
     }

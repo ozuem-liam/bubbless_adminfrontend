@@ -240,5 +240,5 @@ const Card2 = styled.div`
 `
 
 const Div = styled.div`
-
+  width: 78%;
 `

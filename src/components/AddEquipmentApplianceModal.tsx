@@ -11,7 +11,7 @@ import Button from './Button'
 import TextInput from './TextInput'
 
 function AddEquipmentApplianceModal({ modalOpen, handleCancel, handleFormSubmit, loader, edit, handleEditSubmit }) {
-  
+
 
   const initialValues: { name: string, watts: number } = {
     name: edit ? edit?.type : '',

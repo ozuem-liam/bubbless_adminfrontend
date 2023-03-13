@@ -1,6 +1,6 @@
 import { Modal } from 'antd';
 import { useFormik } from 'formik';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch } from '../app/hook';
 
@@ -25,7 +25,11 @@ function AddEquipmentModal({ modalOpen, handleCancel, handleFormSubmit, loader, 
     inputRef.current.click();
   };
 
-  
+
+  useEffect(() => {
+      setFile(edit?.specification_file)
+  }, [edit])
+
 
   const handleFileChange = (e) => {
     setLoading(true)
@@ -33,9 +37,10 @@ function AddEquipmentModal({ modalOpen, handleCancel, handleFormSubmit, loader, 
     formData.append("file", e.target.files[0]);
     dispatch(fileUpload(formData)).then(dd => {
       setLoading(false)
-      setFile(dd?.payload?.data)
+      setFile(dd?.payload?.data?.fileUrl)
       toast.success("upload successfull")
     }).catch(e => {
+      setLoading(false)
       toast.error("Upload failed")
     })
   }
@@ -83,7 +88,7 @@ function AddEquipmentModal({ modalOpen, handleCancel, handleFormSubmit, loader, 
         <TextInput label={'Price'} value={values?.price.toString()} number onChange={handleChange('price')} errorMsg={touched.price ? errors.price : undefined} />
         <RowDiv>
           {
-            loading ? <LoadingOutlined /> : <TextField fontFamily='Mont-SemiBold' text={file ? file?.fileUrl : "Upload a file (pdf)"} fontWeight='bold' />
+            loading ? <LoadingOutlined /> : <TextField fontFamily='Mont-SemiBold' text={file ? file : "Upload a file (pdf)"} fontWeight='bold' />
           }
           <TextField text='UPLOAD' color='#54A6FF' onClick={handleOpenFileInput} />
           <input

@@ -17,7 +17,7 @@ const initialState = {
 
 export const createEquipment = createAsyncThunk(
   'equipment/createEquipment',
-  async (payload: {equipment_type: string, name: string, brand: string, price: number, secification_file: string, description: string}, { rejectWithValue }) => {
+  async (payload: {equipment_type: string, name: string, brand: string, price: number, specification_file: string, description: string}, { rejectWithValue }) => {
     try {
       const response = await postRequest("/equipment/create", payload)
       if (response?.status === 200) {
@@ -35,7 +35,7 @@ export const createEquipment = createAsyncThunk(
 
 export const createEquipmentRequest = createAsyncThunk(
     'equipment/createEquipmentRequest',
-    async (payload: {equipment_type: string, name: string, brand: string, price: number, secification_file: string, description: string, status: string, supplier: string}, { rejectWithValue }) => {
+    async (payload: {equipment_type: string, name: string, brand: string, price: number, specification_file: string, description: string, status: string, supplier: string}, { rejectWithValue }) => {
       try {
         const response = await postRequest("/equipment-request/create", payload)
         if (response?.status === 200) {
@@ -53,14 +53,14 @@ export const createEquipmentRequest = createAsyncThunk(
 
 export const updateEquipment = createAsyncThunk(
   'equipment/updateEquipment',
-  async (payload: {equipment_type: string, name: string, brand: string, price: number, secification_file: string, description: string, id: string}, { rejectWithValue }) => {
+  async (payload: {equipment_type: string, name: string, brand: string, price: number, specification_file: string, description: string, id: string}, { rejectWithValue }) => {
     try {
       const data = {
         equipment_type: payload.equipment_type, 
         name: payload.name, 
         brand: payload.brand, 
         price: payload.price, 
-        secification_file: payload.secification_file, 
+        specification_file: payload.specification_file, 
         description: payload.description
       }
       const response = await updateRequest(`/equipment/update/${payload?.id}`, data)
