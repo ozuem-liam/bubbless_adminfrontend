@@ -38,7 +38,9 @@ function EquipmentDetail({ modalOpen, handleCancel, info }) {
       <Div>
         <TextField text='Specifications File' fontWeight='bold' />
         <Subdiv>
-          <TextField text='N/A' color='#54A6FF' fontWeight='bold' textTransform='capitalize' />
+         <a href={info?.specification_file} target="_blank">
+         <TextField text={info?.specification_file} color='#54A6FF' fontWeight='bold' textTransform='capitalize' />
+         </a>
         </Subdiv>
       </Div>
       <Div>
