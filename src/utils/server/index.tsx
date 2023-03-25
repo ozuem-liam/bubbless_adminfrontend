@@ -4,8 +4,8 @@ import secureLocalStorage from "react-secure-storage";
 
 
 
-const Base_url = "https://staging-backend.getrenewabletek.com/api/v1"
-
+const Base_Type = "Prod" as string
+const Base_url = Base_Type === "Staging" ? process.env.APP_STAGING : Base_Type === "Prod" ? process.env.APP_PROD : null;
 
 var getToken = secureLocalStorage.getItem('token')
 

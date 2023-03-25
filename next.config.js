@@ -7,6 +7,10 @@ const nextConfig = {
   typescript: {
     ignoreDuringBuilds: true,
   },
+  env: {
+    APP_STAGING: process.env.APP_STAGING,
+    APP_PROD: process.env.APP_PROD,
+  },
   swcMinify: false,
 }
 
