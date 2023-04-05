@@ -1,16 +1,159 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import AddInstaller from '../../components/AddInstaller';
 import Layouts from '../../components/Layout'
 import TextField from '../../components/TextField'
 import Image from 'next/image'
 import { more, square } from '../../assets';
-import { Row, Col } from 'antd';
-
+import { Row, Col, Table } from 'antd';
+import { getInstaller } from '../../slices/InstallerSlice';
+import { useRouter } from 'next/router';
+import { useAppDispatch } from '../../app/hook';
+import CurrencyFormat from "react-currency-format"
 
 function InstallerDetail() {
     const [installerOpen, setInstallerOpen] = useState(false);
     const [type, setType] = useState('information')
+    const router = useRouter()
+    const [InstallerDetail, setInstallerDetail] = useState(null)
+    const id = router?.query?.id as string
+    const dispatch = useAppDispatch()
+
+
+    useEffect(() => {
+        dispatch(getInstaller()).then(data => {
+            const filt = data?.payload?.data?.result?.find(data => data?.account?._id === id);
+            if(filt){
+                setInstallerDetail(filt)
+            }
+        })
+      }, [id])
+
+
+  const columns = [
+    {
+      title: 'Site name',
+      dataIndex: 'name',
+      render: (value, rowIndex) => {
+        return  <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+      },
+      width: '20%',
+    },
+    {
+        title: 'Id',
+        dataIndex: 'id',
+        render: (value) => {
+          return (
+            <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          );
+        },
+        width: '25%',
+      },
+    {
+      title: 'Equipment',
+      dataIndex: 'equipment',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Total',
+      dataIndex: 'total',
+      render: (value) => {
+        return <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} textTransform='capitalize' fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />} />
+      },
+      width: '20%',
+    },
+    {
+        title: 'Status',
+        dataIndex: 'status',
+        render: (value) => {
+          return (
+            <Colored style={{ background: value === "Active" ? "#AED6C3"  : "#FFD96B", borderRadius: "23px",width: '100px', padding: '10px' }}>
+            <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
+          </Colored>
+          );
+        },
+        width: '20%',
+      },
+  ];
+
+  const columns1 = [    
+    {
+        title: 'Id',
+        dataIndex: 'id',
+        render: (value) => {
+          return (
+            <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          );
+        },
+        width: '25%',
+      },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      render: (value, rowIndex) => {
+        return  <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+      },
+      width: '20%',
+    },
+
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+        title: 'Status',
+        dataIndex: 'status',
+        render: (value) => {
+          return (
+            <Colored style={{ background: value === "Active" ? "#AED6C3"  : "#FFD96B", borderRadius: "23px",width: '100px', padding: '10px' }}>
+            <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
+          </Colored>
+          );
+        },
+        width: '20%',
+      },
+  ];
+
+  const data =  InstallerDetail?.sitings?.map(dd => {
+    return  {
+      key: dd?._id,
+      name: dd?.site_name,
+     equipment: dd?.equipmentrequests?.length,
+     total: dd?.grand_total,
+     status: dd?.is_active ? "Active" : "Inactive",
+      ...dd
+    }
+  })
+
+  const data1 =  InstallerDetail?.customers?.map(dd => {
+    return  {
+      key: dd?.id,
+      name: dd?.first_name + " " + dd?.last_name,
+     email: dd?.email,
+     status: dd?.is_active ? "Active" : "Inactive",
+      ...dd
+    }
+  })
+
+
+  const onChange = (pagination, filters, sorter, extra) => {
+    console.log('params', pagination, filters, sorter, extra);
+  };
+
+  const onChange1 = (pagination, filters, sorter, extra) => {
+    console.log('params', pagination, filters, sorter, extra);
+  };
 
 
     const handleInstallerClose = () => {
@@ -27,9 +170,9 @@ function InstallerDetail() {
                         <TextField text='Here are your analytics details' color={'#8A8A8A'} margin='0px 0px 15px 0px' />
                     </div>
 
-                    <div>
+                    {/* <div>
                         <ButtonTextColored onClick={() => setInstallerOpen(true)}> + New Installer</ButtonTextColored>
-                    </div>
+                    </div> */}
                 </RowBtw>
 
                 <Card>
@@ -41,11 +184,11 @@ function InstallerDetail() {
                             <TextField text='List of sites' color={type === "site" ? 'black' : '#C7C7C7'} fontFamily={type === "site" ? 'Mont-Bold' : 'Mont-SemiBold'} fontSize='14px' lineHeight='20px' />
                         </div>
                         <div style={{ cursor: 'pointer' }} onClick={() => setType("consumer")}>
-                            <TextField text='Lists of consumers' color={type === "consumer" ? 'black' : '#C7C7C7'} fontFamily={type === "consumer" ? 'Mont-Bold' : 'Mont-SemiBold'} fontSize='14px' lineHeight='20px' />
+                            <TextField text='Lists of customers' color={type === "consumer" ? 'black' : '#C7C7C7'} fontFamily={type === "consumer" ? 'Mont-Bold' : 'Mont-SemiBold'} fontSize='14px' lineHeight='20px' />
                         </div>
-                        <div style={{ cursor: 'pointer' }} onClick={() => setType("equipment")}>
+                        {/* <div style={{ cursor: 'pointer' }} onClick={() => setType("equipment")}>
                             <TextField text='List of requested equipments' color={type === "equipment" ? 'black' : '#C7C7C7'} fontFamily={type === "equipment" ? 'Mont-Bold' : 'Mont-SemiBold'} fontSize='14px' lineHeight='20px' />
-                        </div>
+                        </div> */}
                     </RowStart>
                     <hr />
 
@@ -56,34 +199,34 @@ function InstallerDetail() {
                             <Payment>
                                 <RowBtw style={{ marginTop: '25px' }}>
                                     <TextField text='Name' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                                    <TextField text='Installer name' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+                                    <TextField text={InstallerDetail?.account?.first_name + " " + InstallerDetail?.account?.last_name} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
                                 </RowBtw>
                                 <RowBtw style={{ marginTop: '25px' }}>
                                     <TextField text='ID' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                                    <TextField text='10101010101' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+                                    <TextField text={InstallerDetail?.account?._id} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
                                 </RowBtw>
                                 <RowBtw style={{ marginTop: '25px' }}>
                                     <TextField text='Address' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                                    <TextField text='Site Address' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+                                    <TextField text={InstallerDetail?.account?.address} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
                                 </RowBtw>
                                 <RowBtw style={{ marginTop: '25px' }}>
                                     <TextField text='Email' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                                    <TextField text='email@installer.com' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+                                    <TextField text={InstallerDetail?.account?.email} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
                                 </RowBtw>
                                 <RowBtw style={{ marginTop: '25px' }}>
                                     <TextField text='Phone No' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                                    <TextField text='0810000000' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+                                    <TextField text={InstallerDetail?.account?.phone} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
                                 </RowBtw>
-                                <RowBtw style={{ marginTop: '25px' }}>
+                                {/* <RowBtw style={{ marginTop: '25px' }}>
                                     <TextField text='Rate' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
                                     <TextField text='N10,000 per hour' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
-                                </RowBtw>
+                                </RowBtw> */}
                             </Payment>
                         </ComponentDiv2>
                         <Menu>
@@ -133,10 +276,19 @@ function InstallerDetail() {
                     </RowStart2>
                     <br/>
                     <br/>
-                    <ButtonTextColored>Create account</ButtonTextColored>
+                    {/* <ButtonTextColored>Create account</ButtonTextColored> */}
                     <br/>
                     <br/>
                 </Card>
+                   }
+
+                   {
+                    type === "site" && <Table columns={columns} dataSource={data} onChange={onChange} />
+              
+                   }
+{
+                    type === "consumer" && <Table columns={columns1} dataSource={data1} onChange={onChange1} />
+              
                    }
 
 

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import Layouts from '../components/Layout'
 import TextField from '../components/TextField'
@@ -9,7 +9,10 @@ import type { ColumnsType, TableProps } from 'antd/es/table';
 import Image from "next/image"
 import { placeholder } from '../assets'
 import InvestorDetailModal from '../components/InvestorDetailModal'
-
+import { useAppDispatch } from '../app/hook'
+import { getInvestorStat } from '../slices/InvestmentSlice'
+import CurrencyFormat from "react-currency-format"
+import moment from 'moment'
 
 interface DataType {
   key: React.Key;
@@ -23,11 +26,26 @@ interface DataType {
 function Investment() {
   const router = useRouter()
   const [detailOpen, setDetailOpen] = useState(false);
+  const [investorData, setInvestorData] = useState(null);
+  const dispatch = useAppDispatch()
+ const [investments, setInvestments] = useState(null)
 
+  useEffect(() => {
+    dispatch(getInvestorStat()).then(data => {
+      setInvestments(data?.payload?.data)
+    })
+  }, [])
 
+  const handleDetailOpen = (data) => {
+    setDetailOpen(true)
+    setInvestorData(data)
+  }
   const handleDetailClose = () => {
     setDetailOpen(false)
+    setInvestorData(null)
   }
+
+ 
 
 
   const columns: ColumnsType<DataType> = [
@@ -35,9 +53,8 @@ function Investment() {
       title: 'Name',
       dataIndex: 'name',
       render: (value, rowIndex) => {
-        var id = rowIndex?.key as number
         return (
-          <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => setDetailOpen(true)}>
+          <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => handleDetailOpen(rowIndex)}>
           <Image src={placeholder} alt='' />
           <div style={{marginLeft: '10px'}}>
            <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
@@ -46,18 +63,18 @@ function Investment() {
        </div>
         );
       },
-      width: '30%',
+      width: '40%',
       responsive: ['lg'],
     },
     {
-      title: 'Type',
+      title: 'No of Plan',
       dataIndex: 'type',
       render: (value) => {
         return (
           <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
-      width: '30%',
+      width: '20%',
       responsive: ['lg'],
     },
     {
@@ -65,7 +82,7 @@ function Investment() {
       dataIndex: 'amount',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
         );
       },
       width: '20%',
@@ -76,7 +93,7 @@ function Investment() {
       dataIndex: 'date',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <TextField text={moment(value).format("MMM Do YY")} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
       width: '20%',
@@ -84,32 +101,17 @@ function Investment() {
     },
   ];
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'Cole Benson',
-      type: "Plan 1",
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      
-    },
-    {
-      key: '2',
-      name: 'Cole Benson',
-      type: "Plan 2",
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      
-    },
-    {
-      key: '3',
-      name: 'Cole Benson',
-      type: "Plan 3",
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      
-    },
-  ];
+  const data = investments?.results?.map(data => {
+    return {
+      key: data?.account?._id,
+      name: data?.account?.first_name + " " + data?.account?.last_name,
+      type: data?.plans?.length,
+      amount: data?.account?.total_wallet_balance,
+      date: data?.account?.createdAt,
+      ...data
+    }
+  })
+  
 
   const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
@@ -130,76 +132,51 @@ function Investment() {
       <RowBtw style={{ background: 'white', padding: '30px 48px' }}>
         <div>
           <TextField text='Total Investment' textAlign='center' color='#424242' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-          <TextField text='N22,000,000' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+          <CurrencyFormat value={investments?.stats?.totalInvestment} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-Bold' fontWeight='bold' fontSize={'22px'} lineHeight='34px' />} />
+         
         </div>
         <div>
           <TextField text='Registerd Investors' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-          <TextField text='200' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+          <TextField text={investments?.stats?.registeredInvestors} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+       
         </div>
         <div>
           <TextField text='Active Investors' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-          <TextField text='200' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+          <TextField text={investments?.stats?.activeInvestors} fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
         </div>
         <div>
           <TextField text='Interest Accrued' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-          <TextField text='N5,000,000' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+          <CurrencyFormat value={investments?.stats?.interestAccrued} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-Bold' fontWeight='bold' fontSize={'22px'} lineHeight='34px' />} />
+         
         </div>
       </RowBtw>
       <ComponentDiv>
         <Row>
-          <Col span={8}>
-            <InvestmentCardOne>
+          {
+            investments?.planStats?.map(data => {
+              return   <Col span={8}>
+            <InvestmentCardOne style={{background: data?.plan === "gold" ? "#EEE9E2" : data?.plan === "diamond" ? "#E0E9F4" : "#EAE9F0"}}>
               <Sub>
                 <SubMenu>
-                  <TextField text='Week' fontSize='8px' />
+                  {/* <TextField text='Week' fontSize='8px' /> */}
                 </SubMenu>
               </Sub>
               <TextField text='Investment Value' color='#1A202C' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='24px' />
-              <TextField text='N5,000,000' fontWeight='bold' fontFamily='Mont-Bold' fontSize='30px' lineHeight='34px' margin='20px 0px' />
+                <CurrencyFormat value={data?.tatalPlanAmount} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontWeight='bold' fontFamily='Mont-Bold' fontSize='30px' lineHeight='34px' margin='20px 0px' />} />
+       
               <RowBtw>
-                <TextField text='20%' color='#7FB519' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
+                <div></div>
+                {/* <TextField text='20%' color='#7FB519' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' /> */}
                 <SubMenu2>
-                  <TextField text='Plan 1' fontWeight='bold' color='white' fontFamily='Mont-SemiBold' fontSize='10px' lineHeight='20px' />
+                  <TextField text={data?.plan} textTransform="capitalize" fontWeight='bold' color='white' fontFamily='Mont-SemiBold' fontSize='10px' lineHeight='20px' />
                 </SubMenu2>
               </RowBtw>
             </InvestmentCardOne>
           </Col>
-          <Col span={8}>
-            <InvestmentCardTwo>
-              <Sub>
-                <SubMenu>
-                  <TextField text='Week' fontSize='8px' />
-                </SubMenu>
-              </Sub>
-              <TextField text='Investment Value' color='#1A202C' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='24px' />
-              <TextField text='N5,000,000' fontWeight='bold' fontFamily='Mont-Bold' fontSize='30px' lineHeight='34px' margin='20px 0px' />
-              <RowBtw>
-                <TextField text='20%' color='#7FB519' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-                <SubMenu3>
-                  <TextField text='Plan 2' fontWeight='bold' color='white' fontFamily='Mont-SemiBold' fontSize='10px' lineHeight='20px' />
-                </SubMenu3>
-              </RowBtw>
-            </InvestmentCardTwo>
-          </Col>
-          <Col span={8}>
-            <InvestmentCardThree>
-              <Sub>
-                <SubMenu>
-                  <TextField text='Week' fontSize='8px' />
-                </SubMenu>
-              </Sub>
-              <TextField text='Investment Value' color='#1A202C' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='24px' />
-              <TextField text='N5,000,000' fontWeight='bold' fontFamily='Mont-Bold' fontSize='30px' lineHeight='34px' margin='20px 0px' />
-              <RowBtw>
-                <TextField text='20%' color='#7FB519' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-                <SubMenu4>
-                  <TextField text='Plan 3' fontWeight='bold' color='white' fontFamily='Mont-SemiBold' fontSize='10px' lineHeight='20px' />
-                </SubMenu4>
-              </RowBtw>
-            </InvestmentCardThree>
-          </Col>
+            })
+          }
         </Row>
-        <br />
+        {/* <br />
         <Row>
           <Col span={12}>
             <InvestmentCardFour>
@@ -230,7 +207,7 @@ function Investment() {
               </RowBtw>
             </InvestmentCardFour>
           </Col>
-        </Row>
+        </Row> */}
         <br />
         <Row>
           <Col md={24} lg={24} xl={15}>
@@ -253,12 +230,12 @@ function Investment() {
                 <TextField text='View All ' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
               </div>
               </RowBtw>
-              <Table columns={columns} dataSource={data} onChange={onChange} />
+           
             </InvestmentCardFour>
           </Col>
         </Row>
 
-        <InvestorDetailModal modalOpen={detailOpen}  handleCancel={handleDetailClose} />
+        <InvestorDetailModal modalOpen={detailOpen}  handleCancel={handleDetailClose} investorData={investorData} />
       </ComponentDiv>
     </Layouts>
   )
@@ -326,7 +303,9 @@ const SubMenu = styled.div`
 const SubMenu2 = styled.div`
 background: #5D54B2;
 border-radius: 25px;
-  width: 45px;
+  min-width: 45px;
+  max-width: 100px;
+  padding: 0px 10px;
   display: flex;
   justify-content: center;
 `

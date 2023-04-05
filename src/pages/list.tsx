@@ -19,7 +19,7 @@ import { createEquipment, deleteEquipment, getEquipment, updateEquipment } from 
 import { EllipsisOutlined } from "@ant-design/icons"
 import { Dropdown, Space } from 'antd';
 import { edit2, trash } from '../assets'
-
+import CurrencyFormat from "react-currency-format"
 
 
 
@@ -48,8 +48,14 @@ function List() {
   const [equipment, setEquipment] = useState<any>()
   const [loader, setLoader] = useState(false)
   const [search, setSearch] = useState("")
+  const [detatilInfo, setDetailInfo] = useState(null)
   const [selectedData, setSelectedData] = useState<any>()
   const [selectedDataEquip, setSelectedDataEquip] = useState<any>()
+
+  const handleDetailOpen = (data) => {
+    setDetailOpen(true)
+    setDetailInfo(data)
+  }
 
   useEffect(() => {
     dispatch(getAppliance()).then(dd => setAppliance(dd?.payload?.data?.appliances))
@@ -77,6 +83,7 @@ function List() {
   }
   const handleDetailClose = () => {
     setDetailOpen(false)
+    setDetailInfo(null)
   }
 
   const handleFormSubmit = async (data) => {
@@ -155,14 +162,18 @@ function List() {
     }
   }
 
-  const handleFormSubmit2 = async (data) => {
+  const handleFormSubmit2 = async (data, file) => {
+    if(!file) {
+      toast.error("File upload is required")
+      return;
+    }
     setLoader(true)
     const payload = {
       equipment_type: data?.equipment_type,
       name: data?.name,
       brand: data?.brand,
       price: parseInt(data?.price),
-      secification_file: data?.secification_file,
+      specification_file: file,
       description: data?.description
     }
 
@@ -207,14 +218,18 @@ function List() {
     }
   }
 
-  const handleEquipmentUpdate = async (data) => {
+  const handleEquipmentUpdate = async (data, file) => {
+    if(!file) {
+      toast.error("File upload is required")
+      return;
+    }
     setLoader(true)
     const payload = {
       equipment_type: data?.equipment_type,
       name: data?.name,
       brand: data?.brand,
       price: parseInt(data?.price),
-      secification_file: data?.secification_file,
+      specification_file: file,
       description: data?.description,
       id: selectedDataEquip.key
     }
@@ -224,7 +239,7 @@ function List() {
       var response = await dispatch(updateEquipment(payload))
       if (updateEquipment.fulfilled.match(response)) {
         toast.success(response?.payload?.message)
-        dispatch(getAppliance()).then(dd => setAppliance(dd?.payload?.data?.appliances))
+        dispatch(getEquipment()).then(dd => setEquipment(dd?.payload?.data?.equipments))
         handleEuipClose()
         setLoader(false)
       }
@@ -297,12 +312,12 @@ function List() {
       render: (value, rowIndex) => {
         var id = rowIndex?.key as number
         return (
-          <div style={{ cursor: 'pointer' }} onClick={() => setDetailOpen(true)}>
+          <div style={{ cursor: 'pointer' }} onClick={() => handleDetailOpen(rowIndex)}>
             <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
           </div>
         );
       },
-      width: '30%',
+      width: '20%',
     },
     {
       title: 'Name',
@@ -312,7 +327,7 @@ function List() {
           <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
-      width: '30%',
+      width: '20%',
     },
     {
       title: 'Description',
@@ -339,7 +354,8 @@ function List() {
       dataIndex: 'price',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
         );
       },
       width: '20%',
@@ -366,7 +382,7 @@ function List() {
       render: (value, rowIndex) => {
         var id = rowIndex?.key as number
         return (
-          <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/loan-details/${id}`)}>
+          <div style={{ cursor: 'pointer' }}>
             <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
           </div>
         );
@@ -378,7 +394,7 @@ function List() {
       dataIndex: 'vottage',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
         );
       },
       width: '30%',
@@ -397,6 +413,8 @@ function List() {
       width: '20%',
     }
   ];
+
+
 
   const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
@@ -417,7 +435,8 @@ function List() {
       name: data?.name,
       description: data?.description,
       brand: data?.brand,
-      price: data?.price
+      price: data?.price,
+      ...data
     }
   })
 
@@ -425,7 +444,8 @@ function List() {
     return {
       key: data?._id,
       type: data?.name,
-      vottage: `N${data?.watts}`
+      vottage: data?.watts,
+      ...data
     }
   })
 
@@ -465,9 +485,9 @@ function List() {
           }
         </Card>
 
-        <AddEquipmentModal modalOpen={equipOpen} handleCancel={() => handleEuipClose()} handleEditSubmit={(info) => handleEquipmentUpdate(info)} handleFormSubmit={(info) => handleFormSubmit2(info)} loader={loader} edit={selectedDataEquip} />
+        <AddEquipmentModal modalOpen={equipOpen} handleCancel={() => handleEuipClose()} handleEditSubmit={(info, file) => handleEquipmentUpdate(info, file)} handleFormSubmit={(info, file) => handleFormSubmit2(info, file)} loader={loader} edit={selectedDataEquip} />
         <AddEquipmentApplianceModal modalOpen={applianceOpen} handleCancel={() => handleApplianceClose()} handleEditSubmit={(info) => handleEditSubmit(info)} handleFormSubmit={(info) => handleFormSubmit(info)} loader={loader} edit={selectedData} />
-        <EquipmentDetail modalOpen={detailOpen} handleCancel={() => handleDetailClose()} />
+        <EquipmentDetail modalOpen={detailOpen} handleCancel={() => handleDetailClose()} info={detatilInfo} />
       </ComponentDiv>
 
       <ToastContainer position='top-center' />

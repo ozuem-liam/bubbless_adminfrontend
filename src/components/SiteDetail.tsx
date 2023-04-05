@@ -3,76 +3,75 @@ import React from 'react'
 import styled from 'styled-components'
 import TextField from './TextField'
 
-function SiteDetail({ modalOpen, handleCancel }) {
+function SiteDetail({ modalOpen, handleCancel, info }) {
+
   return (
     <Modals title="Site details" open={modalOpen} onCancel={handleCancel} footer={null}>
       <Div>
         <TextField text='Name' fontWeight='bold' />
         <Subdiv>
-          <TextField text='Site name' fontWeight='bold' />
+          <TextField text={info?.name} fontWeight='bold' />
         </Subdiv>
       </Div>
       <Div>
         <TextField text='ID' fontWeight='bold' />
         <Subdiv>
-          <TextField text='ID' fontWeight='bold' />
+          <TextField text={info?.id} fontWeight='bold' />
         </Subdiv>
       </Div>
       <Div>
         <TextField text='Address' fontWeight='bold' />
         <Subdiv>
-          <TextField text='Site Address' fontWeight='bold' />
+          <TextField text={info?.site_address} fontWeight='bold' />
         </Subdiv>
       </Div>
       <Div>
         <TextField text='Status' fontWeight='bold' />
         <Subdiv>
-          <TextField text='Active' fontWeight='bold' />
+          <TextField text={info?.status} fontWeight='bold' />
         </Subdiv>
       </Div>
       <Div>
         <TextField text='Consumer name' fontWeight='bold' />
         <Subdiv>
-          <TextField text='Jane Doe'  fontWeight='bold' />
+          <TextField text={info?.consumer_name}  fontWeight='bold' />
         </Subdiv>
       </Div>
       <Div>
         <TextField text='Installer name' fontWeight='bold' />
         <Subdiv>
-          <TextField text='Malcolm Gladwell' fontWeight='bold' />
+          <TextField text={info?.installer} fontWeight='bold' />
         </Subdiv>
 
       </Div>
       <Div>
         <TextField text='Installer ID' fontWeight='bold' />
         <Subdiv>
-          <TextField text='DQ234890ABC' fontWeight='bold' />
+          <TextField text={info?.installer_id} fontWeight='bold' />
         </Subdiv>
 
       </Div>
       <Div>
         <TextField text='Sizing  ID' fontWeight='bold' />
         <Subdiv>
-          <TextField text='DQ234890ABC' fontWeight='bold' />
+          <TextField text={info?.sizing_id} fontWeight='bold' />
         </Subdiv>
 
       </Div>
       <Div></Div>
-      <Div>
-        <TextField text='Equipments on site:' fontWeight='bold' />
+      <TextField text='Equipments' fontWeight='bold' />
+      <ul>
+      {
+        info?.equipmentrequests?.map(data => {
+          return <li>
+             <Div style={{marginTop: '5px'}}>
+        <TextField text={data} fontWeight='bold' />
       </Div>
-      <Div>
-        <TextField text='Equipment 1 ' fontWeight='bold' />
-      </Div>
-      <Div>
-        <TextField text='Equipment 1 ' fontWeight='bold' />
-      </Div>
-      <Div>
-        <TextField text='Equipment 1 ' fontWeight='bold' />
-      </Div>
-      <Div>
-        <TextField text='Equipment 1 ' fontWeight='bold' />
-      </Div>
+          </li>
+        })
+      }
+      </ul>
+    
     </Modals>
   )
 }

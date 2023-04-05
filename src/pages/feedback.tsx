@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Layouts from '../components/Layout'
 import TextField from '../components/TextField'
@@ -7,12 +7,16 @@ import { Row, Col, Table } from "antd"
 import { useRouter } from 'next/router'
 import Image from "next/image"
 import type { ColumnsType, TableProps } from 'antd/es/table';
-import SearchField from '../components/SearchField'
-import AddEquipmentModal from '../components/AddEquipmentModal'
-import AddEquipmentApplianceModal from '../components/AddEquipmentApplianceModal'
-import EquipmentDetail from '../components/EquipmentDetail'
+
 import AddInstaller from '../components/AddInstaller'
 import { placeholder } from '../assets'
+import { useAppDispatch } from '../app/hook'
+import { getFeedback } from '../slices/FeedbackSlice'
+import { Dropdown, Space, Menu } from 'antd';
+import { EllipsisOutlined } from "@ant-design/icons"
+import FeedbackDetail from '../components/FeedbackDetail'
+
+
 
 
 interface DataType {
@@ -29,7 +33,24 @@ function Feedback() {
   const router = useRouter()
   const [type,setType] = useState('equipment')
   const [installerOpen, setInstallerOpen] = useState(false);
+  const [feedbacks, setFeedbacks] = useState(null)
+  const dispatch = useAppDispatch()
+  const [detatilInfo, setDetailInfo] = useState(null)
+  const [detailOpen, setDetailOpen] = useState(false);
 
+  const handleDetailOpen = (data) => {
+    setDetailOpen(true)
+    setDetailInfo(data)
+  }
+
+  const handleDetailClose = () => {
+    setDetailOpen(false)
+  }
+
+
+  useEffect(() => {
+    dispatch(getFeedback()).then(pp => setFeedbacks(pp?.payload?.data))
+  }, [])
 
 
   const handleInstallerClose = () => {
@@ -38,15 +59,20 @@ function Feedback() {
 
 
 
-  const columns: ColumnsType<DataType> = [
+  const columns = [
     {
       title: 'Name',
       dataIndex: 'name',
       render: (value, rowIndex) => {
-        var id = rowIndex?.key as number
+        var id = rowIndex?.installer_id as number
         return (
-          <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => router.push(`/installer-detail/${id}`)}>
-             <Image src={placeholder} alt='' />
+          <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => handleDetailOpen(rowIndex)}>
+             {
+              !rowIndex?.customer_image ? 
+              <Image src={placeholder}  alt=''/>
+              :
+              <Images src={rowIndex?.customer_image } alt='' />
+             }
              <div style={{marginLeft: '10px'}}>
               <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
              </div>
@@ -59,10 +85,15 @@ function Feedback() {
     {
       title: 'Installer name',
       dataIndex: 'consumer',
-      render: (value) => {
+      render: (value, rowIndex) => {
         return (
           <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} >
-          <Image src={placeholder} alt='' />
+            {
+              !rowIndex?.installer_image ? 
+              <Image src={placeholder}  alt=''/>
+              :
+              <Images src={rowIndex?.installer_image } alt='' />
+             }
           <div style={{marginLeft: '10px'}}>
            <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
           </div>
@@ -73,8 +104,8 @@ function Feedback() {
       width: '30%',
     },
     {
-      title: 'Date',
-      dataIndex: 'date',
+      title: 'Message',
+      dataIndex: 'message',
       render: (value) => {
         return (
           <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
@@ -82,30 +113,26 @@ function Feedback() {
       },
       width: '20%',
     },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      render: (value) => {
-        return (
-          <Colored style={{ background: value === "Approved" ? "#AED6C3"  : "#FFD96B", borderRadius: "23px",width: '100px', padding: '10px' }}>
-          <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
-        </Colored>
-        );
-      },
-      width: '20%',
-    },
-    {
-      title: '',
-      dataIndex: '',
-      render: (value) => {
-        return (
-          <Colored style={{width: '100px', padding: '0px' }}>
-          <TextField textAlign='center' textTransform='capitalize' text={'---'} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
-        </Colored>
-        );
-      },
-      width: '20%',
-    }
+    // {
+    //   title: 'Date',
+    //   dataIndex: 'updatedAt',
+    //   render: (value) => {
+    //     return (
+    //       <TextField text={new Date(value)} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+    //     );
+    //   },
+    //   width: '20%',
+    // },
+    // {
+    //   title: '',
+    //   dataIndex: '',
+    //   render: (value) => {
+    //     return (
+    //       <EllipsisOutlined />
+    //     );
+    //   },
+    //   width: '20%',
+    // }
   ];
 
 
@@ -116,30 +143,20 @@ function Feedback() {
 
 
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'Cole Benson',
-      consumer: 'Cole Benson',
+  const data = feedbacks?.map(data => {
+    return {
+      key: data?._id,
+      installer_image: data?.installer_image,
+      installer_id: data?.installer_id,
+      name: data?.installer_name,
+      consumer: data?.customer_name,
+      consumer_image: data?.consumer_image,
       date: "23-06-22",
-      status: 'Approved'
-    },
-    {
-      key: '2',
-      name: 'Cole Benson',
-      consumer: 'Cole Benson',
-      date: "23-06-22",
-      status: 'Pending'
-    },
-    {
-      key: '3',
-      name: 'Cole Benson',
-      consumer: 'Cole Benson',
-      date: "23-06-22",
-      status: 'Approved'
-    },
-   
-  ];
+      status: 'Approved',
+      ...data
+    }
+  })
+  
 
 
 
@@ -181,7 +198,7 @@ function Feedback() {
         </Card>
 
         <AddInstaller modalOpen={installerOpen} handleCancel={() => handleInstallerClose()} />
-
+        <FeedbackDetail modalOpen={detailOpen} handleCancel={() => handleDetailClose()} info={detatilInfo}  />
       </ComponentDiv>
     </Layouts>
   )
@@ -255,4 +272,10 @@ const RowStart = styled.div`
 
 const Colored = styled.div`
 
+`
+
+const Images = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
 `

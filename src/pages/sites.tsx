@@ -36,6 +36,13 @@ function Sites() {
   const dispatch = useAppDispatch()
   const [searchValue, setSearchValue] = useState<string>("")
   const [sitings, setSitings] = useState<any>()
+  const [detatilInfo, setDetailInfo] = useState(null)
+
+
+  const handleDetailOpen = (data) => {
+    setDetailOpen(true)
+    setDetailInfo(data)
+  }
 
   const handleDetailClose = () => {
     setDetailOpen(false)
@@ -52,7 +59,6 @@ function Sites() {
     try {
       var response = await dispatch(deleteSiting(data?.id))
       if(deleteSiting.fulfilled.match(response)) {
-        console.log({response})
         dispatch(getSiting()).then(data => setSitings(data?.payload?.data?.sitings))
           toast.success("Siting deleted successfully")
       }
@@ -100,7 +106,7 @@ function Sites() {
       render: (value, rowIndex) => {
         var id = rowIndex?.key as number
         return (
-          <div style={{ cursor: 'pointer' }} onClick={() => setDetailOpen(true)}>
+          <div style={{ cursor: 'pointer' }} onClick={() => handleDetailOpen(rowIndex)}>
             <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
           </div>
         );
@@ -149,18 +155,19 @@ function Sites() {
       },
       width: '20%',
     },
-    {
-      title: 'Action',
-      dataIndex: '',
-      render: (value) => {
-        return (
-          <Dropdown overlay={menu(value)}>
-            <EllipsisOutlined />
-          </Dropdown>
-        );
-      },
-      width: '20%',
-    }
+    // {
+    //   title: 'Action',
+    //   dataIndex: '',
+    //   render: (value) => {
+    //     return (
+    //       <Dropdown overlay={menu(value)}>
+    //         <EllipsisOutlined />
+    //       </Dropdown>
+
+    //     );
+    //   },
+    //   width: '20%',
+    // }
   ];
 
 
@@ -177,7 +184,8 @@ function Sites() {
       id: data?.id,
       installer: data?.consumer_name,
       installerId: data?.installer_id,
-      status: data?.is_active ? "Active" : "Inactive"
+      status: data?.is_active ? "Active" : "Inactive",
+      ...data
     }
   })
   
@@ -211,7 +219,7 @@ function Sites() {
 
         </Card>
 
-        <SiteDetail modalOpen={detailOpen} handleCancel={() => handleDetailClose()} />
+        <SiteDetail modalOpen={detailOpen} handleCancel={() => handleDetailClose()} info={detatilInfo}  />
       </ComponentDiv>
 
       <ToastContainer />

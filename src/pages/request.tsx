@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Layouts from '../components/Layout'
 import TextField from '../components/TextField'
@@ -12,6 +12,13 @@ import SearchField from '../components/SearchField'
 import AddEquipmentModal from '../components/AddEquipmentModal'
 import AddEquipmentApplianceModal from '../components/AddEquipmentApplianceModal'
 import EquipmentDetail from '../components/EquipmentDetail'
+import { useAppDispatch } from '../app/hook'
+import { getEquipmentRequest, updateRequestStatus } from '../slices/EquipmentSlice'
+import { EllipsisOutlined } from "@ant-design/icons"
+import { Dropdown, Space, Menu } from 'antd';
+import { trash } from '../assets'
+import { toast, ToastContainer } from 'react-toastify'
+import CurrencyFormat from "react-currency-format"
 
 
 interface DataType {
@@ -30,12 +37,93 @@ function Request() {
   const [equipOpen, setEquipOpen] = useState(false);
   const [applianceOpen, setApplianceOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [detatilInfo, setDetailInfo] = useState(null)
+  const dispatch = useAppDispatch()
+  const [requested, setRequested] = useState([])
+  const [procured, setProcured] = useState([])
+  const [delivered, setDelivered] = useState([])
+  const [search, setSearch] = useState("")
 
+
+  useEffect(() => {
+    dispatch(getEquipmentRequest("Request")).then(oo => {
+      console.log("1",{oo})
+      setRequested(oo?.payload?.data)})
+    dispatch(getEquipmentRequest("Procured")).then(oo => {
+        console.log("2",{oo})
+      setProcured(oo?.payload?.data)})
+    dispatch(getEquipmentRequest("Delivered")).then(oo => {
+        console.log("3",{oo})
+      setDelivered(oo?.payload?.data)})
+  }, [])
+
+
+  const filterProc = procured?.filter(data => data?.name.toLowerCase().includes(search.toLowerCase()))
+  const filterDeliver = delivered?.filter(data => data?.name.toLowerCase().includes(search.toLowerCase()))
+  const filterRequest = requested?.filter(data => data?.name.toLowerCase().includes(search.toLowerCase()))
 
 
   const handleDetailClose = () => {
     setDetailOpen(false)
+    setDetailInfo(null)
   }
+  const handleDetailOpen = (data) => {
+    setDetailOpen(true)
+    setDetailInfo(data)
+  }
+
+  const upateRequestStatus = async (data, status) => {
+    const payload = {
+      id: data?.key,
+      status: status,
+    }
+    try {
+      var response = await dispatch(updateRequestStatus(payload))
+      if(updateRequestStatus.fulfilled.match(response)){
+        dispatch(getEquipmentRequest("Request")).then(oo => setRequested(oo?.payload?.data))
+        dispatch(getEquipmentRequest("Procured")).then(oo => setProcured(oo?.payload?.data))
+        dispatch(getEquipmentRequest("Delivered")).then(oo => setDelivered(oo?.payload?.data))
+        toast.success("Update successfull")
+      }
+      else {
+        var errMsg = response?.payload as string
+        toast.error(errMsg)
+      }
+    }
+    catch(e) {
+      console.log({e})
+    }
+  }
+
+  const menu = (data) => (
+    <Menu
+      items={[
+        {
+          key: '2',
+          label: (
+            <Menudiv onClick={() => upateRequestStatus(data, "Procured")}>
+              <TextField text='Update Status' margin='0px 5px' fontSize='12px' />
+            </Menudiv>
+          )
+        }
+      ]}
+    />
+  );
+
+  const menu1 = (data) => (
+    <Menu
+      items={[
+        {
+          key: '2',
+          label: (
+            <Menudiv onClick={() => upateRequestStatus(data, "Delivered")}>
+              <TextField text='Update Status' margin='0px 5px' fontSize='12px' />
+            </Menudiv>
+          )
+        }
+      ]}
+    />
+  );
 
 
   const columns: ColumnsType<DataType> = [
@@ -45,12 +133,12 @@ function Request() {
       render: (value, rowIndex) => {
         var id = rowIndex?.key as number
         return (
-          <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/loan-details/${id}`)}>
+          <div>
             <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
           </div>
         );
       },
-      width: '30%',
+      width: '20%',
     },
     {
       title: 'Supplier',
@@ -60,7 +148,7 @@ function Request() {
           <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
-      width: '30%',
+      width: '20%',
     },
     {
       title: 'Type',
@@ -77,7 +165,8 @@ function Request() {
       dataIndex: 'price',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
         );
       },
       width: '20%',
@@ -87,7 +176,149 @@ function Request() {
         dataIndex: 'status',
         render: (value) => {
           return (
-            <Colored style={{ background: value === "Request" ? "#E0E9F4" : value === "Procurred" ? "#E0E9F4": value === "Delivered" ? "#AED6C3" : "", borderRadius: "23px",width: '100px', padding: '10px' }}>
+            <Colored style={{ background: value === "Request" ? "#E0E9F4" : value === "Procured" ? "#E0E9F4": value === "Delivered" ? "#AED6C3" : "", borderRadius: "23px",width: '100px', padding: '10px' }}>
+              <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
+            </Colored>
+          );
+        }
+    },
+        {
+      title: 'Action',
+      dataIndex: '',
+      render: (value) => {
+        return (
+          <Dropdown overlay={menu(value)}>
+            <EllipsisOutlined />
+          </Dropdown>
+
+        );
+      },
+      width: '20%',
+    }
+  ];
+
+  const columns1: ColumnsType<DataType> = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      render: (value, rowIndex) => {
+        var id = rowIndex?.key as number
+        return (
+          <div>
+            <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          </div>
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Supplier',
+      dataIndex: 'supplier',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Price',
+      dataIndex: 'price',
+      render: (value) => {
+        return (
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
+        );
+      },
+      width: '20%',
+    },
+    {
+        title: 'Status',
+        dataIndex: 'status',
+        render: (value) => {
+          return (
+            <Colored style={{ background: value === "Request" ? "#E0E9F4" : value === "Procured" ? "#E0E9F4": value === "Delivered" ? "#AED6C3" : "", borderRadius: "23px",width: '100px', padding: '10px' }}>
+              <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
+            </Colored>
+          );
+        }
+    },
+        {
+      title: 'Action',
+      dataIndex: '',
+      render: (value) => {
+        return (
+          <Dropdown overlay={menu1(value)}>
+            <EllipsisOutlined />
+          </Dropdown>
+
+        );
+      },
+      width: '20%',
+    }
+  ];
+
+  const columns2: ColumnsType<DataType> = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      render: (value, rowIndex) => {
+        var id = rowIndex?.key as number
+        return (
+          <div>
+            <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          </div>
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Supplier',
+      dataIndex: 'supplier',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+      render: (value) => {
+        return (
+          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+        );
+      },
+      width: '20%',
+    },
+    {
+      title: 'Price',
+      dataIndex: 'price',
+      render: (value) => {
+        return (
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
+        );
+      },
+      width: '20%',
+    },
+    {
+        title: 'Status',
+        dataIndex: 'status',
+        render: (value) => {
+          return (
+            <Colored style={{ background: value === "Request" ? "#E0E9F4" : value === "Procured" ? "#E0E9F4": value === "Delivered" ? "#AED6C3" : "", borderRadius: "23px",width: '100px', padding: '10px' }}>
               <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
             </Colored>
           );
@@ -102,90 +333,40 @@ function Request() {
   };
 
 
+  const data = filterRequest?.map(data => {
+    return  {
+      key: data._id,
+      name: data?.name,
+      supplier: data?.supplier,
+      type: data?.equipment_type,
+      price: `N${data?.price}`,
+      status: data?.status
+    }
+  })
+  
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'Solar panel',
-      supplier: 'Adex Ltd',
-      type: "Lorem Ipsum",
-      price: "N1,000,000",
-      status: "Request"
-    },
-    {
-        key: '1',
-        name: 'Solar panel',
-        supplier: 'Adex Ltd',
-        type: "Lorem Ipsum",
-        price: "N1,000,000",
-        status: "Request"
-      },
-      {
-        key: '1',
-        name: 'Solar panel',
-        supplier: 'Adex Ltd',
-        type: "Lorem Ipsum",
-        price: "N1,000,000",
-        status: "Request"
-      },
-
-  ];
-
-  const data2: DataType[] = [
-    {
-      key: '1',
-      name: 'Solar panel',
-      supplier: 'Adex Ltd',
-      type: "Lorem Ipsum",
-      price: "N1,000,000",
-      status: "Procurred"
-    },
-    {
-        key: '1',
-        name: 'Solar panel',
-        supplier: 'Adex Ltd',
-        type: "Lorem Ipsum",
-        price: "N1,000,000",
-        status: "Procurred"
-      },
-      {
-        key: '1',
-        name: 'Solar panel',
-        supplier: 'Adex Ltd',
-        type: "Lorem Ipsum",
-        price: "N1,000,000",
-        status: "Procurred"
-      },
-
-  ];
-  const data3: DataType[] = [
-    {
-      key: '1',
-      name: 'Solar panel',
-      supplier: 'Adex Ltd',
-      type: "Lorem Ipsum",
-      price: "N1,000,000",
-      status: "Delivered"
-    },
-    {
-        key: '1',
-        name: 'Solar panel',
-        supplier: 'Adex Ltd',
-        type: "Lorem Ipsum",
-        price: "N1,000,000",
-        status: "Delivered"
-      },
-      {
-        key: '1',
-        name: 'Solar panel',
-        supplier: 'Adex Ltd',
-        type: "Lorem Ipsum",
-        price: "N1,000,000",
-        status: "Delivered"
-      },
-
-  ];
+  const data2 = filterProc?.map(data => {
+    return  {
+      key: data._id,
+      name: data?.name,
+      supplier: data?.supplier,
+      type: data?.equipment_type,
+      price: `N${data?.price}`,
+      status: data?.status
+    }
+  })
  
+  const data3 = filterDeliver?.map(data => {
+    return  {
+      key: data._id,
+      name: data?.name,
+      supplier: data?.supplier,
+      type: data?.equipment_type,
+      price: `N${data?.price}`,
+      status: data?.status
+    }
+  })
+
 
   return (
     <Layouts>
@@ -209,7 +390,7 @@ function Request() {
               </div>
             </RowStart>
             <SmallDiv>
-              <SearchField placeholder={'Search by name, email or ID'} value={''} handleChange={() => {}} />
+              <SearchField placeholder={'Search by name, email or ID'} value={search} handleChange={(e) => setSearch(e.target.value)} />
             </SmallDiv>
           </RowBtw>
          {
@@ -217,15 +398,17 @@ function Request() {
          }
 
 {
-          type === "procured" &&  <Table columns={columns} dataSource={data2} onChange={onChange} />
+          type === "procured" &&  <Table columns={columns1} dataSource={data2} onChange={onChange} />
          }
          {
-          type === "delivered" &&  <Table columns={columns} dataSource={data3} onChange={onChange} />
+          type === "delivered" &&  <Table columns={columns2} dataSource={data3} onChange={onChange} />
          }
         </Card>
 
-        <EquipmentDetail  modalOpen={detailOpen} handleCancel={() => handleDetailClose()} />
+        <EquipmentDetail  modalOpen={detailOpen} handleCancel={() => handleDetailClose()} info={detatilInfo}  />
       </ComponentDiv>
+
+      <ToastContainer />
     </Layouts>
   )
 }
@@ -298,4 +481,9 @@ const RowStart = styled.div`
 
 const Colored = styled.div`
 
+`
+
+const Menudiv = styled.div`
+  display: flex;
+  align-items: center;
 `

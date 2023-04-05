@@ -29,11 +29,18 @@ interface DataType {
 function AllInvestors() {
     const [type, setType] = useState('control')
     const [detailOpen, setDetailOpen] = useState(false);
+    const [investorData, setInvestorData] = useState(null);
 
 
-    const handleDetailClose = () => {
-      setDetailOpen(false)
-    }
+
+    const handleDetailOpen = (data) => {
+    setDetailOpen(true)
+    setInvestorData(data)
+  }
+  const handleDetailClose = () => {
+    setDetailOpen(false)
+    setInvestorData(null)
+  }
   
 
 
@@ -44,7 +51,7 @@ function AllInvestors() {
             render: (value, rowIndex) => {
                 var id = rowIndex?.key as number
                 return (
-                    <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => setDetailOpen(true)}>
+                    <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => handleDetailOpen(rowIndex)}>
                     <Image src={placeholder} alt='' />
                     <div style={{marginLeft: '10px'}}>
                      <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
@@ -131,7 +138,7 @@ function AllInvestors() {
 
 
 
-                <InvestorDetailModal modalOpen={detailOpen}  handleCancel={handleDetailClose} />
+                <InvestorDetailModal modalOpen={detailOpen}  handleCancel={handleDetailClose} investorData={investorData} />
             </ComponentDiv>
         </Layouts>
     )

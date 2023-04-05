@@ -892,7 +892,7 @@ mime-types@^2.1.12:
   dependencies:
     mime-db "1.52.0"
 
-moment@^2.24.0, moment@^2.29.2:
+moment@^2.24.0, moment@^2.29.2, moment@^2.29.4:
   version "2.29.4"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
   integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
@@ -982,7 +982,7 @@ postcss@8.4.14:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
-prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -1372,6 +1372,13 @@ rc-virtual-list@^3.2.0, rc-virtual-list@^3.4.8:
     classnames "^2.2.6"
     rc-resize-observer "^1.0.0"
     rc-util "^5.15.0"
+
+react-currency-format@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-currency-format/-/react-currency-format-1.1.0.tgz#efef7f18045fc09a987de270b144f5eec8801dab"
+  integrity sha512-WWrEOIp/3GbDSk1wlhFXaBc7IHGT3IwL306DHbGP3GVr4YFa0iS5hHPbKjHa0haruGL4Ly+WG4/5jBHpUtgqZg==
+  dependencies:
+    prop-types "^15.6.0"
 
 react-dom@18.2.0:
   version "18.2.0"

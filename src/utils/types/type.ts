@@ -16,21 +16,54 @@ export type ResetFormData = {
     email: string;
 }
 
+export type LoanConfig = {
+    number: number,
+    period: string,
+    interest_rate: number,
+    min_value: number, 
+    max_value: number
+}
+
+export type InstallationConfig = {
+    name: string,
+    value: number,
+    cost_type: string
+}
+
+export type InvestmentConfig = {
+    name: string,
+    number: number,
+    period: string, 
+    interest_rate: number, 
+    min_value: number, 
+    max_value: number
+}
+
+export type InstallerType = {
+    first_name: string, 
+    last_name: string, 
+    password: string,
+    email: string, 
+    phone: number, 
+    business_name: string, 
+    address: string, 
+    user_type: string, 
+}
+
 export type EquipmentType = {
     equipment_type: string, 
     name: string, 
     brand: string, 
     price: number, 
-    secification_file: string, 
     description: string
 }
 
 export type SignupType = {
     email: string;
     password: string;
-    fName: string;
-    lName: string;
-    // mobile: string;
+    firstName: string;
+    lastName: string;
+    mobile: string;
 
 }
 export type LoginState = {
@@ -69,7 +102,7 @@ export type InputType = {
     isMultiline?: boolean,
     isPassword?: boolean,
     disabled?: boolean,
-    type?: string,
+    number?: boolean,
     required?: boolean,
     handleClick?: (value?: any) => void,
     onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
@@ -79,6 +112,7 @@ export type InputType = {
 
 export type TextProps = {
     text: string;
+    onClick?: (value?: any) => void;
     fontSize?: string;
     textAlign?: 'left' | 'right' | 'center' | 'justify';
     color?: string;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Layouts from '../components/Layout'
 import TextField from '../components/TextField'
@@ -8,11 +8,14 @@ import { useRouter } from 'next/router'
 import Image from "next/image"
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import SearchField from '../components/SearchField'
-import AddEquipmentModal from '../components/AddEquipmentModal'
-import AddEquipmentApplianceModal from '../components/AddEquipmentApplianceModal'
-import EquipmentDetail from '../components/EquipmentDetail'
+
 import AddInstaller from '../components/AddInstaller'
 import { placeholder } from '../assets'
+import { useAppDispatch } from '../app/hook'
+import { getInstaller } from '../slices/InstallerSlice'
+import { Email } from '@material-ui/icons'
+import { Dropdown, Space, Menu } from 'antd';
+import { EllipsisOutlined } from "@ant-design/icons"
 
 
 interface DataType {
@@ -21,7 +24,8 @@ interface DataType {
   consumer: number;
   site: number;
   equipment: number;
-  status: string
+  status: string,
+  email: string
 }
 
 
@@ -30,16 +34,40 @@ function Installer() {
   const router = useRouter()
   const [type,setType] = useState('equipment')
   const [installerOpen, setInstallerOpen] = useState(false);
+  const dispatch = useAppDispatch()
+ const [installer, setInstaller] = useState([])
+ const [search, setSearch] = useState("")
+
 
 
 
   const handleInstallerClose = () => {
     setInstallerOpen(false)
+    dispatch(getInstaller()).then(data => setInstaller(data?.payload?.data?.result))
   }
 
 
+  useEffect(() => {
+    dispatch(getInstaller()).then(data => setInstaller(data?.payload?.data?.result))
+  }, [])
 
-  const columns: ColumnsType<DataType> = [
+
+
+  const menu = (data) => (
+    <Menu
+      items={[
+        {
+          key: '1',
+          
+        },
+
+      ]}
+    />
+  );
+
+
+
+  const columns = [
     {
       title: 'Name',
       dataIndex: 'name',
@@ -47,16 +75,21 @@ function Installer() {
         var id = rowIndex?.key as number
         return (
           <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => router.push(`/installer-detail/${id}`)}>
-             <Image src={placeholder} alt='' />
+             {
+              rowIndex?.image?.length < 1 ?
+              <Image src={placeholder} alt=''  />
+              :  <img src={rowIndex?.image} alt='' width={40} height={40} style={{borderRadius: "50%"}} />
+             }
+            
              <div style={{marginLeft: '10px'}}>
               <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
-              <TextField text={'adewalemusa@gmail.com'} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' margin='-5px 0px 0px 0px' color='#90A3BF' />
+              <TextField text={rowIndex?.email} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' margin='-5px 0px 0px 0px' color='#90A3BF' />
              </div>
             
           </div>
         );
       },
-      width: '30%',
+      width: '40%',
     },
     {
       title: 'Consumer',
@@ -66,7 +99,7 @@ function Installer() {
           <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
-      width: '30%',
+      width: '20%',
     },
     {
       title: 'Site',
@@ -78,16 +111,16 @@ function Installer() {
       },
       width: '20%',
     },
-    {
-      title: 'Equipment',
-      dataIndex: 'equipment',
-      render: (value) => {
-        return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
-        );
-      },
-      width: '20%',
-    },
+    // {
+    //   title: 'Equipment',
+    //   dataIndex: 'equipment',
+    //   render: (value) => {
+    //     return (
+    //       <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+    //     );
+    //   },
+    //   width: '20%',
+    // },
     {
       title: 'Status',
       dataIndex: 'status',
@@ -100,18 +133,18 @@ function Installer() {
       },
       width: '20%',
     },
-    {
-      title: '',
-      dataIndex: '',
-      render: (value) => {
-        return (
-          <Colored style={{width: '100px', padding: '0px' }}>
-          <TextField textAlign='center' textTransform='capitalize' text={'---'} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
-        </Colored>
-        );
-      },
-      width: '20%',
-    }
+    // {
+    //   title: '',
+    //   dataIndex: '',
+    //   render: (value) => {
+    //     return (
+    //       <Dropdown overlay={menu(value)}>
+    //       <EllipsisOutlined />
+    //     </Dropdown>
+    //     );
+    //   },
+    //   width: '20%',
+    // }
   ];
 
 
@@ -121,35 +154,24 @@ function Installer() {
   };
 
 
+  const filterInstaller = installer?.filter(data => data?.account.first_name.toLowerCase().includes(search.toLowerCase()) || data?.account?.last_name.toLowerCase().includes(search.toLowerCase())) 
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'Cole Benson',
-      consumer: 2,
-      site: 4,
-      equipment: 10,
-      status: 'Approved'
-    },
-    {
-      key: '2',
-      name: 'Cole Benson',
-      consumer: 2,
-      site: 4,
-      equipment: 10,
-      status: 'Pending'
-    },
-    {
-      key: '3',
-      name: 'Cole Benson',
-      consumer: 2,
-      site: 4,
-      equipment: 10,
-      status: 'Approved'
-    },
-   
-  ];
-
+  const data = filterInstaller?.map(dd => {
+    return  {
+      key: dd?.account?._id,
+      image: dd?.account?.company_logo,
+      name: dd?.account?.last_name + " " + dd?.account?.first_name,
+      email: dd?.account?.email,
+      consumer: dd?.customers?.length,
+      site: dd?.sitings?.length,
+      status: dd?.account?.status,
+      ...dd
+    }
+  })
+  
+  
+  
+  
 
 
   const rowSelection = {
@@ -185,7 +207,7 @@ function Installer() {
               </div>
             </RowStart>
             <SmallDiv>
-              <SearchField value={'value'} handleChange={() => console.log("log")} placeholder={'Search by name, email or ID'} />
+              <SearchField  value={search} handleChange={(e) => setSearch(e.target.value)} placeholder={'Search by name, email or ID'} />
             </SmallDiv>
           </RowBtw>
 

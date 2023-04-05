@@ -11,7 +11,7 @@ import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Sizes } from '../utils/constant/constant';
 
 
-const PhoneInputs= ({ label, onChange, value, errorMsg, handleTextChange,  }) => {
+const PhoneInputs= ({ label, value, errorMsg, handleTextChange,  }) => {
   
 
     return (
@@ -20,7 +20,7 @@ const PhoneInputs= ({ label, onChange, value, errorMsg, handleTextChange,  }) =>
             <PhoneInputField
                     country={'us'}
                     value={value}
-                    onChange={phone => console.log(phone)}
+                    onChange={phone => handleTextChange(phone)}
                     inputStyle={{
                         width: '100%',
                         border: 'none'
@@ -33,6 +33,11 @@ const PhoneInputs= ({ label, onChange, value, errorMsg, handleTextChange,  }) =>
                         border: 'none'
                     }}
                 />
+                  {errorMsg !== undefined ? (
+                <ErrorDiv>
+                    <Text>{errorMsg}</Text>
+                </ErrorDiv>
+            ) : null}
         </Container>
 
 
@@ -76,4 +81,13 @@ const PhoneInputField = styled(PhoneInput)`
 width: 100%;
 border: 1px solid #D1D1D1;
 border-radius: 16px;
+`
+
+const ErrorDiv = styled.div`
+  margin-top: 5px;
+`
+const Text = styled.p`
+  font-size: 12px;
+  color: red;
+  text-transform: capitalize
 `

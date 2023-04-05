@@ -1,7 +1,7 @@
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { info, more, pic, square, star } from '../../assets'
+import { info, loan, more, pic, square, star } from '../../assets'
 import Button from '../../components/Button'
 import Layouts from '../../components/Layout'
 import TextField from '../../components/TextField'
@@ -9,13 +9,51 @@ import Image from 'next/image'
 import { Colors } from '../../utils/constant/constant'
 import { Row, Col } from "antd"
 import TextInput from '../../components/TextInput'
-
+import { useRouter } from 'next/router'
+import { useAppDispatch } from '../../app/hook'
+import { getLoan, getUserLoanDetail, updateLoanStatus } from '../../slices/LoanSlice'
+import { toast } from 'react-toastify'
+import CurrencyFormat from "react-currency-format"
 
 
 
 
 function loanDetails() {
   const [type, setType] = useState('kyc')
+  const router = useRouter()
+  const [loanDetail, setLoanDetail] = useState<any>()
+  const dispatch = useAppDispatch()
+  const id = router?.query?.id as string
+
+  useEffect(() => {
+
+    dispatch(getUserLoanDetail(id)).then(pp => setLoanDetail(pp?.payload?.data))
+
+  }, [id])
+
+
+  const updateStatus = async(data) => {
+    const payload = {
+      id: id,
+      status: data
+    }
+    try {
+      var response = await dispatch(updateLoanStatus(payload))
+      console.log({response})
+      if(updateLoanStatus.fulfilled.match(response)){
+        toast.success("Status updated successfully")
+        dispatch(getUserLoanDetail(id)).then(pp => setLoanDetail(pp?.payload?.data))
+      }
+      else {
+        var errMsg = response?.payload as string
+        toast.error(errMsg)
+      }
+    }
+    catch(e) {
+      console.log({e})
+    }
+  }
+
 
 
 
@@ -25,9 +63,11 @@ function loanDetails() {
         <View>
           <TextField text='Loans details' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
           <Div>
-            <ButtonText>Decline</ButtonText>
-            <EmptyDiv></EmptyDiv>
-            <ButtonTextColored>Approved</ButtonTextColored>
+            {
+              loanDetail?.loan?.status === "approved" ? <ButtonText onClick={() => updateStatus("rejected")}>Decline</ButtonText>
+              : <ButtonTextColored onClick={() => updateStatus("approved")}>Approved</ButtonTextColored>
+            }
+           
           </Div>
         </View>
       </ComponentDiv>
@@ -37,12 +77,14 @@ function loanDetails() {
           <Contain>
             <div>
               <TextField text='Loan Amount' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-              <TextField text='N200,000' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+              <CurrencyFormat value={loanDetail?.loan?.loan_amount} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'22px'} lineHeight='34px' />} />
+           
             </div>
             <EmptyContain></EmptyContain>
             <div>
               <TextField text='Loan Amount' textAlign='center' color='#C7C7C7' fontFamily='Mont-SemiBold' fontSize='14px' lineHeight='34px' />
-              <TextField text='N200,000' fontWeight='bold' fontFamily='Mont-Bold' fontSize='22px' lineHeight='34px' />
+              <CurrencyFormat value={loanDetail?.loan?.loan_amount} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'22px'} lineHeight='34px' />} />
+           
             </div>
           </Contain>
           <RowContain>
@@ -86,38 +128,41 @@ function loanDetails() {
         type === "kyc" && <ComponentDiv2>
           <Container style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Row1>
-              <TextInput label={'First name'} value={''} />
-              <TextInput label={'Last name'} value={''} />
-              <TextInput label={'Email'} value={''} />
-              <TextInput label={'Phone number'} value={''} />
-              <TextInput label={'Income'} value={''} />
-              <TextInput label={'BVN'} value={''} />
-              <TextInput label={'Business name'} value={''} />
-              <TextInput label={'Business Address'} value={''} />
+              <TextInput label={'First name'} value={loanDetail?.customer?.first_name} />
+              <TextInput label={'Last name'} value={loanDetail?.customer?.last_name} />
+              <TextInput label={'Email'} value={loanDetail?.customer?.email} />
+              <TextInput label={'Phone number'} value={loanDetail?.customer?.phone} />
+              {/* <TextInput label={'Income'} value={''} /> */}
+              <TextInput label={'BVN'} value={loanDetail?.loan?.bvn} />
+              <TextInput label={'Business name'} value={loanDetail?.installer?.business_name} />
+              <TextInput label={'Business Address'} value={loanDetail?.installer?.address}  />
             </Row1>
             <Row2>
               <MenuDiv>
-                <Img src={"https://res.cloudinary.com/doouwbecx/image/upload/v1659633074/1_ktfkhp.png"} alt='' />
+                <Img src={ loanDetail?.loan?.profile_image?.length > 1 ? loanDetail?.loan?.profile_image : "https://res.cloudinary.com/doouwbecx/image/upload/v1659633074/1_ktfkhp.png"} alt='' />
 
                 <SubmitDiv>
                   <SubmitDiv2>
                     <TextField text='Submitted documents' fontSize={'14px'} lineHeight='20px' fontWeight='bold' fontFamily='Mont-SemiBold' />
                   </SubmitDiv2>
                   <Box>
+                  <a href={loanDetail?.loan?.bank_statement} target="_blank">
                     <Sub3>
                       <div style={{ width: '80%' }}>
-                        <TextField text='Consumer Credit Report' fontSize={'10px'} color={'#54A6FF'} />
+                        <TextField text='Bank Statement' fontSize={'10px'} color={'#54A6FF'} />
                       </div>
                       <Image src={square} alt='' />
                       <Image src={more} alt='' />
                     </Sub3>
-                    <Sub3>
+                    </a>
+                    {/* <Sub3>
                       <div style={{ width: '80%' }}>
-                        <TextField text='Consumer Credit Report' fontSize={'10px'} color={'#54A6FF'} />
+                        <TextField text='Identification' fontSize={'10px'} color={'#54A6FF'} />
                       </div>
                       <Image src={square} alt='' />
                       <Image src={more} alt='' />
                     </Sub3>
+                 */}
                   </Box>
                 </SubmitDiv>
               </MenuDiv>
@@ -133,36 +178,40 @@ function loanDetails() {
               <RowStart>
                 <Image src={star} alt='' />
                 <div style={{ marginLeft: '10px' }}>
-                  <TextField text='3 months' fontSize='20px' lineHeight='21px' fontFamily='Mont-Bold' />
-                  <TextField text='Interest rate @ 3%' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' margin='5px 0px 0px 0px' />
+                  <TextField text={`${loanDetail?.loan?.payment_plan?.length} months`} fontSize='20px' lineHeight='21px' fontFamily='Mont-Bold' />
+                  <TextField text={`Interest rate @ ${loanDetail?.loan?.loan_interest_rate}% `} fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' margin='5px 0px 0px 0px' />
                 </div>
               </RowStart>
               <div>
-                <TextField text='N85,000/month' fontSize='20px' lineHeight='21px' fontFamily='Mont-Bold' />
-                <TextField text='Total: 87,500' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' margin='5px 0px 0px 0px' />
+                <CurrencyFormat value={loanDetail?.loan?.loan_amount / loanDetail?.loan?.payment_plan?.length} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value} months`} fontFamily='Mont-SemiBold' fontSize={'20px'} lineHeight='21px' />} />
+           
+                <CurrencyFormat value={loanDetail?.loan?.loan_amount} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`Total ${value}`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='17px' />} />
+           
               </div>
             </RowBtw>
           </Payment>
           <Payment>
-            <TextField text='3 months plan repayment breakdown' fontSize='16px' lineHeight='19px' fontFamily='Mont-Bold' />
+            <TextField text={`${loanDetail?.loan?.payment_plan?.length} months plan repayment breakdown`} fontSize='16px' lineHeight='19px' fontFamily='Mont-Bold' />
             <Hr2 />
             <TextField text='Payment schedule' fontSize='16px' lineHeight='19px' fontFamily='Mont-Bold' />
-            <RowBtw style={{ marginTop: '15px' }}>
-              <TextField text='Month one' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='N85,000.00' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-            </RowBtw>
-            <RowBtw style={{ marginTop: '15px' }}>
-              <TextField text='Month two' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='N85,000.00' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-            </RowBtw>
-            <RowBtw style={{ marginTop: '15px' }}>
-              <TextField text='Month month' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='N85,000.00' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-            </RowBtw>
-            <RowBtw style={{ marginTop: '15px', background: '#E0E9F4', padding: '10px 5px' }}>
-              <TextField text='Total' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
-              <TextField text='N85,000.00' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
-            </RowBtw>
+            {
+              React.Children.toArray(
+                loanDetail?.loan?.payment_plan?.map((data, i) => {
+                  return (
+                    <RowBtw style={{ marginTop: '15px' }}>
+                       <div style={{width: "100px"}}>
+                    <TextField text={`Month ${i + 1}`} fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
+                       </div>
+                    <CurrencyFormat value={data?.monthly_payout} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='17px' />} />
+                    <div style={{width: "100px"}}>
+                    <TextField text={data?.payment_status} fontSize='14px' textTransform='capitalize' lineHeight='17px' fontFamily='Mont-SemiBold' />
+                  </div>
+                  </RowBtw>
+                  )
+                })
+              )
+            }
+      
           </Payment>
         </ComponentDiv2>
       }
@@ -179,71 +228,40 @@ function loanDetails() {
                   <TextField text='Quantity' fontSize='14px' textAlign='center' lineHeight='17px' fontFamily='Mont-SemiBold' />
                 </th>
                 <th style={{ width: '150px' }}>
-                  <TextField text='Hour on per day' textAlign='right' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
+                  <TextField text='Price' textAlign='right' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
                 </th>
               </tr>
-              <tr style={{ height: '50px' }}>
+              {
+               loanDetail?.equipmentRequest?.map(data => {
+                return  <tr style={{ height: '50px' }}>
                 <td style={{ width: '150px' }}>
-                  <TextField text='Equipment' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
+                  <TextField text={data?.name} fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
                 </td>
                 <td style={{ width: '150px' }}>
-                  <TextField text='12' fontSize='14px' textAlign='center' lineHeight='17px' fontFamily='Mont-SemiBold' />
+                  <TextField text={data?.quantity} fontSize='14px' textAlign='center' lineHeight='17px' fontFamily='Mont-SemiBold' />
                 </td>
                 <td style={{ width: '150px' }}>
-                  <TextField text='12H' fontSize='14px' textAlign='right' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-              </tr>
-              <tr style={{ height: '50px' }}>
-                <td style={{ width: '150px' }}>
-                  <TextField text='Equipment' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-                <td style={{ width: '150px' }}>
-                  <TextField text='12' fontSize='14px' textAlign='center' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-                <td style={{ width: '150px' }}>
-                  <TextField text='12H' fontSize='14px' textAlign='right' lineHeight='17px' fontFamily='Mont-SemiBold' />
+                  <CurrencyFormat value={data?.price} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} textAlign='right' fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='17px' />} />
                 </td>
               </tr>
-              <tr style={{ height: '50px' }}>
-                <td style={{ width: '150px' }}>
-                  <TextField text='Equipment' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-                <td style={{ width: '150px' }}>
-                  <TextField text='12' fontSize='14px' textAlign='center' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-                <td style={{ width: '150px' }}>
-                  <TextField text='12H' fontSize='14px' textAlign='right' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-              </tr>
-              <tr style={{ height: '50px' }}>
-                <td style={{ width: '150px' }}>
-                  <TextField text='Equipment' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-                <td style={{ width: '150px' }}>
-                  <TextField text='12' fontSize='14px' textAlign='center' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-                <td style={{ width: '150px' }}>
-                  <TextField text='12H' fontSize='14px' textAlign='right' lineHeight='17px' fontFamily='Mont-SemiBold' />
-                </td>
-              </tr>
+               })
+              }
+
             </table>
 
             <Hr2 />
             <TextField text='Energy Summary' fontSize='12px' lineHeight='18px' fontFamily='Mont-Bold' />
             <Hr3 />
+            
             <RowBtw style={{ marginTop: '15px' }}>
               <TextField text='Total Watt (Peak Load)' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='1200W' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
-
+              <CurrencyFormat value={loanDetail?.sizing?.total_watts} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}W`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
             </RowBtw>
             <RowBtw style={{ marginTop: '15px' }}>
               <TextField text='Total Watt Hour / day' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='1200W' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
-
-            </RowBtw>
-            <RowBtw style={{ marginTop: '15px' }}>
-              <TextField text='Kilowat Hours /  month' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='75000KW' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <CurrencyFormat value={loanDetail?.sizing?.total_watts_per_hour} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={`${value}W`} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+         
 
             </RowBtw>
           </Payment>
@@ -255,34 +273,34 @@ function loanDetails() {
           <Payment>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Name' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='Installer name' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?.last_name + " " + loanDetail?.installer?.first_name} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='ID' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='10101010101' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?._id} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Address' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='Site Address' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?.address} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Email' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='email@installer.com' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?.email} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Phone No' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='0810000000' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?.phone} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
-            <RowBtw style={{ marginTop: '25px' }}>
+            {/* <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Rate' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
               <TextField text='N10,000 per hour' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
-            </RowBtw>
+            </RowBtw> */}
           </Payment>
         </ComponentDiv2>
       }
@@ -294,34 +312,34 @@ function loanDetails() {
           <Payment>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Name' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='Installer name' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?.last_name + " " + loanDetail?.installer?.first_name} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='ID' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='10101010101' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?._id} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Address' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='Site Address' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?.address} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Email' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='email@installer.com' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?.email} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
             <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Phone No' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
-              <TextField text='0810000000' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
+              <TextField text={loanDetail?.installer?.phone} fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
             </RowBtw>
-            <RowBtw style={{ marginTop: '25px' }}>
+            {/* <RowBtw style={{ marginTop: '25px' }}>
               <TextField text='Rate' fontSize='14px' lineHeight='17px' fontFamily='Mont-SemiBold' />
               <TextField text='N10,000 per hour' fontSize='14px' lineHeight='17px' fontFamily='Mont-Bold' />
 
-            </RowBtw>
+            </RowBtw> */}
           </Payment>
         </ComponentDiv2>
       }
@@ -348,7 +366,7 @@ const Div = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 300px;
+  width: 200px;
 `
 const EmptyDiv = styled.div`
   width: 50px;
@@ -362,11 +380,11 @@ background: white;
 `
 
 const ButtonText = styled.button`
-    background: white;
+    background: red;
     width: 100%;
     padding: 10px;
     font-size: 14px;
-    color: black;
+    color: white;
     border: none;
     border-radius: 10px;
     cursor: pointer;

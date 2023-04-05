@@ -6,11 +6,12 @@ import TextField from '../components/TextField'
 import { Colors } from '../utils/constant/constant'
 import { Row, Col, Table } from "antd"
 import Image from 'next/image'
-
+import CurrencyFormat from "react-currency-format"
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import { useRouter } from 'next/router'
 import { useAppDispatch } from '../app/hook'
-import { getLoan } from '../slices/LoanSlice'
+import { getLoan, getLoanStat } from '../slices/LoanSlice'
+import moment from 'moment'
 
 
 interface DataType {
@@ -41,12 +42,27 @@ function Loan() {
   const [type, setType] = useState('request')
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const [loans, setLoans] = useState<any>()
+  const [approvedLoans, setApprovedLoans] = useState<any>()
+  const [pendingLoans, setPendingLoans] = useState<any>()
+  const [rejectedLoans, setRejectedLoans] = useState<any>()
+  const [loanStat, setLoanStat] = useState<any>()
 
 
   useEffect(() => {
-    dispatch(getLoan()).then(dd => setLoans(dd?.payload?.data?.loans))
+    dispatch(getLoanStat()).then(dd => {
+      setLoanStat(dd?.payload?.stats)
+    })
+    dispatch(getLoan("approved")).then(dd => {
+      setApprovedLoans(dd?.payload?.data)
+    })
+    dispatch(getLoan("rejected")).then(dd => {
+      setRejectedLoans(dd?.payload?.data)
+    })
+    dispatch(getLoan("pending")).then(dd => {
+      setPendingLoans(dd?.payload?.data)
+    })
   }, [])
+
 
   const columns: ColumnsType<DataType> = [
     {
@@ -67,7 +83,8 @@ function Loan() {
       dataIndex: 'amount',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
+            
         );
       },
       width: '30%',
@@ -77,7 +94,7 @@ function Loan() {
       dataIndex: 'date',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <TextField text={moment(value).format("MMM Do YY")} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
       width: '20%',
@@ -88,22 +105,10 @@ function Loan() {
       render: (value) => {
         return (
           <Colored style={{ background: value === "pending" ? "#FFE488" : "", borderRadius: value === "pending" ? "43px" : "none", width: '100px', padding: '10px' }}>
-            <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
+            <TextField textAlign='center' color='white' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
           </Colored>
         );
       },
-      // filters: [
-      //   {
-      //     text: 'London',
-      //     value: 'London',
-      //   },
-      //   {
-      //     text: 'New York',
-      //     value: 'New York',
-      //   },
-      // ],
-      // onFilter: (value: string, record) => record.address.startsWith(value),
-      // filterSearch: true,
       width: '40%',
     },
   ];
@@ -127,7 +132,7 @@ function Loan() {
       dataIndex: 'amount',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
         );
       },
       width: '30%',
@@ -137,7 +142,7 @@ function Loan() {
       dataIndex: 'date',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <TextField text={moment(value).format("MMM Do YY")} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
       width: '20%',
@@ -147,12 +152,11 @@ function Loan() {
       dataIndex: 'status',
       render: (value) => {
         return (
-          <Colored style={{ background: value === "pending" ? "#FFE488" : "red", borderRadius: value === "pending" ? "43px" : "43px",width: '100px', padding: '10px' }}>
-            <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
+          <Colored style={{ background: value === "rejected" ? "red" : "", borderRadius: value === "rejected" ? "43px" : "43px",width: '100px', padding: '10px' }}>
+            <TextField textAlign='center' color='white' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
           </Colored>
         );
       },
-      // filters: [
       //   {
       //     text: 'London',
       //     value: 'London',
@@ -187,120 +191,70 @@ function Loan() {
       dataIndex: 'amount',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <CurrencyFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />} />
         );
       },
-      width: '20%',
+      width: '30%',
     },
     {
       title: 'Date',
       dataIndex: 'date',
       render: (value) => {
         return (
-          <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <TextField text={moment(value).format("MMM Do YY")} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
         );
       },
       width: '20%',
     },
     {
-      title: 'Approved by',
-      dataIndex: 'approvedBy',
+      title: 'Status',
+      dataIndex: 'status',
       render: (value) => {
         return (
-          <Colored style={{ background: value === "pending" ? "#FFE488" : "", borderRadius: value === "pending" ? "43px" : "none" }}>
-            <TextField textAlign='center' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
+          <Colored style={{ background: value === "approved" ? "green" : "red", borderRadius: value === "approved" ? "43px" : "43px",width: '100px', padding: '10px' }}>
+            <TextField textAlign='center' color='white' textTransform='capitalize' text={value} fontFamily='Mont-SemiBold' fontSize={'12px'} lineHeight='28px' />
           </Colored>
         );
       },
-      // filters: [
-      //   {
-      //     text: 'London',
-      //     value: 'London',
-      //   },
-      //   {
-      //     text: 'New York',
-      //     value: 'New York',
-      //   },
-      // ],
-      // onFilter: (value: string, record) => record.address.startsWith(value),
-      // filterSearch: true,
       width: '40%',
     },
   ];
 
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "pending"
-    },
-    {
-      key: '2',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "pending"
-    },
-    {
-      key: '3',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "pending"
+  const data = pendingLoans?.loans?.map(pp => {
+    return {
+      key: pp?.id,
+      consumer: pp?.first_name + " " + pp?.last_name,
+      amount: pp?.loan_amount,
+      date: pp?.createdAt,
+      status: pp?.status,
+      ...pp
     }
-  ];
+  })
+  
 
-  const data3: DataType3[] = [
-    {
-      key: '1',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "rejected"
-    },
-    {
-      key: '2',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "rejected"
-    },
-    {
-      key: '3',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      status: "rejected"
+  const data3 = rejectedLoans?.loans?.map(pp => {
+    return {
+      key: pp?.id,
+      consumer: pp?.first_name + " " + pp?.last_name,
+      amount: pp?.loan_amount,
+      date: pp?.createdAt,
+      status: pp?.status,
+      ...pp
     }
-  ];
+  })
 
 
-  const data2: DataType2[] = [
-    {
-      key: '1',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      approvedBy: "Samuel Nwachukwu"
-    },
-    {
-      key: '2',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      approvedBy: "Samuel Nwachukwu"
-    },
-    {
-      key: '3',
-      consumer: 'Cole Benson',
-      amount: 'N1,250,000',
-      date: "23-05-2022",
-      approvedBy: "Samuel Nwachukwu"
+  const data2 = approvedLoans?.loans?.map(pp => {
+    return {
+      key: pp?.id,
+      consumer: pp?.first_name + " " + pp?.last_name,
+      amount: pp?.loan_amount,
+      date: pp?.createdAt,
+      status: pp?.status,
+      ...pp
     }
-  ];
+  })
 
   const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
@@ -323,14 +277,14 @@ function Loan() {
         <Row gutter={[16, 16]}>
           <Col span={8} >
             <Card>
-              <TextField text='Request' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
+              <TextField text='All' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text='105' fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={loanStat?.all_loans?.count ? loanStat?.all_loans?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text='N200,000' fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <CurrencyFormat value={loanStat?.all_loans?.volume ? loanStat?.all_loans?.volume : 0} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />} />
               </RowBtw>
             </Card>
           </Col>
@@ -339,11 +293,11 @@ function Loan() {
               <TextField text='Approved' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text='50' fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={loanStat?.approved_loans?.count ? loanStat?.approved_loans?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text='N200,000' fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <CurrencyFormat value={loanStat?.approved_loans?.volume ? loanStat?.approved_loans?.volume : 0} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />} />
               </RowBtw>
             </Card>
           </Col>
@@ -352,11 +306,11 @@ function Loan() {
               <TextField text='Rejected' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text='100' fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={loanStat?.rejected_loans?.count ? loanStat?.rejected_loans?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text='N200,000' fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <CurrencyFormat value={loanStat?.rejected_loans?.volume ? loanStat?.rejected_loans?.volume : 0} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />} />
               </RowBtw>
             </Card>
           </Col>

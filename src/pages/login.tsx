@@ -28,9 +28,11 @@ const LoginScreen = () => {
     };
 
     const handleFormSubmit = async (data: any) => {
+      
         setLoader(true)
         try {
             var response = await dispatch(signInUser(data))
+   
             if(signInUser.fulfilled.match(response)){
                 secureLocalStorage.setItem("token", response?.payload?.data?.token)
                 secureLocalStorage.setItem("user", JSON.stringify(response?.payload?.data))
