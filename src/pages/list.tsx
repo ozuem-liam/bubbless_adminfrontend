@@ -51,8 +51,6 @@ function List() {
   const [selectedData, setSelectedData] = useState<any>()
   const [selectedDataEquip, setSelectedDataEquip] = useState<any>()
 
-
-
   useEffect(() => {
     dispatch(getAppliance()).then(dd => setAppliance(dd?.payload?.data?.appliances))
     dispatch(getEquipment()).then(dd => setEquipment(dd?.payload?.data?.equipments))
@@ -456,7 +454,6 @@ function List() {
             </RowStart>
             <SmallDiv>
               <SearchField placeholder={'Search by name'} value={search} handleChange={(e) => setSearch(e.target.value)} />
-
             </SmallDiv>
           </RowBtw>
           {

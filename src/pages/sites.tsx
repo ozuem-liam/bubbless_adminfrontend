@@ -157,7 +157,6 @@ function Sites() {
           <Dropdown overlay={menu(value)}>
             <EllipsisOutlined />
           </Dropdown>
-
         );
       },
       width: '20%',
