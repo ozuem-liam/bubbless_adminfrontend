@@ -3,10 +3,10 @@ import AuthReducer from "../slices/AuthSlice";
 import { createWrapper, HYDRATE } from "next-redux-wrapper";
 import EquipmentReducer from "../slices/EquipmentSlice";
 import ApplianceReducer from "../slices/ApplianceSlice";
-import LoanReducer from "../slices/LoanSlice";
+import LoanReducer from "../slices/OrderSlice";
 import SitingReducer from "../slices/SitingSlice";
 import DashboardReducer from "../slices/DashboardSlice";
-import InstallerReducer from "../slices/InstallerSlice";
+import VendorReducer from "../slices/VendorSlice";
 import FeedbackReducer from "../slices/FeedbackSlice";
 
 
@@ -19,7 +19,7 @@ const combinedReducer = combineReducers({
     loan: LoanReducer,
     siting: SitingReducer,
     feeback: FeedbackReducer,
-    installer: InstallerReducer,
+    installer: VendorReducer,
     dashboard: DashboardReducer
 })
 

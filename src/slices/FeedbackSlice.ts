@@ -1,10 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { deleteRequest, getRequest, patchRequest, postRequest, updateRequest } from "../utils/server";
 
-
-
-
-
 const initialState = {
   feedbacks: [],
   loading: false,
@@ -17,7 +13,7 @@ const initialState = {
 export const getFeedback = createAsyncThunk(
   'feedback/getFeedback',
   async () => {
-      const response = await getRequest("/feedback/admin/conversations") as any
+      const response = await getRequest("/feedback/admin/feedback-room") as any
       if (response?.status === 200) {
         return response?.data
       }

@@ -10,7 +10,7 @@ import CurrencyFormat from "react-currency-format"
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import { useRouter } from 'next/router'
 import { useAppDispatch } from '../app/hook'
-import { getLoan, getLoanStat } from '../slices/LoanSlice'
+import { getOrder, getOrderStat } from '../slices/OrderSlice'
 import moment from 'moment'
 
 
@@ -38,28 +38,27 @@ interface DataType2 {
   approvedBy: string;
 }
 
-function Loan() {
+function Order() {
   const [type, setType] = useState('request')
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const [approvedLoans, setApprovedLoans] = useState<any>()
-  const [pendingLoans, setPendingLoans] = useState<any>()
-  const [rejectedLoans, setRejectedLoans] = useState<any>()
-  const [loanStat, setLoanStat] = useState<any>()
-
+  const [approvedOrder, setApprovedOrders] = useState<any>()
+  const [pendingOrders, setPendingOrders] = useState<any>()
+  const [rejectedOrders, setRejectedOrders] = useState<any>()
+  const [orderStat, setOrderStat] = useState<any>()
 
   useEffect(() => {
-    dispatch(getLoanStat()).then(dd => {
-      setLoanStat(dd?.payload?.stats)
+    dispatch(getOrderStat()).then(dd => {
+      setOrderStat(dd?.payload?.data)
     })
-    dispatch(getLoan("approved")).then(dd => {
-      setApprovedLoans(dd?.payload?.data)
+    dispatch(getOrder("approved")).then(dd => {
+      setApprovedOrders(dd?.payload?.data)
     })
-    dispatch(getLoan("rejected")).then(dd => {
-      setRejectedLoans(dd?.payload?.data)
+    dispatch(getOrder("rejected")).then(dd => {
+      setRejectedOrders(dd?.payload?.data)
     })
-    dispatch(getLoan("pending")).then(dd => {
-      setPendingLoans(dd?.payload?.data)
+    dispatch(getOrder("pending")).then(dd => {
+      setPendingOrders(dd?.payload?.data)
     })
   }, [])
 
@@ -71,7 +70,7 @@ function Loan() {
       render: (value, rowIndex) => {
         var id = rowIndex?.key as number
         return (
-          <div style={{cursor: 'pointer'}} onClick={() => router.push(`/loan-details/${id}`)}>
+          <div style={{cursor: 'pointer'}} onClick={() => router.push(`/order-details/${id}`)}>
             <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
           </div>
         );
@@ -120,7 +119,7 @@ function Loan() {
       render: (value, rowIndex) => {
         var id = rowIndex?.key as number
         return (
-          <div style={{cursor: 'pointer'}} onClick={() => router.push(`/loan-details/${id}`)}>
+          <div style={{cursor: 'pointer'}} onClick={() => router.push(`/order-details/${id}`)}>
             <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
           </div>
         );
@@ -179,7 +178,7 @@ function Loan() {
       render: (value, rowIndex) => {
         var id = rowIndex?.key as number
         return (
-          <div style={{cursor: 'pointer'}} onClick={() => router.push(`/loan-details/${id}`)}>
+          <div style={{cursor: 'pointer'}} onClick={() => router.push(`/order-details/${id}`)}>
             <TextField text={value} fontFamily='Mont-SemiBold' fontSize={'14px'} lineHeight='28px' />
           </div>
         );
@@ -221,11 +220,11 @@ function Loan() {
   ];
 
 
-  const data = pendingLoans?.loans?.map(pp => {
+  const data = pendingOrders?.orders?.map(pp => {
     return {
       key: pp?.id,
       consumer: pp?.first_name + " " + pp?.last_name,
-      amount: pp?.loan_amount,
+      amount: pp?.order_amount,
       date: pp?.createdAt,
       status: pp?.status,
       ...pp
@@ -233,11 +232,11 @@ function Loan() {
   })
   
 
-  const data3 = rejectedLoans?.loans?.map(pp => {
+  const data3 = rejectedOrders?.orders?.map(pp => {
     return {
       key: pp?.id,
       consumer: pp?.first_name + " " + pp?.last_name,
-      amount: pp?.loan_amount,
+      amount: pp?.order_amount,
       date: pp?.createdAt,
       status: pp?.status,
       ...pp
@@ -245,11 +244,11 @@ function Loan() {
   })
 
 
-  const data2 = approvedLoans?.loans?.map(pp => {
+  const data2 = approvedOrder?.orders?.map(pp => {
     return {
       key: pp?.id,
       consumer: pp?.first_name + " " + pp?.last_name,
-      amount: pp?.loan_amount,
+      amount: pp?.order_amount,
       date: pp?.createdAt,
       status: pp?.status,
       ...pp
@@ -271,7 +270,7 @@ function Loan() {
   return (
     <Layouts>
     <ComponentDiv>
-    <TextField text='Loans' fontSize={'24px'} fontWeight='bold' margin='0px 0px 4px 0px' />
+    <TextField text='Orders' fontSize={'24px'} fontWeight='bold' margin='0px 0px 4px 0px' />
       <TextField text='Here are your analytics details' color={'#8A8A8A'} />
       <View>
         <Row gutter={[16, 16]}>
@@ -280,11 +279,11 @@ function Loan() {
               <TextField text='All' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={loanStat?.all_loans?.count ? loanStat?.all_loans?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={orderStat?.all_orders?.count ? orderStat?.all_orders?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <CurrencyFormat value={loanStat?.all_loans?.volume ? loanStat?.all_loans?.volume : 0} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />} />
+                <CurrencyFormat value={orderStat?.all_orders?.volume ? orderStat?.all_orders?.volume : 0} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />} />
               </RowBtw>
             </Card>
           </Col>
@@ -293,11 +292,11 @@ function Loan() {
               <TextField text='Approved' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={loanStat?.approved_loans?.count ? loanStat?.approved_loans?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={orderStat?.approved_orders?.count ? orderStat?.approved_orders?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <CurrencyFormat value={loanStat?.approved_loans?.volume ? loanStat?.approved_loans?.volume : 0} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />} />
+                <CurrencyFormat value={orderStat?.approved_orders?.volume ? orderStat?.approved_orders?.volume : 0} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />} />
               </RowBtw>
             </Card>
           </Col>
@@ -306,11 +305,11 @@ function Loan() {
               <TextField text='Rejected' fontFamily='Mont-Bold' color={'#596780'} fontSize={'16px'} lineHeight='24px' />
               <RowBtw>
                 <TextField text='Number' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <TextField text={loanStat?.rejected_loans?.count ? loanStat?.rejected_loans?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
+                <TextField text={orderStat?.rejected_orders?.count ? orderStat?.rejected_orders?.count : 0} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />
               </RowBtw>
               <RowBtw>
                 <TextField text='Volume' color={"#C7C7C7"} fontSize={'16px'} lineHeight='34px' />
-                <CurrencyFormat value={loanStat?.rejected_loans?.volume ? loanStat?.rejected_loans?.volume : 0} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />} />
+                <CurrencyFormat value={orderStat?.rejected_orders?.volume ? orderStat?.rejected_orders?.volume : 0} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'20px'} lineHeight='34px' />} />
               </RowBtw>
             </Card>
           </Col>
@@ -347,7 +346,7 @@ function Loan() {
   )
 }
 
-export default Loan
+export default Order
 
 const Card = styled.div`
   background: white;

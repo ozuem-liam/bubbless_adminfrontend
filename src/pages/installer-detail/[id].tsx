@@ -6,7 +6,7 @@ import TextField from '../../components/TextField'
 import Image from 'next/image'
 import { more, square } from '../../assets';
 import { Row, Col, Table } from 'antd';
-import { getInstaller } from '../../slices/InstallerSlice';
+import { getInstaller } from '../../slices/VendorSlice';
 import { useRouter } from 'next/router';
 import { useAppDispatch } from '../../app/hook';
 import CurrencyFormat from "react-currency-format"

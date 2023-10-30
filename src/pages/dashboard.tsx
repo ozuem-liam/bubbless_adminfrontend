@@ -11,7 +11,7 @@ import { useRouter } from 'next/router'
 import { useAppDispatch } from '../app/hook'
 import { getProfile } from '../slices/AuthSlice'
 import { getRecentActivities, getStat, getStatForDashboard } from '../slices/DashboardSlice'
-import { getDueLoans } from '../slices/LoanSlice'
+import { getDueLoans } from '../slices/OrderSlice'
 import CurrencyFormat from 'react-currency-format';
 import moment from 'moment'
 
@@ -37,7 +37,7 @@ function Dashboard() {
     dispatch(getRecentActivities("installer")).then(pp => setInstallerAct(pp?.payload?.data))
     dispatch(getRecentActivities("customer")).then(pp => setConsumerAct(pp?.payload?.data))
   }, [])
-
+console.log({dashboard})
 
 
   return (
@@ -51,8 +51,8 @@ function Dashboard() {
             <Col span={6} >
               <Card>
                 <Image src={wallet} width={30} height={30} alt='' />
-                <TextField text='Approved Loans' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
-                <CurrencyFormat value={dashboard?.stats?.total_approved_loans_volume} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'32px'} lineHeight='34px' />} />
+                <TextField text='Customer' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
+                <TextField text={dashboard?.customerCount} fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
            
               </Card>
             </Col>
@@ -66,30 +66,29 @@ function Dashboard() {
             <Col span={6} >
               <Card>
                 <Image src={bag} width={30} height={30} alt='' />
-                <TextField text='Loans Disbursed' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
-               
-                <TextField text={dashboard?.stats?.total_loans_disbursed ? dashboard?.stats?.total_loans_disbursed : 0} fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
+                <TextField text='Vendor' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
+                <TextField text={dashboard?.vendorCount} fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
               </Card>
             </Col>
-            <Col span={6} >
+            {/* <Col span={6} >
               <Card>
                 <Image src={equipemnt} width={30} height={30} alt='' />
                 <TextField text='Equipments Request' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
                 <TextField text={dashboard?.stats?.total_equipments_requested} fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
               </Card>
-            </Col>
+            </Col> */}
             <Col span={6} >
               <Card>
                 <Image src={wallet} width={30} height={30} alt='' />
-                <TextField text='MW Loaned Out' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
-                <TextField text='105' fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
+                <TextField text='Orders' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
+                <TextField text={dashboard?.orderCount} fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
               </Card>
             </Col>
             <Col span={6} >
               <Card>
                 <Image src={cloud} width={30} height={30} alt='' />
-                <TextField text='Saved Carbon Emission' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
-                <TextField text='0000' fontWeight='bold' fontSize={'32px'} lineHeight='34px' />
+                <TextField text='Amount' color={Colors?.gray500} fontSize={'10px'} lineHeight='20px' />
+                <CurrencyFormat value={dashboard?.orderAmount[0]?.amount} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <TextField text={value} fontWeight='bold' fontSize={'32px'} lineHeight='34px' />} />
               </Card>
             </Col>
 
@@ -98,7 +97,7 @@ function Dashboard() {
 
         <View>
           <Row gutter={[8, 16]}>
-            <Col span={12} >
+            <Col span={24} >
               <Card2>
                 <TextField text='Recent activities' fontWeight='bold' fontSize={'16px'} lineHeight='34px' />
                 {/* <View2>
@@ -107,7 +106,7 @@ function Dashboard() {
                 </View2> */}
                    <View2>
                  <div style={{cursor: "pointer"}} onClick={() => setActType("installer")}>
-                 <TextField text='Installer' fontWeight='bold' color={actType === "installer" ? "blue" : "#C7C7C7"} fontSize={'14px'} lineHeight='34px' />
+                 <TextField text='Vendor' fontWeight='bold' color={actType === "installer" ? "blue" : "#C7C7C7"} fontSize={'14px'} lineHeight='34px' />
                  </div>
                  <div style={{cursor: "pointer"}} onClick={() => setActType("consumer")}>
                  <TextField text='Consumer' margin='0px 10px' fontSize={'14px'} color={actType === "consumer" ? "blue" : "#C7C7C7"} lineHeight='34px' />
@@ -139,7 +138,7 @@ function Dashboard() {
 
               </Card2>
             </Col>
-            <Col span={12} >
+            {/* <Col span={12} >
               <Card2>
                 <div>
                   <TextField text='Loan activities' fontWeight='bold' fontSize={'16px'} lineHeight='34px' />
@@ -184,7 +183,7 @@ function Dashboard() {
                 }
   
               </Card2>
-            </Col>
+            </Col> */}
           </Row>
         </View>
 

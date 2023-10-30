@@ -2,7 +2,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import secureLocalStorage from "react-secure-storage";
 
-const Base_Type = "Prod" as string;
+const Base_Type = "Staging" as string;
 const Base_Postfix = "/api/v1" as string;
 const Base_url =
   Base_Type === "Staging"
@@ -55,6 +55,7 @@ export const postRequest = async (url: string, payload?) => {
       authorization: `Bearer ${secureLocalStorage.getItem("token")}`,
     },
   });
+  console.log({ res });
   if (res?.status === 200) {
     return res;
   }

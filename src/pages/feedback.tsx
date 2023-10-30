@@ -49,7 +49,10 @@ function Feedback() {
 
 
   useEffect(() => {
-    dispatch(getFeedback()).then(pp => setFeedbacks(pp?.payload?.data))
+    dispatch(getFeedback()).then(pp => {
+      console.log({dp: pp?.payload})
+      setFeedbacks(pp?.payload?.data)
+    })
   }, [])
 
 
@@ -83,7 +86,7 @@ function Feedback() {
       width: '30%',
     },
     {
-      title: 'Installer name',
+      title: 'Vendor name',
       dataIndex: 'consumer',
       render: (value, rowIndex) => {
         return (
@@ -143,7 +146,7 @@ function Feedback() {
 
 
 
-  const data = feedbacks?.map(data => {
+  const data = feedbacks?.feedbacks?.map(data => {
     return {
       key: data?._id,
       installer_image: data?.installer_image,

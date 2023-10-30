@@ -51,7 +51,7 @@ const Layouts = ({ children }) => {
     const dispatch = useAppDispatch()
 
     var user: any = secureLocalStorage.getItem('user')
-    var userInfo = JSON.parse(user)
+    // var userInfo = JSON.parse(user)
 
     useEffect(() => {
         dispatch(getProfile())
@@ -81,48 +81,48 @@ const Layouts = ({ children }) => {
         },
         {
             id: 2,
-            name: 'Loan',
-            route: '/loan',
-            secondRoute: '/loan-details',
+            name: 'Order',
+            route: '/order',
+            secondRoute: '/order-details',
             icon: walletMinus,
         },
-        {
-            id: 3,
-            name: 'Equipment',
-            route: '/equipment',
-            icon: equip,
-            sub: [
-                {
-                    name: 'List',
-                    route: '/list'
-                },
-                {
-                    name: 'Request',
-                    route: '/request'
-                }
+        // {
+        //     id: 3,
+        //     name: 'Equipment',
+        //     route: '/equipment',
+        //     icon: equip,
+        //     sub: [
+        //         {
+        //             name: 'List',
+        //             route: '/list'
+        //         },
+        //         {
+        //             name: 'Request',
+        //             route: '/request'
+        //         }
 
-            ]
-        },
-        {
-            id: 4,
-            name: 'Sites',
-            route: '/sites',
-            icon: site,
-        },
-        {
-            id: 5,
-            name: 'Installers',
-            route: '/installers',
-            icon: people,
-            secondRoute: '/installer-detail',
-        },
-        {
-            id: 6,
-            name: 'Investment',
-            route: '/investment',
-            icon: startUp,
-            secondRoute: '/all-investors'
-        },
+        //     ]
+        // },
+        // {
+        //     id: 4,
+        //     name: 'Sites',
+        //     route: '/sites',
+        //     icon: site,
+        // },
+        // {
+        //     id: 5,
+        //     name: 'Installers',
+        //     route: '/installers',
+        //     icon: people,
+        //     secondRoute: '/installer-detail',
+        // },
+        // {
+        //     id: 6,
+        //     name: 'Investment',
+        //     route: '/investment',
+        //     icon: startUp,
+        //     secondRoute: '/all-investors'
+        // },
         {
             id: 7,
             name: 'Feedback',
@@ -132,12 +132,12 @@ const Layouts = ({ children }) => {
     ]
 
     const sideBottom = [
-        {
-            id: 1,
-            name: 'Configurations',
-            route: '/configurations',
-            icon: config,
-        },
+        // {
+        //     id: 1,
+        //     name: 'Configurations',
+        //     route: '/configurations',
+        //     icon: config,
+        // },
         {
             id: 2,
             name: 'Log Out',
@@ -171,7 +171,7 @@ const Layouts = ({ children }) => {
 
                         <Menudiv>
                             {
-                                sideMenu?.map(({ name, icon, route, id, secondRoute, sub }) => {
+                                sideMenu?.map(({ name, icon, route, id, secondRoute, /*sub*/ }) => {
                                     return (
                                         <div>
                                             <Subdiv key={id} onClick={name === "Equipment" ? () => setOpen(!open) : () => router.push(route)} style={{
@@ -180,13 +180,13 @@ const Layouts = ({ children }) => {
                                                 <Image src={icon} alt='' />
                                                 <TextField text={name} margin='0px 0px 0px 14px' />
                                             </Subdiv>
-                                            {
+                                            {/* {
                                                 sub && open && sub?.map((dd, i) => {
                                                     return <Subdiv2 key={i} onClick={() => router.push(dd?.route)} style={{ background: (pathname === dd?.route || pathname.includes(dd?.route)) ? "#FFC268" : "white", borderRadius: (pathname === dd?.route || pathname.includes(dd?.route)) ? "10px" : "0" }}>
                                                         <TextField text={dd?.name} margin='0px 0px 0px 14px' textTransform='capitalize' />
                                                     </Subdiv2>
                                                 })
-                                            }
+                                            } */}
 
                                         </div>
                                     )

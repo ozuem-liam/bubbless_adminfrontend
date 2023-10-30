@@ -11,7 +11,7 @@ import { Row, Col } from "antd"
 import TextInput from '../../components/TextInput'
 import { useRouter } from 'next/router'
 import { useAppDispatch } from '../../app/hook'
-import { getLoan, getUserLoanDetail, updateLoanStatus } from '../../slices/LoanSlice'
+import { getLoan, getUserLoanDetail, updateLoanStatus } from '../../slices/OrderSlice'
 import { toast } from 'react-toastify'
 import CurrencyFormat from "react-currency-format"
 

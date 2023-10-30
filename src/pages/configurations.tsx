@@ -12,11 +12,11 @@ import { Row, Col, Table, Menu } from "antd"
 import AddInstallation from '../components/AddInstallation'
 import AddInvestment from '../components/AddInvestment'
 import { useAppDispatch } from '../app/hook'
-import { createConfigLoan, deleteConfigLoan, getConfigLoan } from '../slices/LoanSlice'
+import { createConfigLoan, deleteConfigLoan, getConfigLoan } from '../slices/OrderSlice'
 import { toast, ToastContainer } from 'react-toastify'
 import { EllipsisOutlined } from "@ant-design/icons"
 import { Dropdown, Space } from 'antd';
-import { createInstallerCosting, deleteInstallerCosting, getInstallerCosting } from '../slices/InstallerSlice'
+import { createInstallerCosting, deleteInstallerCosting, getInstallerCosting } from '../slices/VendorSlice'
 import { createInvestorCosting, getInvestorCosting } from '../slices/InvestmentSlice'
 import CurrencyFormat from "react-currency-format"
 

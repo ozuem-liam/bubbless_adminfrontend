@@ -65,7 +65,7 @@ const LoginScreen = () => {
     return (
         <Div>
 
-            <Image src={'https://res.cloudinary.com/doouwbecx/image/upload/v1667845935/LOGO_FULL_COLOUR_nfevgw.png'} />
+            <Image src={'https://res.cloudinary.com/dhjptk5wf/image/upload/v1698488668/xk10tutv7fztr7myhsqq.png'} />
             <LoginDiv>
                 <View>
                     <TextField text='Log in to your account' fontSize={'22px'} fontFamily='Mont-Bold' fontWeight='bold' />

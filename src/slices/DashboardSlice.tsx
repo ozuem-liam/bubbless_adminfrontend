@@ -18,7 +18,7 @@ const initialState = {
 export const getStatForDashboard = createAsyncThunk(
   'dashboard/getStatForDashboard',
   async () => {
-      const response = await getRequest("/admin-action/dashboard/get-stats") as any
+      const response = await getRequest("/admin/stats") as any
       if (response?.status === 200) {
         return response?.data
       }

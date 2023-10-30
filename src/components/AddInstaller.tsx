@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import styled from 'styled-components';
 import { useAppDispatch } from '../app/hook';
-import { createInstaller } from '../slices/InstallerSlice';
+import { createInstaller } from '../slices/VendorSlice';
 import { AddInstallerSchema } from '../utils/schemas/schema';
 import { InstallerType } from '../utils/types/type';
 import Button from './Button';

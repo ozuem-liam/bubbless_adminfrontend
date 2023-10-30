@@ -12,7 +12,7 @@ import SearchField from '../components/SearchField'
 import AddInstaller from '../components/AddInstaller'
 import { placeholder } from '../assets'
 import { useAppDispatch } from '../app/hook'
-import { getInstaller } from '../slices/InstallerSlice'
+import { getInstaller } from '../slices/VendorSlice'
 import { Email } from '@material-ui/icons'
 import { Dropdown, Space, Menu } from 'antd';
 import { EllipsisOutlined } from "@ant-design/icons"

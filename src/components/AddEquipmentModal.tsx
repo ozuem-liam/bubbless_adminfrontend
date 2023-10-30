@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch } from '../app/hook';
 
-import { fileUpload } from '../slices/LoanSlice';
+import { fileUpload } from '../slices/OrderSlice';
 import { AddApplianceSchema, AddEquipmentSchema } from '../utils/schemas/schema';
 import { EquipmentType } from '../utils/types/type';
 import Button from './Button';

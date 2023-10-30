@@ -6,17 +6,17 @@ import { deleteRequest, getRequest, patchRequest, postRequest, updateRequest } f
 
 
 const initialState = {
-    loans: [],
+    orders: [],
     loading: false,
     error: null
 }
 
 
 
-export const getLoanStat = createAsyncThunk(
-    'loan/getLoanStat',
+export const getOrderStat = createAsyncThunk(
+    'loan/getOrderStat',
     async () => {
-        const response = await getRequest("/admin-action/loan-stats") as any
+        const response = await getRequest("/admin/order-stats") as any
         if (response?.status === 200) {
             return response?.data
         }
@@ -24,10 +24,10 @@ export const getLoanStat = createAsyncThunk(
     }
 )
 
-export const getLoan = createAsyncThunk(
-    'loan/getLoan',
+export const getOrder = createAsyncThunk(
+    'loan/getOrder',
     async (payload: string) => {
-        const response = await getRequest(`/admin-action/loans?status=${payload}`) as any
+        const response = await getRequest(`/admin/orders?status=${payload}`) as any
         if (response?.status === 200) {
             return response?.data
         }
@@ -130,10 +130,10 @@ export const LoanSlice = createSlice({
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(getLoan.pending, (state, action) => {
+        builder.addCase(getOrder.pending, (state, action) => {
             state.loading = true
         }),
-            builder.addCase(getLoan.fulfilled, (state, action) => {
+            builder.addCase(getOrder.fulfilled, (state, action) => {
                 state.loading = false
             })
         builder.addCase(getDueLoans.rejected, (state, action) => {
@@ -145,16 +145,16 @@ export const LoanSlice = createSlice({
             builder.addCase(getDueLoans.fulfilled, (state, action) => {
                 state.loading = false
             })
-        builder.addCase(getLoan.rejected, (state, action) => {
+        builder.addCase(getOrder.rejected, (state, action) => {
             state.error = action.error.message
         }),
-        builder.addCase(getLoanStat.pending, (state, action) => {
+        builder.addCase(getOrderStat.pending, (state, action) => {
             state.loading = true
         }),
-            builder.addCase(getLoanStat.fulfilled, (state, action) => {
+            builder.addCase(getOrderStat.fulfilled, (state, action) => {
                 state.loading = false
             })
-        builder.addCase(getLoanStat.rejected, (state, action) => {
+        builder.addCase(getOrderStat.rejected, (state, action) => {
             state.error = action.error.message
         })
         builder.addCase(fileUpload.pending, (state, action) => {
