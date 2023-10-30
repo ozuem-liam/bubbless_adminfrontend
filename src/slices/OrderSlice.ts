@@ -125,7 +125,7 @@ export const fileUpload = createAsyncThunk(
 
 
 
-export const LoanSlice = createSlice({
+export const OrderSlice = createSlice({
     name: 'loan',
     initialState,
     reducers: {},
@@ -214,6 +214,6 @@ export const LoanSlice = createSlice({
     }
 })
 
-export default LoanSlice.reducer;
+export default OrderSlice.reducer;
 
 
